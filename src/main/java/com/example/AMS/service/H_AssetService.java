@@ -4,6 +4,7 @@ import com.example.AMS.model.Asset;
 import com.example.AMS.repository.H_AssetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,5 +37,8 @@ public class H_AssetService {
 
     public void deleteAsset(String assetID) {
         assetRepository.deleteById(assetID);
+    }
+
+    public void importFromExcel(MultipartFile file) {
     }
 }

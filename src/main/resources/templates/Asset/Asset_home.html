@@ -779,7 +779,7 @@
                 <span class="menu-text">Condemn</span>
             </a>
             <a href="/#" class="menu-item">
-                <span class="menu-text">Asset Histoey</span>
+                <span class="menu-text">Asset History</span>
             </a>
             <a href="/#" class="menu-item">
                 <span class="menu-text">Asset</span>
@@ -807,7 +807,10 @@
             <div class="container">
                 <div class="page-header">
                     <h1 class="page-title">All Assets</h1>
-                    <a href="#" class="btn btn-primary">
+                    <!-- Button to open modal -->
+                    <a href="javascript:void(0)"
+                       onclick="openModal()"
+                       class="btn btn-primary bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center gap-2">
                         <i class="fas fa-plus"></i> Add New Asset
                     </a>
                 </div>
@@ -827,7 +830,7 @@
                     <tr>
                         <th>Asset ID</th>
                         <th>Asset Name</th>
-                        <th>Type</th>
+                        <th>Asset Type</th>
                         <th>Brand</th>
                         <th>Model</th>
                         <th>PurchaseDate<th>
@@ -837,6 +840,7 @@
                         <th>Warranty Date</th>
                         <th>Warrenty Period</th>
                         <th>Purchase Store</th>
+                        <th>Location</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -848,8 +852,8 @@
                             </div>
                             <div class="no-assets-title">No Assets Found</div>
                             <div class="no-assets-text">There are currently no assets in the system.</div>
-                            <a href="#" class="btn btn-primary">
-                                <i class="fas fa-plus"></i> Add Your First Asset
+                            <a href="Asset_create.html" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Add New Asset
                             </a>
                         </td>
                     </tr>
