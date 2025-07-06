@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface H_AssetRepository extends JpaRepository<Asset, String> {
-    // Add custom queries if needed
+    //    List<Damages> findByIsDeletedFalse();
 }
