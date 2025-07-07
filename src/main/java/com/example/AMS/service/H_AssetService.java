@@ -41,4 +41,9 @@ public class H_AssetService {
 
     public void importFromExcel(MultipartFile file) {
     }
+
+    public void saveAsset(Asset asset) {
+        assetRepository.save(asset); // assuming you have a JPA repository named assetRepository
+    }
+
 }

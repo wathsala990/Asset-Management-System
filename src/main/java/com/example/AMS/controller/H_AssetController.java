@@ -3,125 +3,95 @@ package com.example.AMS.controller;
 import com.example.AMS.model.Asset;
 import com.example.AMS.service.H_AssetService;
 import com.example.AMS.service.M_LocationService;
-
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/asset")
 public class H_AssetController {
 
     private final H_AssetService assetService;
     private final M_LocationService locationService;
 
-    @Autowired
     public H_AssetController(H_AssetService assetService, M_LocationService locationService) {
         this.assetService = assetService;
         this.locationService = locationService;
     }
 
-    // ✅ Main Asset List Page
-    @GetMapping("/home")
-    public String home(Model model) {
-        List<Asset> assetList = assetService.getAllAssets();
-        model.addAttribute("assetList", assetList);
-        return "asset_home"; // Template: src/main/resources/templates/asset_home.html
+    // Show list of all assets (Home page for asset management)
+    @GetMapping({"/"})
+    public String showAllAssets(@RequestParam(value = "assetID", defaultValue = "0") String assetID,
+                                Model model) {
+        List<Asset> assetsList = assetService.getAllAssets();
+        model.addAttribute("assetsList", assetsList);
+        return "Asset_home";
     }
 
-    // ✅ Show form to create a new asset
+    // Show form for creating a new asset
     @GetMapping("/create")
     public String createAssetForm(Model model) {
         model.addAttribute("asset", new Asset());
         model.addAttribute("locations", locationService.getAllLocations());
-        return "asset_create"; // Template: asset_create.html
+        return "Asset_create";
     }
 
-    // ✅ Save manually created asset
+    // Handle form submission to save new or edited asset
     @PostMapping("/save")
     public String saveAsset(@Valid @ModelAttribute("asset") Asset asset,
                             BindingResult bindingResult,
-                            Model model,
-                            RedirectAttributes redirectAttributes) {
+                            RedirectAttributes redirectAttributes,
+                            Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("locations", locationService.getAllLocations());
-            return "asset_create";
+            return "Asset_create";
         }
 
-        assetService.createAsset(asset);
-        redirectAttributes.addFlashAttribute("message", "Asset saved successfully!");
-        return "redirect:/asset/";
+        assetService.saveAsset(asset);
+        redirectAttributes.addFlashAttribute("successMessage", "Asset saved successfully!");
+        return "redirect:/asset/home";
     }
 
-    // ✅ Show Excel Upload Page
-    @GetMapping("/upload")
-    public String showUploadForm() {
-        return "asset_upload"; // Create asset_upload.html
-    }
-
-    // ✅ Handle Excel Upload (uncomment when ready)
-    @PostMapping("/upload")
-    public String handleFileUpload(@RequestParam("file") MultipartFile file,
-                                   RedirectAttributes redirectAttributes) {
-        if (file.isEmpty()) {
-            redirectAttributes.addFlashAttribute("error", "Please select a valid Excel file.");
-            return "redirect:/asset/upload";
-        }
-
-        try {
-            assetService.importFromExcel(file); // Make sure this method exists
-            redirectAttributes.addFlashAttribute("message", "Assets uploaded successfully!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Upload failed: " + e.getMessage());
-        }
-
-        return "redirect:/asset/";
-    }
-
-    // ✅ View individual asset
-    @GetMapping("/{assetID}")
-    public String viewAsset(@PathVariable String assetID, Model model) {
+    // Show form to edit an existing asset
+    @GetMapping("/edit/{assetID}")
+    public String showEditForm(@PathVariable("assetID") String assetID, Model model) {
         Optional<Asset> optionalAsset = assetService.getAssetById(assetID);
-        if (optionalAsset.isPresent()) {
-            model.addAttribute("asset", optionalAsset.get());
-            return "asset_viewdetails"; // Template: asset_viewdetails.html
+        if (optionalAsset.isEmpty()) {
+            return "redirect:/asset/home";
         }
-        return "redirect:/asset/";
+        model.addAttribute("asset", optionalAsset.get());
+        model.addAttribute("locations", locationService.getAllLocations());
+        return "Asset_edit";
     }
 
-    // ✅ Edit asset
-    @GetMapping("/{assetID}/edit")
-    public String editAsset(@PathVariable String assetID, Model model) {
-        Optional<Asset> asset = assetService.getAssetById(assetID);
-        if (asset.isPresent()) {
-            model.addAttribute("asset", asset.get());
+    // Handle form submission to update existing asset
+    @PostMapping("/update")
+    public String updateAsset(@Valid @ModelAttribute("asset") Asset asset,
+                              BindingResult result,
+                              RedirectAttributes redirectAttributes,
+                              Model model) {
+        if (result.hasErrors()) {
             model.addAttribute("locations", locationService.getAllLocations());
-            return "asset_create";
+            return "Asset_edit";
         }
-        return "redirect:/asset/";
+
+        assetService.updateAsset(asset.getAssetID(), asset);
+        redirectAttributes.addFlashAttribute("successMessage", "Asset updated successfully!");
+        return "redirect:/asset/home";
     }
 
-    // ✅ Delete asset
-    @GetMapping("/{assetID}/delete")
-    public String deleteAsset(@PathVariable String assetID, RedirectAttributes redirectAttributes) {
+    // Delete an asset by its ID
+    @GetMapping("/delete/{assetID}")
+    public String deleteAsset(@PathVariable("assetID") String assetID,
+                              RedirectAttributes redirectAttributes) {
         assetService.deleteAsset(assetID);
-        redirectAttributes.addFlashAttribute("message", "Asset deleted successfully!");
-        return "redirect:/asset/";
-    }
-
-    // ✅ View All Assets (Alternate Page)
-    @GetMapping("/view")
-    public String viewAssetList(Model model) {
-        List<Asset> assetList = assetService.getAllAssets();
-        model.addAttribute("assetList", assetList);
-        return "asset_viewdetails";
+        redirectAttributes.addFlashAttribute("successMessage", "Asset deleted successfully!");
+        return "redirect:/asset/home";
     }
 }
