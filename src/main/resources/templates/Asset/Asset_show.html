@@ -587,7 +587,7 @@
         <span class="menu-text">Condemn</span>
       </a>
       <a href="/#" class="menu-item">
-        <span class="menu-text">Asset Histoey</span>
+        <span class="menu-text">Asset History</span>
       </a>
       <a href="/#" class="menu-item">
         <span class="menu-text">Asset</span>
@@ -608,29 +608,93 @@
     </nav>
   </aside>
 
-  <main class="flex-grow">
-    <div class="main-content">
-      <p>Add to the Asset Management List</p>
-      <form th:action="@{/assets/save}" th:object="${asset}" method="post">
-        <label>ID:</label> <input type="text" th:field="*{assetID}" /><br/>
-        <label>Name:</label> <input type="text" th:field="*{assetName}" /><br/>
-        <label>Type:</label> <input type="text" th:field="*{assetType}" /><br/>
-        <label>Brand:</label> <input type="text" th:field="*{brand}" /><br/>
-        <label>Model:</label> <input type="text" th:field="*{model}" /><br/>
-        <label>Purchase Date:</label> <input type="date" th:field="*{purchaseDate}" /><br/>
-        <label>Specification:</label> <input type="text" th:field="*{specification}" /><br/>
-        <label>Warranty ID:</label> <input type="text" th:field="*{warrantyID}" /><br/>
-        <label>Warranty Date:</label> <input type="date" th:field="*{warrantyDate}" /><br/>
-        <label>Warranty Period:</label> <input type="text" th:field="*{warrantyPeriod}" /><br/>
-        <label>Purchase Store:</label> <input type="text" th:field="*{purchaseStore}" /><br/>
-        <label>Active:</label> <input type="checkbox" th:field="*{activeStatus}" /><br/>
+  <!DOCTYPE html>
+  <html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8">
+    <title>Asset Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  </head>
+  <body class="bg-gray-100">
 
-        <button type="submit">Save</button>
-      </form>
-      <a href="/assets">Back to List</a>
+  <main>
+    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <!-- Page Title -->
+      <h2 class="text-3xl font-bold text-bg-red-900  mb-6">View Asset Information</h2>
+
+      <table class="table-auto w-full">
+        <tr>
+          <th class="uppercase border text-left px-6 bg-red-900 text-white">Asset ID</th>
+          <td class="px-6 py-4 border bg-white" th:text="${asset.assetID}"></td>
+        </tr>
+
+        <tr>
+          <th class="uppercase border text-left px-6 bg-red-900 text-white">Asset Name</th>
+          <td class="px-6 py-4 border bg-white" th:text="${asset.assetName}"></td>
+        </tr>
+
+        <tr>
+          <th class="uppercase border text-left px-6 bg-red-900 text-white">Type</th>
+          <td class="px-6 py-4 border bg-white" th:text="${asset.assetType}"></td>
+        </tr>
+
+        <tr>
+          <th class="uppercase border text-left px-6 bg-red-900 text-white">Brand</th>
+          <td class="px-6 py-4 border bg-white" th:text="${asset.brand}"></td>
+        </tr>
+
+        <tr>
+          <th class="uppercase border text-left px-6 bg-red-900 text-white">Model</th>
+          <td class="px-6 py-4 border bg-white" th:text="${asset.model}"></td>
+        </tr>
+
+        <tr>
+          <th class="uppercase border text-left px-6 bg-red-900 text-white">Specification</th>
+          <td class="px-6 py-4 border bg-white" th:text="${asset.specification}"></td>
+        </tr>
+
+        <tr>
+          <th class="uppercase border text-left px-6 bg-red-900 text-white">Purchase Date</th>
+          <td class="px-6 py-4 border bg-white" th:text="${#dates.format(asset.purchaseDate, 'yyyy-MM-dd')}"></td>
+        </tr>
+
+        <tr>
+          <th class="uppercase border text-left px-6 bg-red-900 text-white">Warranty ID</th>
+          <td class="px-6 py-4 border bg-white" th:text="${asset.warrantyID}"></td>
+        </tr>
+
+        <tr>
+          <th class="uppercase border text-left px-6 bg-red-900 text-white">Warranty Date</th>
+          <td class="px-6 py-4 border bg-white" th:text="${#dates.format(asset.warrantyDate, 'yyyy-MM-dd')}"></td>
+        </tr>
+
+        <tr>
+          <th class="uppercase border text-left px-6 bg-red-900 text-white">Warranty Period</th>
+          <td class="px-6 py-4 border bg-white" th:text="${asset.warrantyPeriod}"></td>
+        </tr>
+
+        <tr>
+          <th class="uppercase border text-left px-6 bg-red-900 text-white">Purchase Store</th>
+          <td class="px-6 py-4 border bg-white" th:text="${asset.purchaseStore}"></td>
+        </tr>
+
+        <tr>
+          <th class="uppercase border text-left px-6 bg-red-900 text-white">Location</th>
+          <td class="px-6 py-4 border bg-white" th:text="${asset.location.name}"></td>
+        </tr>
+
+        <tr>
+          <th class="uppercase border text-left px-6 bg-red-900 text-white">Active Status</th>
+          <td class="px-6 py-4 border bg-white" th:text="${asset.activeStatus ? 'Active' : 'Inactive'}"></td>
+        </tr>
+      </table>
 
     </div>
   </main>
+
+  </body>
+  </html>
+
 </div>
 
 <footer class="main-footer">

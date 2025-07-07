@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/asset")
+@RequestMapping("/")
 public class H_AssetController {
 
     private final H_AssetService assetService;
@@ -25,10 +25,9 @@ public class H_AssetController {
         this.locationService = locationService;
     }
 
-    // Show list of all assets (Home page for asset management)
-    @GetMapping({"/"})
-    public String showAllAssets(@RequestParam(value = "assetID", defaultValue = "0") String assetID,
-                                Model model) {
+    // Show list of all assets
+    @GetMapping("/")
+    public String showAllAssets(Model model) {
         List<Asset> assetsList = assetService.getAllAssets();
         model.addAttribute("assetsList", assetsList);
         return "Asset_home";
@@ -70,7 +69,19 @@ public class H_AssetController {
         return "Asset_edit";
     }
 
-    // Handle form submission to update existing asset
+    // View details of an asset
+    @GetMapping("/view/{assetID}")
+    public String viewAsset(@PathVariable("assetID") String assetID, Model model) {
+        Optional<Asset> asset = assetService.getAssetById(assetID);
+        if (asset.isPresent()) {
+            model.addAttribute("asset", asset.get());
+            return "Asset_show";
+        } else {
+            return "redirect:/asset/home";
+        }
+    }
+
+    // Update existing asset
     @PostMapping("/update")
     public String updateAsset(@Valid @ModelAttribute("asset") Asset asset,
                               BindingResult result,
