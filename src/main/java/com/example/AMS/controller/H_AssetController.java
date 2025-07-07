@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/asset")
+@RequestMapping("/")
 public class H_AssetController {
 
     private final H_AssetService assetService;
@@ -30,7 +30,7 @@ public class H_AssetController {
     }
 
     // ✅ Main Asset List Page
-    @GetMapping("/")
+    @GetMapping("/home")
     public String home(Model model) {
         List<Asset> assetList = assetService.getAllAssets();
         model.addAttribute("assetList", assetList);

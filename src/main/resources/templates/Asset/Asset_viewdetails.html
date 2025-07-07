@@ -607,29 +607,7 @@
     </nav>
   </aside>
 
-  <main class="flex-grow">
-    <div class="main-content">
-      <p>Add to the Asset Management List</p>
-      <form th:action="@{/assets/save}" th:object="${asset}" method="post">
-        <label>ID:</label> <input type="text" th:field="*{assetID}" /><br/>
-        <label>Name:</label> <input type="text" th:field="*{assetName}" /><br/>
-        <label>Type:</label> <input type="text" th:field="*{assetType}" /><br/>
-        <label>Brand:</label> <input type="text" th:field="*{brand}" /><br/>
-        <label>Model:</label> <input type="text" th:field="*{model}" /><br/>
-        <label>Purchase Date:</label> <input type="date" th:field="*{purchaseDate}" /><br/>
-        <label>Specification:</label> <input type="text" th:field="*{specification}" /><br/>
-        <label>Warranty ID:</label> <input type="text" th:field="*{warrantyID}" /><br/>
-        <label>Warranty Date:</label> <input type="date" th:field="*{warrantyDate}" /><br/>
-        <label>Warranty Period:</label> <input type="text" th:field="*{warrantyPeriod}" /><br/>
-        <label>Purchase Store:</label> <input type="text" th:field="*{purchaseStore}" /><br/>
-        <label>Active:</label> <input type="checkbox" th:field="*{activeStatus}" /><br/>
 
-        <button type="submit">Save</button>
-      </form>
-      <a href="/assets">Back to List</a>
-
-    </div>
-  </main>
 </div>
 
 <footer class="main-footer">
