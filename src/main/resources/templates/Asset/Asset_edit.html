@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Asset</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-4">
+  <h1>Edit Asset</h1>
+  <form th:action="@{/assets/save}" th:object="${asset}" method="post">
+    <div class="mb-3">
+      <label class="form-label">Asset ID</label>
+      <input type="text" class="form-control" th:field="*{assetID}" readonly>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Asset Name</label>
+      <input type="text" class="form-control" th:field="*{assetName}" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Asset Type</label>
+      <select class="form-select" th:field="*{assetType}" required>
+        <option th:each="type : ${assetTypes}"
+                th:value="${type}"
+                th:text="${type}"
+                th:selected="${type == asset.assetType}"></option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Brand</label>
+      <input type="text" class="form-control" th:field="*{brand}" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Model</label>
+      <input type="text" class="form-control" th:field="*{model}" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Location</label>
+      <select class="form-select" th:field="*{location}">
+        <option value="">No Location</option>
+        <option th:each="location : ${locations}"
+                th:value="${location.locationID}"
+                th:text="${location.roomName + ' (' + location.roomNo + ')'}"
+                th:selected="${asset.location != null && asset.location.locationID == location.locationID}"></option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Purchase Date</label>
+      <input type="date" class="form-control" th:field="*{purchaseDate}" required>
+    </div>
+
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" th:field="*{activeStatus}">
+      <label class="form-check-label">Active Status</label>
+    </div>
+
+    <button type="submit" class="btn btn-success">Update</button>
+    <a th:href="@{/assets}" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+</body>
+</html>

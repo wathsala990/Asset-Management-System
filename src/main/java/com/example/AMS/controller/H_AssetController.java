@@ -3,116 +3,65 @@ package com.example.AMS.controller;
 import com.example.AMS.model.Asset;
 import com.example.AMS.service.H_AssetService;
 import com.example.AMS.service.M_LocationService;
-import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import java.util.List;
-import java.util.Optional;
+import java.util.List; // Add this import
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/Asset")
 public class H_AssetController {
+    @Autowired
+    private H_AssetService assetService;
 
-    private final H_AssetService assetService;
-    private final M_LocationService locationService;
+    @Autowired
+    private M_LocationService locationService;
 
-    public H_AssetController(H_AssetService assetService, M_LocationService locationService) {
-        this.assetService = assetService;
-        this.locationService = locationService;
+    @GetMapping
+    public String listAssets(Model model) {
+        model.addAttribute("assets", assetService.getAllAssets());
+        return "Asset/Asset_home";
     }
 
-    // Show list of all assets
-    @GetMapping("/")
-    public String showAllAssets(Model model) {
-        List<Asset> assetsList = assetService.getAllAssets();
-        model.addAttribute("assetsList", assetsList);
-        return "/asset/home";
-    }
-
-    // Show form for creating a new asset
-    @GetMapping("/create")
-    public String createAssetForm(Model model) {
+    @GetMapping("/add")
+    public String showAddForm(Model model) {
         model.addAttribute("asset", new Asset());
         model.addAttribute("locations", locationService.getAllLocations());
-        return "/asset/create";
+        model.addAttribute("assetTypes", List.of("Laptop", "Desktop", "Monitor", "Printer", "Server", "Network Equipment"));
+        return "Asset/Asset_create";
     }
 
-    // Handle form submission to save new or edited asset
     @PostMapping("/save")
-    public String saveAsset(@Valid @ModelAttribute("asset") Asset asset,
-                            BindingResult bindingResult,
-                            RedirectAttributes redirectAttributes,
-                            Model model) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("locations", locationService.getAllLocations());
-            return "Asset_create";
-        }
-
+    public String saveAsset(@ModelAttribute Asset asset) {
         assetService.saveAsset(asset);
-        redirectAttributes.addFlashAttribute("successMessage", "Asset saved successfully!");
-        return "redirect:/asset/home";
+        return "redirect:/Asset";
     }
 
-    // Show form to edit an existing asset
     @GetMapping("/edit/{assetID}")
-    public String showEditForm(@PathVariable("assetID") String assetID, Model model) {
-        Optional<Asset> optionalAsset = assetService.getAssetById(assetID);
-        if (optionalAsset.isEmpty()) {
-            return "redirect:/asset/home";
-        }
-        model.addAttribute("asset", optionalAsset.get());
+    public String showEditForm(@PathVariable String assetID, Model model) {
+        Asset asset = assetService.getAssetById(assetID);
+        model.addAttribute("asset", asset);
         model.addAttribute("locations", locationService.getAllLocations());
-        return "Asset_edit";
+        model.addAttribute("assetTypes", List.of("Laptop", "Desktop", "Monitor", "Printer", "Server", "Network Equipment"));
+        return "Asset/Asset_edit";
     }
 
-    // View details of an asset
-    @GetMapping("/view/{assetID}")
-    public String viewAsset(@PathVariable("assetID") String assetID, Model model) {
-        Optional<Asset> asset = assetService.getAssetById(assetID);
-        if (asset.isPresent()) {
-            model.addAttribute("asset", asset.get());
-            return "Asset_show";
-        } else {
-            return "redirect:/asset/home";
-        }
-    }
-
-    // Update existing asset
-    @PostMapping("/update")
-    public String updateAsset(@Valid @ModelAttribute("asset") Asset asset,
-                              BindingResult result,
-                              RedirectAttributes redirectAttributes,
-                              Model model) {
-        if (result.hasErrors()) {
-            model.addAttribute("locations", locationService.getAllLocations());
-            return "Asset_edit";
-        }
-
-        assetService.updateAsset(asset.getAssetID(), asset);
-        redirectAttributes.addFlashAttribute("successMessage", "Asset updated successfully!");
-        return "redirect:/asset/home";
-    }
-
-    // Delete an asset by its ID
     @GetMapping("/delete/{assetID}")
-    public String deleteAsset(@PathVariable("assetID") String assetID,
-                              RedirectAttributes redirectAttributes) {
+    public String deleteAsset(@PathVariable String assetID) {
         assetService.deleteAsset(assetID);
-        redirectAttributes.addFlashAttribute("successMessage", "Asset deleted successfully!");
-        return "redirect:/asset/home";
-    }
-    @ControllerAdvice
-    public class GlobalExceptionHandler {
-
-        @ExceptionHandler(Exception.class)
-        public String handleException(Exception e, Model model) {
-            model.addAttribute("error", e.getMessage());
-            return "error"; // Create error.html in templates
-        }
+        return "redirect:/Asset";
     }
 
+    @GetMapping("/search")
+    public String searchAssets(@RequestParam String name, Model model) {
+        model.addAttribute("assets", assetService.searchAssetsByName(name));
+        return "Asset/Asset_home";
+    }
+
+    @GetMapping("/active")
+    public String listActiveAssets(Model model) {
+        model.addAttribute("assets", assetService.getActiveAssets());
+        return "Assets/Asset_home";
+    }
 }
