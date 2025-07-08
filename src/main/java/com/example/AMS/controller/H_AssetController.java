@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import java.util.List; // Add this import
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.List;
 
 @Controller
 @RequestMapping("/Asset")
@@ -18,13 +19,15 @@ public class H_AssetController {
     @Autowired
     private M_LocationService locationService;
 
+    // Home page - List all assets
     @GetMapping
     public String listAssets(Model model) {
         model.addAttribute("assets", assetService.getAllAssets());
         return "Asset/Asset_home";
     }
 
-    @GetMapping("/add")
+    // Show add form
+    @GetMapping("/create")
     public String showAddForm(Model model) {
         model.addAttribute("asset", new Asset());
         model.addAttribute("locations", locationService.getAllLocations());
@@ -32,12 +35,15 @@ public class H_AssetController {
         return "Asset/Asset_create";
     }
 
+    // Save new asset or update existing one
     @PostMapping("/save")
-    public String saveAsset(@ModelAttribute Asset asset) {
+    public String saveAsset(@ModelAttribute Asset asset, RedirectAttributes redirectAttributes) {
         assetService.saveAsset(asset);
-        return "redirect:/Asset";
+        redirectAttributes.addFlashAttribute("successMessage", "Asset saved successfully!");
+        return "redirect:/Asset_home";  // Must match your home page mapping
     }
 
+    // Show edit form
     @GetMapping("/edit/{assetID}")
     public String showEditForm(@PathVariable String assetID, Model model) {
         Asset asset = assetService.getAssetById(assetID);
@@ -47,21 +53,31 @@ public class H_AssetController {
         return "Asset/Asset_edit";
     }
 
+    // Delete asset
     @GetMapping("/delete/{assetID}")
-    public String deleteAsset(@PathVariable String assetID) {
+    public String deleteAsset(@PathVariable String assetID, RedirectAttributes redirectAttributes) {
         assetService.deleteAsset(assetID);
-        return "redirect:/Asset";
+        redirectAttributes.addFlashAttribute("successMessage", "Asset successfully deleted!");
+        return "redirect:/";
     }
 
+    // Search assets
     @GetMapping("/search")
     public String searchAssets(@RequestParam String name, Model model) {
         model.addAttribute("assets", assetService.searchAssetsByName(name));
         return "Asset/Asset_home";
     }
 
+    // List active assets
     @GetMapping("/active")
     public String listActiveAssets(Model model) {
         model.addAttribute("assets", assetService.getActiveAssets());
-        return "Assets/Asset_home";
+        return "Asset/Asset_home";
+    }
+
+    // Handle root URL
+    @GetMapping("/")
+    public String homeRedirect() {
+        return "redirect:/Asset";
     }
 }

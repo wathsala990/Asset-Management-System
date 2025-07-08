@@ -4,64 +4,143 @@
     <meta charset="UTF-8">
     <title>Add Asset</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+        }
+        .section-title {
+            margin-bottom: 1rem;
+            color: #0d6efd;
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-4">
-    <h1>Add New Asset</h1>
-    <form th:action="@{/assets/save}" th:object="${asset}" method="post">
-        <div class="mb-3">
-            <label class="form-label">Asset ID</label>
-            <input type="text" class="form-control" th:field="*{assetID}" required>
+    <h1 class="mb-4">Add New Asset</h1>
+    <form th:action="@{Asset_home}" th:object="${asset}" method="post">
+
+        <!-- Basic Information Section -->
+        <div class="form-section">
+            <h3 class="section-title">Basic Information</h3>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Asset ID *</label>
+                    <input type="text" class="form-control" th:field="*{assetID}" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Asset Name *</label>
+                    <input type="text" class="form-control" th:field="*{assetName}" required>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Asset Type *</label>
+                    <select class="form-select" th:field="*{assetType}" required>
+                        <option value="">Select Type</option>
+                        <option th:each="type : ${assetTypes}"
+                                th:value="${type}"
+                                th:text="${type}"></option>
+                    </select>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Brand *</label>
+                    <input type="text" class="form-control" th:field="*{brand}" required>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Model *</label>
+                    <input type="text" class="form-control" th:field="*{model}" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Specification</label>
+                <textarea class="form-control" th:field="*{specification}" rows="3"></textarea>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Asset Name</label>
-            <input type="text" class="form-control" th:field="*{assetName}" required>
+        <!-- Purchase Information Section -->
+        <div class="form-section">
+            <h3 class="section-title">Purchase Information</h3>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Purchase Date *</label>
+                    <input type="date" class="form-control" th:field="*{purchaseDate}" required>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Purchase Store</label>
+                    <input type="text" class="form-control" th:field="*{purchaseStore}">
+                </div>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Asset Type</label>
-            <select class="form-select" th:field="*{assetType}" required>
-                <option value="">Select Type</option>
-                <option th:each="type : ${assetTypes}"
-                        th:value="${type}"
-                        th:text="${type}"></option>
-            </select>
+        <!-- Warranty Information Section -->
+        <div class="form-section">
+            <h3 class="section-title">Warranty Information</h3>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Warranty ID</label>
+                    <input type="text" class="form-control" th:field="*{warrantyID}">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Warranty Date</label>
+                    <input type="date" class="form-control" th:field="*{warrantyDate}">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Warranty Period</label>
+                    <input type="text" class="form-control" th:field="*{warrantyPeriod}" placeholder="e.g., 1 Year">
+                </div>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Brand</label>
-            <input type="text" class="form-control" th:field="*{brand}" required>
+        <!-- Location & Status Section -->
+        <div class="form-section">
+            <h3 class="section-title">Location & Status</h3>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Location</label>
+                    <select class="form-select" th:field="*{location}">
+                        <option value="">No Location</option>
+                        <option th:each="location : ${locations}"
+                                th:value="${location.locationID}"
+                                th:text="${location.roomName + ' (' + location.roomNo + ')'}"></option>
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-check form-switch mt-4">
+                        <input class="form-check-input" type="checkbox" role="switch" th:field="*{activeStatus}">
+                        <label class="form-check-label">Active Status</label>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Model</label>
-            <input type="text" class="form-control" th:field="*{model}" required>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Location</label>
-            <select class="form-select" th:field="*{location}">
-                <option value="">No Location</option>
-                <option th:each="location : ${locations}"
-                        th:value="${location.locationID}"
-                        th:text="${location.roomName + ' (' + location.roomNo + ')'}"></option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Purchase Date</label>
-            <input type="date" class="form-control" th:field="*{purchaseDate}" required>
-        </div>
-
-        <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" th:field="*{activeStatus}">
-            <label class="form-check-label">Active Status</label>
-        </div>
-
-        <button type="submit" class="btn btn-success">Save</button>
-        <a th:href="@{/assets}" class="btn btn-secondary">Cancel</a>
+        <!-- Form Actions -->
+        < <div class="d-flex justify-content-between mt-4">
+        <a th:href="@{/Asset/Asset_home}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Cancel
+        </a>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save"></i> Save Asset
+        </button>
+    </div>>
     </form>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
