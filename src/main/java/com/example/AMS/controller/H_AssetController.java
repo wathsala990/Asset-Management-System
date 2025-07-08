@@ -30,7 +30,7 @@ public class H_AssetController {
     public String showAllAssets(Model model) {
         List<Asset> assetsList = assetService.getAllAssets();
         model.addAttribute("assetsList", assetsList);
-        return "Asset_home";
+        return "/asset/home";
     }
 
     // Show form for creating a new asset
@@ -38,7 +38,7 @@ public class H_AssetController {
     public String createAssetForm(Model model) {
         model.addAttribute("asset", new Asset());
         model.addAttribute("locations", locationService.getAllLocations());
-        return "Asset_create";
+        return "/asset/create";
     }
 
     // Handle form submission to save new or edited asset
@@ -105,4 +105,14 @@ public class H_AssetController {
         redirectAttributes.addFlashAttribute("successMessage", "Asset deleted successfully!");
         return "redirect:/asset/home";
     }
+    @ControllerAdvice
+    public class GlobalExceptionHandler {
+
+        @ExceptionHandler(Exception.class)
+        public String handleException(Exception e, Model model) {
+            model.addAttribute("error", e.getMessage());
+            return "error"; // Create error.html in templates
+        }
+    }
+
 }
