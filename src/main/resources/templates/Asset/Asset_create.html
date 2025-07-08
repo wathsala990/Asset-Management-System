@@ -20,7 +20,7 @@
 <body>
 <div class="container mt-4">
     <h1 class="mb-4">Add New Asset</h1>
-    <form th:action="@{Asset_home}" th:object="${asset}" method="post">
+    <form th:action="@{/Asset/save}" th:object="${asset}" method="post">
 
         <!-- Basic Information Section -->
         <div class="form-section">
@@ -113,7 +113,9 @@
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Location</label>
                     <select class="form-select" th:field="*{location}">
-                        <option value="">No Location</option>
+                        <option value="">Director office</option>
+                        <option value="">Cisco Lab</option>
+                        <option value="">Main Student Lab</option>
                         <option th:each="location : ${locations}"
                                 th:value="${location.locationID}"
                                 th:text="${location.roomName + ' (' + location.roomNo + ')'}"></option>
@@ -130,14 +132,14 @@
         </div>
 
         <!-- Form Actions -->
-        < <div class="d-flex justify-content-between mt-4">
+        <div class="d-flex justify-content-between mt-4">
         <a th:href="@{/Asset/Asset_home}" class="btn btn-secondary">
             <i class="bi bi-arrow-left"></i> Cancel
         </a>
         <button type="submit" class="btn btn-primary">
             <i class="bi bi-save"></i> Save Asset
         </button>
-    </div>>
+    </div>
     </form>
 </div>
 

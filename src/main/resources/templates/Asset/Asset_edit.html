@@ -116,7 +116,9 @@
         <div class="col-md-6 mb-3">
           <label class="form-label">Location</label>
           <select class="form-select" th:field="*{location}">
-            <option value="">No Location</option>
+            <option value="">Director office</option>
+            <option value="">Cisco Lab</option>
+            <option value="">Main Student Lab</option>
             <option th:each="location : ${locations}"
                     th:value="${location.locationID}"
                     th:text="${location.roomName + ' (' + location.roomNo + ')'}"
