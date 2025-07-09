@@ -43,6 +43,9 @@
                     <label class="form-label">Asset Type *</label>
                     <select class="form-select" th:field="*{assetType}" required>
                         <option value="">Select Type</option>
+<!--                        <option value="">Laptop</option>-->
+<!--                        <option value="">Hard Drive</option>-->
+<!--                        <option value="">Tables</option>-->
                         <option th:each="type : ${assetTypes}"
                                 th:value="${type}"
                                 th:text="${type}"></option>
@@ -133,7 +136,7 @@
 
         <!-- Form Actions -->
         <div class="d-flex justify-content-between mt-4">
-        <a th:href="@{/Asset/Asset_home}" class="btn btn-secondary">
+        <a th:href="@{/Asset}" class="btn btn-secondary">
             <i class="bi bi-arrow-left"></i> Cancel
         </a>
         <button type="submit" class="btn btn-primary">

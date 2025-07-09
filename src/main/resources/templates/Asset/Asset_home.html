@@ -25,9 +25,9 @@
     <h1 class="mb-4">Asset Management</h1>
 
     <div class="d-flex justify-content-between mb-4 flex-wrap gap-3">
-        <a th:href="@{Asset/Asset_create}" class="btn btn-primary">Add New Asset</a>
+        <a th:href="@{/Asset/create}" class="btn btn-primary">Add New Asset</a>
         <div class="d-flex flex-wrap gap-2">
-<!--            <a th:href="@{/assets/active}" class="btn btn-success">Active Assets</a>-->
+            <a th:href="@{/Asset/active}" class="btn btn-success">Active Assets</a>
             <form th:action="@{Asset/search}" method="get" class="search-form">
                 <div class="input-group">
                     <input type="text" name="name" class="form-control" placeholder="Search by name">
