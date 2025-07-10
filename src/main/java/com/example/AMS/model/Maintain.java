@@ -1,62 +1,31 @@
 package com.example.AMS.model;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-
+import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
 public class Maintain {
     @Id
-    private String maintainID;
+    private String maintainId;
+    private Date maintainsDate;
+    private Date nextMaintainDate;
+    private String description;
+    private float cost;
 
     @ManyToOne
-    @JoinColumn(name = "assetID")
+    @JoinColumn(name = "assetId")
     private Asset asset;
 
-    public Date getMaintainDate() {
-        return maintainDate;
-    }
-
-    public void setMaintainDate(Date maintainDate) {
-        this.maintainDate = maintainDate;
-    }
-
-    public Asset getAsset() {
-        return asset;
-    }
-
-    public void setAsset(Asset asset) {
-        this.asset = asset;
-    }
-
-    public String getMaintainID() {
-        return maintainID;
-    }
-
-    public void setMaintainID(String maintainID) {
-        this.maintainID = maintainID;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Float getCost() {
-        return cost;
-    }
-
-    public void setCost(Float cost) {
-        this.cost = cost;
-    }
-
-    private Date maintainDate;
-    private String description;
-    private Float cost;
+    // Getters and Setters
+    public String getMaintainId() { return maintainId; }
+    public void setMaintainId(String maintainId) { this.maintainId = maintainId; }
+    public Date getMaintainsDate() { return maintainsDate; }
+    public void setMaintainsDate(Date maintainsDate) { this.maintainsDate = maintainsDate; }
+    public Date getNextMaintainDate() { return nextMaintainDate; }
+    public void setNextMaintainDate(Date nextMaintainDate) { this.nextMaintainDate = nextMaintainDate; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public float getCost() { return cost; }
+    public void setCost(float cost) { this.cost = cost; }
+    public Asset getAsset() { return asset; }
+    public void setAsset(Asset asset) { this.asset = asset; }
 }
