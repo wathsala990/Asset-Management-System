@@ -1,6 +1,6 @@
-package com.example.AMS.repository;  // add your actual package here
+package com.example.AMS.repository;
 
-import com.example.AMS.model.User;  // import User entity
+import com.example.AMS.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;

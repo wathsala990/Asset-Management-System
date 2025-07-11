@@ -22,10 +22,12 @@ public class H_AssetController {
     private M_LocationService locationService;
 
     // Home page - List all assets
-    @GetMapping
-    public String listAssets(Model model) {
+    @GetMapping("/Asset")
+    public String getAssetsPage(Model model) {
         model.addAttribute("assets", assetService.getAllAssets());
-        return "Asset/Asset_home";
+        model.addAttribute("newAsset", new Asset());
+        model.addAttribute("locations", locationService.getAllLocations());
+        return "Asset_home";
     }
 
     // Show add form
