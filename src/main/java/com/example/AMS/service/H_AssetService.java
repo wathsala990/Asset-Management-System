@@ -4,10 +4,12 @@ import com.example.AMS.model.Asset;
 import com.example.AMS.repository.H_AssetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
 public class H_AssetService {
+
     @Autowired
     private H_AssetRepository assetRepository;
 
@@ -23,20 +25,19 @@ public class H_AssetService {
         return assetRepository.save(asset);
     }
 
-
     public void deleteAsset(String assetId) {
         assetRepository.deleteById(assetId);
     }
 
     public List<Asset> getActiveAssets() {
-        return assetRepository.findByActiveStatus(true);
+        return assetRepository.findByActivityStatus(true); // fixed
     }
 
-    public List<Asset> getAssetsByType(String assetType) {
-        return assetRepository.findByAssetType(assetType);
+    public List<Asset> getAssetsByType(String type) {
+        return assetRepository.findByType(type); // fixed
     }
 
-    public List<Asset> searchAssetsByName(String assetName) {
-        return assetRepository.findByAssetNameContaining(assetName);
+    public List<Asset> searchAssetsByName(String name) {
+        return assetRepository.findByNameContaining(name); // fixed
     }
 }
