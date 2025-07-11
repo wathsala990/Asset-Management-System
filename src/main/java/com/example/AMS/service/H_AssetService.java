@@ -30,14 +30,14 @@ public class H_AssetService {
     }
 
     public List<Asset> getActiveAssets() {
-        return assetRepository.findByActivityStatus(true); // fixed
+        return assetRepository.findByActivityStatus(true);
     }
 
     public List<Asset> getAssetsByType(String type) {
-        return assetRepository.findByType(type); // fixed
+        return assetRepository.findByType(type);
     }
 
     public List<Asset> searchAssetsByName(String name) {
-        return assetRepository.findByNameContaining(name); // fixed
+        return assetRepository.findByNameContaining(name);
     }
 }

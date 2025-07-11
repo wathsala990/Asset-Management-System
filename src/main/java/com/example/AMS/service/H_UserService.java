@@ -41,7 +41,7 @@ public class H_UserService {
     }
 
     public List<User> getUsersByAsset(String assetId) {
-        return userRepository.findByAsset_AssetID(assetId);
+        return userRepository.findByAsset_AssetId(assetId);
     }
 
     public boolean usernameExists(String username) {

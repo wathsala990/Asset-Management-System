@@ -18,5 +18,5 @@ public interface H_AssetRepository extends JpaRepository<Asset, String> {
     @Query("SELECT a FROM Asset a WHERE a.purchaseDate BETWEEN :startDate AND :endDate")
     List<Asset> findByPurchaseDateBetween(Date startDate, Date endDate);
 
-    List<Asset> findByLocation_LocationID(String locationId);
+    List<Asset> findByLocation_LocationId(Long locationId);
 }
