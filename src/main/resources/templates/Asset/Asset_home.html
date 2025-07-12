@@ -3,204 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UoP - Asset Management</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Asset Management | University of Peradeniya</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #800000; /* University Maroon */
-            --primary-dark: #600000; /* Darker maroon for gradient */
+            --primary-color: #800000;
+            --primary-dark: #600000;
             --primary-light: #a04040;
-            --secondary-color: #f8f9fa;
-            --accent-color: #ffc107; /* Gold/Amber for highlights */
+            --accent-color: #ffc107;
+            --text-light: #f8f9fa;
             --text-dark: #343a40;
-            --text-light: #f8f9fa; /* White/Off-white for text on dark backgrounds */
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
         }
 
         body {
-            font-family: 'Poppins', sans-serif; /* Changed to Poppins for a modern feel */
-            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-dark);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            background-color: #f5f5f5;
         }
 
         /* Header Styles */
         .main-header {
-            background: linear-gradient(90deg, var(--primary-color), var(--primary-dark)); /* Header gradient */
-            color: var(--text-light); /* Ensure text is light on dark header */
-            box-shadow: var(--shadow);
-            padding: 0.5rem 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 1000;
         }
 
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
         .logo-container {
             display: flex;
             align-items: center;
+            transition: var(--transition);
+        }
+
+        .logo-container:hover {
+            transform: translateX(3px);
         }
 
         .logo-img {
-            height: 50px;
-            margin-right: 15px;
-            filter: brightness(1.1) drop-shadow(0 0 2px rgba(0,0,0,0.3)); /* Slight adjustment for better look on dark bg */
-        }
-
-        .logo-container h5 { /* Adjusted font size */
-            font-size: 1.1rem;
-            margin-bottom: 0;
-        }
-
-        .logo-container small { /* Adjusted font size */
-            font-size: 0.75rem;
-            display: block;
-        }
-
-        .nav-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-        }
-
-        .main-nav {
-            display: flex;
-            align-items: center;
-            flex-grow: 1; /* Allow navigation to take available space */
-            justify-content: center; /* Center main nav items */
-        }
-
-        .nav-link {
-            color: var(--text-light); /* Links are light */
-            padding: 0.6rem 1rem; /* Adjusted padding for smaller font */
-            margin: 0 0.4rem; /* Adjusted margin */
-            border-radius: 6px; /* Slightly more rounded corners */
+            height: 40px;
+            margin-right: 10px;
             transition: var(--transition);
-            font-weight: 500;
-            font-size: 0.9rem; /* Adjusted font size */
-            display: flex; /* For icon and text alignment */
+        }
+
+        .logo-img:hover {
+            transform: scale(1.05);
+        }
+
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
             align-items: center;
         }
 
-        .nav-link:hover {
-            color: var(--text-light); /* Keep text light on hover */
-            background-color: rgba(255, 255, 255, 0.15); /* Light transparent background on hover */
+        .main-nav li {
+            margin-left: 15px;
+            position: relative;
+        }
+
+        .main-nav a {
+            color: white;
             text-decoration: none;
-        }
-
-        .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.25); /* More prominent background for active link */
-            font-weight: 600;
-            color: var(--text-light);
-        }
-
-        .nav-link i {
-            margin-right: 8px; /* Space between icon and text */
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-        }
-
-        .user-menu .dropdown-toggle {
-            color: var(--text-light); /* User dropdown button text is light */
-            background-color: transparent;
-            border: none;
-            padding: 0.6rem 1rem; /* Adjusted padding for smaller font */
-            transition: var(--transition);
+            padding: 0.5rem 0.8rem;
             border-radius: 4px;
-            font-size: 0.9rem; /* Adjusted font size */
+            transition: var(--transition);
+            display: inline-block;
         }
 
-        .user-menu .dropdown-toggle:hover {
+        .main-nav a:not(.login-btn):hover {
             background-color: rgba(255, 255, 255, 0.15);
-            color: var(--text-light);
+            transform: translateY(-2px);
         }
 
-        .user-menu .dropdown-toggle i {
-            margin-right: 5px;
-        }
-
-        .dropdown-menu {
-            background-color: white; /* Dropdown menu background */
-            border: none;
-            box-shadow: var(--shadow);
-            font-size: 0.9rem; /* Adjusted font size for dropdown items */
-        }
-
-        .dropdown-menu .dropdown-item {
-            color: var(--text-dark); /* Dropdown items text dark */
-            padding: 0.6rem 1rem; /* Adjusted padding */
+        .main-nav a:not(.login-btn)::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: var(--accent-color);
             transition: var(--transition);
+            transform: translateX(-50%);
         }
 
-        .dropdown-menu .dropdown-item:hover {
-            background-color: #e9ecef; /* Light gray on hover for dropdown items */
-            color: var(--primary-color);
+        .main-nav a:not(.login-btn):hover::after {
+            width: 70%;
         }
 
-        .user-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: var(--accent-color); /* Use accent color for avatar background */
-            color: var(--text-dark); /* Dark text on accent color */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Search Bar Styles */
-        .search-bar {
-            display: flex;
-            align-items: center;
-            margin-right: 1rem; /* Space between search and account */
-        }
-
-        .search-bar input {
-            border: none;
-            border-radius: 5px;
-            padding: 0.3rem 0.7rem; /* Adjusted padding */
-            background-color: rgba(255, 255, 255, 0.2);
-            color: var(--text-light);
+        .login-btn {
+            background-color: var(--accent-color);
+            color: #212529;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
             transition: var(--transition);
-            width: 140px; /* Adjust width as needed */
-            font-size: 0.85rem; /* Adjusted font size */
+            border: 2px solid transparent;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .search-bar input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .search-bar input:focus {
-            background-color: rgba(255, 255, 255, 0.3);
-            outline: none;
-            width: 180px; /* Expand on focus */
-        }
-
-        .search-bar button {
-            background: none;
-            border: none;
-            color: var(--text-light);
-            margin-left: -28px; /* Overlap with input for icon positioning */
-            padding: 0.3rem 0.7rem; /* Adjusted padding */
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 0.85rem; /* Adjusted font size */
-        }
-
-        .search-bar button:hover {
-            color: var(--accent-color);
+        .login-btn:hover {
+            background-color: #e0a800;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-color: rgba(0, 0, 0, 0.1);
         }
 
         /* Sidebar Styles */
@@ -208,35 +133,43 @@
             width: 250px;
             background: linear-gradient(180deg, var(--primary-color), var(--primary-dark));
             color: white;
-            height: calc(100vh - 70px); /* Adjust height based on header height */
+            height: calc(100vh - 60px);
             position: sticky;
-            top: 70px; /* Position below the sticky header */
+            top: 60px;
             transition: var(--transition);
             box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
             padding-top: 1rem;
         }
 
         .sidebar-menu {
-            padding: 0; /* Remove top/bottom padding as it's in .sidebar */
+            padding: 0;
+            list-style: none;
         }
 
         .menu-item {
             display: flex;
             align-items: center;
-            padding: 0.75rem 1.5rem;
+            padding: 0.8rem 1.5rem;
             color: white;
             text-decoration: none;
             transition: var(--transition);
-            margin: 0.25rem 0;
+            margin: 0.25rem 1rem;
             border-left: 4px solid transparent;
-            font-size: 0.9rem; /* Adjusted font size */
+            font-size: 0.95rem;
+            border-radius: 0 4px 4px 0;
+            position: relative;
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
         }
 
         .menu-item:hover {
             background-color: rgba(255, 255, 255, 0.1);
             border-left: 4px solid var(--accent-color);
-            text-decoration: none;
-            color: white;
+            transform: translateX(5px);
         }
 
         .menu-item.active {
@@ -245,180 +178,246 @@
             font-weight: 500;
         }
 
-        .menu-icon {
-            margin-right: 12px;
-            font-size: 1rem; /* Adjusted icon size */
-            width: 24px;
-            text-align: center;
-        }
-
         /* Main Content Styles */
         .main-content {
             flex: 1;
             padding: 2rem;
             background-color: white;
             border-radius: 8px;
-            box-shadow: var(--shadow);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin: 1rem;
-            overflow-y: auto; /* Enable scrolling for content if it overflows */
         }
 
-        .content-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
+        /* Asset Table Styles */
+        .asset-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1.5rem;
+        }
+
+        .asset-table th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .asset-table td {
+            padding: 10px 12px;
             border-bottom: 1px solid #eee;
         }
 
-        /* Dashboard Card Styles (improved) */
-        .card {
+        .asset-table tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-maintenance {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            margin-right: 5px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-view {
+            background-color: #e2e3e5;
+            color: #383d41;
             border: none;
-            border-radius: 8px;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            overflow: hidden; /* Ensures border-left is within rounded corners */
         }
 
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        .btn-edit {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: none;
         }
 
-        .card.border-left-primary { border-left: .25rem solid var(--primary-color) !important;}
-        .card.border-left-success { border-left: .25rem solid #28a745 !important; }
-        .card.border-left-info { border-left: .25rem solid #17a2b8 !important; }
-        .card.border-left-warning { border-left: .25rem solid #ffc107 !important; }
-
-        .card-body .text-xs {
-            font-size: 0.7rem; /* Slightly smaller for captions */
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-        }
-        .card-body .h5 {
-            font-size: 1.1rem; /* Slightly smaller for card numbers */
-            font-weight: 700;
-            color: var(--text-dark);
-        }
-        .card-body .fa-2x {
-            font-size: 1.8rem; /* Adjusted icon size */
-            color: #dee2e6; /* Lighter gray for card icons */
+        .btn-delete {
+            background-color: #f5c6cb;
+            color: #721c24;
+            border: none;
         }
 
-        /* Activity Feed Styles */
-        .activity-feed {
-            position: relative;
-            padding-left: 25px; /* Space for the badges */
-        }
-
-        .activity-feed::before {
-            content: '';
-            position: absolute;
-            left: 8px;
-            top: 0;
-            height: 100%;
-            width: 2px;
-            background-color: #e0e0e0;
-        }
-
-        .activity-item {
-            position: relative;
+        /* Search and Filter Section */
+        .asset-toolbar {
             display: flex;
-            align-items: flex-start;
-            margin-bottom: 1rem;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
         }
 
-        .activity-badge {
-            width: 22px; /* Slightly smaller badge */
-            height: 22px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem; /* Smaller icon in badge */
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .search-box i {
             position: absolute;
-            left: -11px; /* Center over the line */
-            top: 0;
-            z-index: 1;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
         }
 
-        .activity-content {
-            margin-left: 25px;
-            flex-grow: 1;
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
-        .activity-content small {
-            display: block;
-            margin-bottom: 3px;
-            color: #888;
-            font-size: 0.75rem; /* Smaller date/time */
+        .filter-select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
         }
 
-        .activity-content p {
-            font-size: 0.9rem; /* Smaller activity text */
-            line-height: 1.4;
-            margin-bottom: 0;
+        .add-asset-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .add-asset-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
         }
 
         /* Footer Styles */
         .main-footer {
-            background: linear-gradient(90deg, var(--primary-dark), var(--primary-color)); /* Footer gradient */
-            color: white;
-            padding: 1.2rem 0; /* Slightly reduced padding */
-            margin-top: auto;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            font-size: 0.85rem; /* Smaller footer text */
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 40px 0;
         }
 
-        .footer-content {
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-row {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
-            align-items: center;
         }
 
-        .footer-links {
-            display: flex;
+        .footer-col {
+            width: 25%;
+            margin-bottom: 20px;
         }
 
-        .footer-link {
-            color: white;
-            margin-right: 1.2rem; /* Adjusted margin */
-            text-decoration: none;
+        .footer-col h4 {
+            color: var(--accent-color);
+            margin-bottom: 1.2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-col h4::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--accent-color);
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-col li {
+            margin-bottom: 0.6rem;
             transition: var(--transition);
         }
 
-        .footer-link:hover {
+        .footer-col li:hover {
+            transform: translateX(5px);
+        }
+
+        .footer-col a {
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-block;
+            padding: 0.2rem 0;
+        }
+
+        .footer-col a:hover {
             color: var(--accent-color);
             text-decoration: none;
         }
 
         .social-icons {
             display: flex;
+            margin-top: 1.5rem;
         }
 
-        .social-icon {
+        .social-icons a {
             color: white;
-            margin-left: 0.8rem; /* Adjusted margin */
-            font-size: 1.1rem; /* Slightly smaller social icons */
+            margin-right: 15px;
+            font-size: 1.2rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: var(--transition);
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
-        .social-icon:hover {
-            color: var(--accent-color);
+        .social-icons a:hover {
+            background-color: var(--accent-color);
+            color: var(--text-dark);
+            transform: translateY(-3px);
         }
 
         /* Responsive Adjustments */
         @media (max-width: 992px) {
-            .main-nav {
-                justify-content: flex-start; /* Align main nav left on smaller screens */
-                flex-wrap: wrap; /* Allow nav items to wrap */
-            }
-            .nav-link {
-                padding: 0.5rem 0.8rem;
-                margin: 0.2rem;
-                font-size: 0.85rem;
+            .footer-col {
+                width: 50%;
             }
 
             .sidebar {
@@ -429,49 +428,39 @@
             .menu-text {
                 display: none;
             }
-
-            .menu-icon {
-                margin-right: 0;
-                font-size: 1.1rem;
-            }
-
-            .search-bar {
-                margin-right: 0.5rem;
-            }
-
-            .search-bar input {
-                width: 90px; /* Further adjust for smaller screens */
-                font-size: 0.8rem;
-            }
-
-            .search-bar input:focus {
-                width: 130px;
-            }
-
-            .search-bar button {
-                font-size: 0.8rem;
-            }
-
-            .user-menu .dropdown-toggle {
-                font-size: 0.85rem;
-            }
         }
 
         @media (max-width: 768px) {
-            .main-header {
-                padding: 0.5rem 1rem;
+            .header-container {
+                flex-direction: column;
+                text-align: center;
             }
+
             .main-nav {
-                display: none; /* Hide main nav on very small screens, rely on sidebar */
+                margin-top: 1rem;
+                width: 100%;
+            }
+
+            .main-nav ul {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .main-nav li {
+                margin: 0.3rem;
+            }
+
+            .footer-col {
+                width: 100%;
             }
 
             .sidebar {
                 position: fixed;
                 height: 100vh;
-                top: 0; /* Align sidebar to top when fixed */
+                top: 0;
                 z-index: 900;
                 transform: translateX(-100%);
-                padding-top: 70px; /* Space for header if it's not hidden */
+                padding-top: 60px;
             }
 
             .sidebar.active {
@@ -480,243 +469,343 @@
 
             .mobile-menu-btn {
                 display: block !important;
-                color: var(--primary-color); /* Adjust color for menu button on white header */
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                color: white;
+                cursor: pointer;
+                margin-right: 1rem;
+                transition: var(--transition);
             }
 
-            .main-content {
-                margin: 0.5rem;
-                padding: 1.5rem;
+            .mobile-menu-btn:hover {
+                color: var(--accent-color);
+                transform: scale(1.1);
             }
 
-            .footer-content {
+            .asset-toolbar {
                 flex-direction: column;
-                text-align: center;
             }
 
-            .footer-links, .social-icons {
-                margin-top: 1rem;
-            }
-
-            .footer-link {
-                margin: 0 0.75rem;
-            }
-
-            .search-bar {
-                display: none; /* Hide search bar on smaller screens if space is limited */
+            .search-box {
+                width: 100%;
             }
         }
 
         .mobile-menu-btn {
             display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            cursor: pointer;
-        }
-
-        /* Utility Classes */
-        .flex-grow {
-            flex-grow: 1;
-        }
-
-        .text-accent {
-            color: var(--accent-color);
-        }
-
-        .bg-primary-light {
-            background-color: var(--primary-light);
         }
     </style>
 </head>
 <body>
+<!-- Header -->
 <header class="main-header">
-    <div class="container-fluid d-flex align-items-center">
-        <button class="mobile-menu-btn mr-3">
+    <div class="header-container">
+        <button class="mobile-menu-btn">
             <i class="fas fa-bars"></i>
         </button>
         <div class="logo-container">
-            <img src="https://upload.wikimedia.org/wikipedia/en/c/cc/University_of_Peradeniya_crest.png"
-                 alt="University Logo" class="logo-img">
-            <div>
-                <h5 class="mb-0 text-light">University of Peradeniya</h5> <small class="text-light">Asset Management System</small> </div>
+            <img th:src="@{/images/University_of_Peradeniya_logo.png}" alt="University Logo" class="logo-img">
+            <h1 style="margin: 0; font-size: 1.5rem;">Asset Management System</h1>
         </div>
-
         <nav class="main-nav">
-            <a href="/" class="nav-link active">Home</a>
-            <a href="/about" class="nav-link">About</a>
-            <a href="/contact" class="nav-link">Contact Us</a>
+            <ul>
+                <li><a href="/home">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contactUs">Contact</a></li>
+                <li><a th:href="@{/}" class="login-btn">Login</a></li>
+            </ul>
         </nav>
-
-        <div class="search-bar">
-            <input type="text" placeholder="Search..." aria-label="Search">
-            <button type="submit"><i class="fas fa-search"></i></button>
-        </div>
-
-        <div class="user-menu ml-auto">
-            <div class="dropdown">
-                <button class="btn dropdown-toggle" type="button" id="userDropdown"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Account
-                </button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="/profile"><i class="fas fa-user mr-2"></i>Profile</a>
-                    <a class="dropdown-item" href="/settings"><i class="fas fa-cog mr-2"></i>Settings</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
-                </div>
-            </div>
-        </div>
     </div>
 </header>
 
-<div class="container-fluid flex-grow d-flex p-0">
+<!-- Main Content with Sidebar -->
+<div class="d-flex flex-grow-1">
+    <!-- Sidebar -->
     <aside class="sidebar">
-        <nav class="sidebar-menu">
-            <a href="/dashboard" class="menu-item active">
-                <span class="menu-text">Dashboard</span>
-            </a>
-            <a href="/#" class="menu-item">
-                <span class="menu-text">User History</span>
-            </a>
-            <a href="/#" class="menu-item">
-                <span class="menu-text">Maintain</span>
-            </a>
-            <a href="/#" class="menu-item">
-                <span class="menu-text">Condemn</span>
-            </a>
-            <a href="/#" class="menu-item">
-                <span class="menu-text">Asset History</span>
-            </a>
-            <a href="/#" class="menu-item">
-                <span class="menu-text">Asset</span>
-            </a>
-
-            <a href="/#" class="menu-item">
-                <span class="menu-text">Invoice</span>
-            </a>
-            <a href="/#" class="menu-item">
-                <span class="menu-text">Movement</span>
-            </a>
+        <nav>
+            <ul class="sidebar-menu">
+                <li><a href="/Dashboard" class="menu-item"><i ></i> <span class="menu-text">Dashboard</span></a></li>
+                <li><a href="/UserHistory" class="menu-item"><i ></i> <span class="menu-text">User History</span></a></li>
+                <li><a href="/Maintain" class="menu-item"><i ></i> <span class="menu-text">Maintain</span></a></li>
+                <li><a href="/Condemn" class="menu-item"><i ></i> <span class="menu-text">Condemn</span></a></li>
+                <li><a href="/AssetHistory" class="menu-item"><i ></i> <span class="menu-text">Asset History</span></a></li>
+                <li><a href="/Asset" class="menu-item active"><i></i> <span class="menu-text">Asset</span></a></li>
+                <li><a href="/Invoice" class="menu-item"><i ></i> <span class="menu-text">Invoice</span></a></li>
+                <li><a href="/Movement" class="menu-item"><i ></i> <span class="menu-text">Movement</span></a></li>
+            </ul>
         </nav>
     </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-boxes"></i> Asset Management</h1>
+            <button class="add-asset-btn" data-bs-toggle="modal" data-bs-target="#addAssetModal">
+                <i class="fas fa-plus"></i> Add Asset
+            </button>
+        </div>
+
+        <div class="asset-toolbar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search assets...">
+            </div>
+            <div class="filter-group">
+                <select class="filter-select">
+                    <option value="">All Categories</option>
+                    <option value="electronics">Electronics</option>
+                    <option value="furniture">Furniture</option>
+                    <option value="vehicles">Vehicles</option>
+                    <option value="equipment">Equipment</option>
+                </select>
+                <select class="filter-select">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="maintenance">Maintenance</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="asset-table">
+                <thead>
+                <tr>
+                    <th>Asset ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Purchase Date</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>AST-001</td>
+                    <td>Dell Laptop</td>
+                    <td>Electronics</td>
+                    <td>Computer Lab</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td>2023-01-15</td>
+                    <td>
+                        <button class="action-btn btn-view"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn btn-edit"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn btn-delete"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>AST-002</td>
+                    <td>Office Chair</td>
+                    <td>Furniture</td>
+                    <td>Admin Office</td>
+                    <td><span class="status-badge status-active">Active</span></td>
+                    <td>2022-11-20</td>
+                    <td>
+                        <button class="action-btn btn-view"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn btn-edit"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn btn-delete"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>AST-003</td>
+                    <td>Projector</td>
+                    <td>Electronics</td>
+                    <td>Lecture Hall A</td>
+                    <td><span class="status-badge status-maintenance">Maintenance</span></td>
+                    <td>2023-03-10</td>
+                    <td>
+                        <button class="action-btn btn-view"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn btn-edit"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn btn-delete"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>AST-004</td>
+                    <td>Printer</td>
+                    <td>Electronics</td>
+                    <td>Library</td>
+                    <td><span class="status-badge status-inactive">Inactive</span></td>
+                    <td>2021-09-05</td>
+                    <td>
+                        <button class="action-btn btn-view"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn btn-edit"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn btn-delete"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </main>
 </div>
 
-
-    <!-- Add Asset Modal -->
+<!-- Add Asset Modal -->
 <div class="modal fade" id="addAssetModal" tabindex="-1" aria-labelledby="addAssetModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <form th:action="@{/Asset/create}" th:object="${newAsset}" method="post">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addAssetModalLabel">Add New Asset</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body row g-3">
-                    <div class="col-md-6"><label>Asset ID</label><input type="text" th:field="*{assetId}" class="form-control" required></div>
-                    <div class="col-md-6"><label>Name</label><input type="text" th:field="*{name}" class="form-control" required></div>
-                    <div class="col-md-6"><label>Type</label><input type="text" th:field="*{type}" class="form-control"></div>
-                    <div class="col-md-6"><label>Brand</label><input type="text" th:field="*{brand}" class="form-control"></div>
-                    <div class="col-md-6"><label>Model</label><input type="text" th:field="*{model}" class="form-control"></div>
-                    <div class="col-md-6"><label>Specification</label><input type="text" th:field="*{specification}" class="form-control"></div>
-                    <div class="col-md-6"><label>Purchase Date</label><input type="date" th:field="*{purchaseDate}" class="form-control"></div>
-                    <div class="col-md-6">
-                        <label>Status</label>
-                        <select th:field="*{activityStatus}" class="form-select">
-                            <option th:value="true">Active</option>
-                            <option th:value="false">Inactive</option>
+            <div class="modal-header">
+                <h5 class="modal-title" id="addAssetModalLabel">Add New Asset</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="assetName" class="form-label">Asset Name</label>
+                        <input type="text" class="form-control" id="assetName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="assetCategory" class="form-label">Category</label>
+                        <select class="form-select" id="assetCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="electronics">Electronics</option>
+                            <option value="furniture">Furniture</option>
+                            <option value="vehicles">Vehicles</option>
+                            <option value="equipment">Equipment</option>
                         </select>
                     </div>
-                    <div class="col-md-6"><label>Warranty ID</label><input type="text" th:field="*{warrantyId}" class="form-control"></div>
-                    <div class="col-md-6"><label>Warranty Date</label><input type="date" th:field="*{warrantyDate}" class="form-control"></div>
-                    <div class="col-md-6"><label>Warranty Period</label><input type="text" th:field="*{warrantyPeriod}" class="form-control"></div>
-                    <div class="col-md-6"><label>Purchase Store</label><input type="text" th:field="*{purchaseStore}" class="form-control"></div>
-                    <div class="col-md-6">
-                        <label for="location" class="form-label">Location</label>
-                        <input type="text" class="form-control" id="location" th:field="*{location.locationName}" placeholder="Enter location name" required>
+                    <div class="mb-3">
+                        <label for="assetLocation" class="form-label">Location</label>
+                        <input type="text" class="form-control" id="assetLocation" required>
                     </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </div>
-            </form>
+                    <div class="mb-3">
+                        <label for="purchaseDate" class="form-label">Purchase Date</label>
+                        <input type="date" class="form-control" id="purchaseDate" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="assetValue" class="form-label">Value (LKR)</label>
+                        <input type="number" class="form-control" id="assetValue" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="assetDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="assetDescription" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Save Asset</button>
+            </div>
         </div>
     </div>
 </div>
 
-
 <!-- Footer -->
 <footer class="main-footer">
-    <div class="container-fluid">
-        <div class="footer-content">
-            <div class="copyright">
-                &copy; 2025 University of Peradeniya. All rights reserved. </div>
-            <div class="footer-links">
-                <a href="/privacy" class="footer-link">Privacy Policy</a>
-                <a href="/terms" class="footer-link">Terms of Service</a>
-                <a href="/contact" class="footer-link">Contact Us</a>
+    <div class="footer-container">
+        <div class="footer-row">
+            <div class="footer-col">
+                <h4>University of Peradeniya</h4>
+                <p>The University of Peradeniya is a leading higher education institution in Sri Lanka, committed to excellence in teaching, research, and innovation.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
             </div>
-            <div class="social-icons">
-                <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-                <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contactUs">Contact</a></li>
+                    <li><a th:href="@{/}">Login</a></li>
+                </ul>
             </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">User Guide</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Training Videos</a></li>
+                    <li><a href="#">System Updates</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <p>Subscribe to receive updates and system announcements.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your Email">
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="footer-bottom">
+            <p>&copy; 2023 University of Peradeniya. All rights reserved.</p>
+            <p>Asset Management System v2.1</p>
         </div>
     </div>
 </footer>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Mobile menu toggle
+    // Mobile menu toggle functionality
     document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
         document.querySelector('.sidebar').classList.toggle('active');
     });
 
-    // Initialize chart
-    document.addEventListener('DOMContentLoaded', function() {
-        var ctx = document.getElementById('assetDistributionChart').getContext('2d');
-        var chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Computers', 'Furniture', 'Electronics', 'Lab Equipment', 'Vehicles', 'Other'],
-                datasets: [{
-                    label: 'Assets by Category',
-                    data: [420, 300, 200, 150, 80, 50],
-                    backgroundColor: [
-                        'rgba(128, 0, 0, 0.7)',
-                        'rgba(54, 162, 235, 0.7)',
-                        'rgba(255, 206, 86, 0.7)',
-                        'rgba(75, 192, 192, 0.7)',
-                        'rgba(153, 102, 255, 0.7)',
-                        'rgba(255, 159, 64, 0.7)'
-                    ],
-                    borderColor: [
-                        'rgba(128, 0, 0, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)',
-                        'rgba(153, 102, 255, 1)',
-                        'rgba(255, 159, 64, 1)'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
+    // Add active class to current nav item
+    document.querySelectorAll('.main-nav a').forEach(link => {
+        if (link.href === window.location.href) {
+            link.classList.add('active');
+        }
+
+        link.addEventListener('click', function() {
+            document.querySelectorAll('.main-nav a').forEach(item => {
+                item.classList.remove('active');
+            });
+            this.classList.add('active');
         });
+    });
+
+    // Initialize tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Sample data for demonstration
+    const assets = [
+        {
+            id: 'AST-001',
+            name: 'Dell Laptop',
+            category: 'Electronics',
+            location: 'Computer Lab',
+            status: 'active',
+            purchaseDate: '2023-01-15'
+        },
+        // More assets can be added here
+    ];
+
+    // You would typically fetch assets from an API in a real application
+    // function fetchAssets() {
+    //     fetch('/api/assets')
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             // Process and display assets
+    //         });
+    // }
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+        // Any initialization code can go here
     });
 </script>
 </body>
