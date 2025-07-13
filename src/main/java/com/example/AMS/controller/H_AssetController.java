@@ -42,8 +42,8 @@ public class H_AssetController {
     // Save new asset or update existing one
     @PostMapping("/save")
     public String saveAsset(@Valid @ModelAttribute("asset") Asset asset,
-                             BindingResult bindingResult,
-                             RedirectAttributes redirectAttributes) {
+                            BindingResult bindingResult,
+                            RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             return "Asset/Asset_create";
         }
@@ -55,8 +55,8 @@ public class H_AssetController {
 
     // Show edit form
     @GetMapping("/edit/{assetId}")
-    public String showEditForm(@PathVariable String assetID, Model model) {
-        Asset asset = assetService.getAssetById(assetID);
+    public String showEditForm(@PathVariable String assetId, Model model) {
+        Asset asset = assetService.getAssetById(assetId);
         model.addAttribute("asset", asset);
         model.addAttribute("locations", locationService.getAllLocations());
         model.addAttribute("assetTypes", List.of("Laptop", "Desktop", "Monitor", "Printer", "Server", "Network Equipment"));
@@ -65,8 +65,8 @@ public class H_AssetController {
 
     // Delete asset
     @GetMapping("/delete/{assetId}")
-    public String deleteAsset(@PathVariable String assetID, RedirectAttributes redirectAttributes) {
-        assetService.deleteAsset(assetID);
+    public String deleteAsset(@PathVariable String assetId, RedirectAttributes redirectAttributes) {
+        assetService.deleteAsset(assetId);
         redirectAttributes.addFlashAttribute("successMessage", "Asset successfully deleted!");
         return "redirect:/Asset";
     }
@@ -87,8 +87,8 @@ public class H_AssetController {
 
     // Show single asset
     @GetMapping("/show/{assetId}")
-    public String showAsset(@PathVariable String assetID, Model model) {
-        model.addAttribute("asset", assetService.getAssetById(assetID));
+    public String showAsset(@PathVariable String assetId, Model model) {
+        model.addAttribute("asset", assetService.getAssetById(assetId));
         return "Asset/Asset_show";
     }
 
