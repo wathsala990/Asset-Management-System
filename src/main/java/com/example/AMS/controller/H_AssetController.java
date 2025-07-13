@@ -22,12 +22,12 @@ public class H_AssetController {
     private M_LocationService locationService;
 
     // Home page - List all assets
-    @GetMapping("/Asset")
+    @GetMapping("")
     public String getAssetsPage(Model model) {
         model.addAttribute("assets", assetService.getAllAssets());
         model.addAttribute("newAsset", new Asset());
         model.addAttribute("locations", locationService.getAllLocations());
-        return "Asset_home";
+        return "Asset/Asset_home";
     }
 
     // Show add form
@@ -54,7 +54,7 @@ public class H_AssetController {
     }
 
     // Show edit form
-    @GetMapping("/Asset_edit/{assetID}")
+    @GetMapping("/edit/{assetId}")
     public String showEditForm(@PathVariable String assetID, Model model) {
         Asset asset = assetService.getAssetById(assetID);
         model.addAttribute("asset", asset);
@@ -64,7 +64,7 @@ public class H_AssetController {
     }
 
     // Delete asset
-    @GetMapping("/delete/{assetID}")
+    @GetMapping("/delete/{assetId}")
     public String deleteAsset(@PathVariable String assetID, RedirectAttributes redirectAttributes) {
         assetService.deleteAsset(assetID);
         redirectAttributes.addFlashAttribute("successMessage", "Asset successfully deleted!");
@@ -85,9 +85,17 @@ public class H_AssetController {
         return "Asset/Asset_home";
     }
 
+    // Show single asset
+    @GetMapping("/show/{assetId}")
+    public String showAsset(@PathVariable String assetID, Model model) {
+        model.addAttribute("asset", assetService.getAssetById(assetID));
+        return "Asset/Asset_show";
+    }
+
     // Handle root URL
     @GetMapping("/")
     public String homeRedirect() {
         return "redirect:/Asset";
     }
+
 }
