@@ -54,7 +54,7 @@ public class H_AssetController {
     }
 
     // Show edit form
-    @GetMapping("/edit/{assetId}")
+    @GetMapping("/{assetId}/edit")
     public String showEditForm(@PathVariable String assetId, Model model) {
         Asset asset = assetService.getAssetById(assetId);
         model.addAttribute("asset", asset);
@@ -64,7 +64,7 @@ public class H_AssetController {
     }
 
     // Delete asset
-    @GetMapping("/delete/{assetId}")
+    @GetMapping("/{assetId}/delete")
     public String deleteAsset(@PathVariable String assetId, RedirectAttributes redirectAttributes) {
         assetService.deleteAsset(assetId);
         redirectAttributes.addFlashAttribute("successMessage", "Asset successfully deleted!");
@@ -86,7 +86,7 @@ public class H_AssetController {
     }
 
     // Show single asset
-    @GetMapping("/show/{assetId}")
+    @GetMapping("/show")
     public String showAsset(@PathVariable String assetId, Model model) {
         model.addAttribute("asset", assetService.getAssetById(assetId));
         return "Asset/Asset_show";
