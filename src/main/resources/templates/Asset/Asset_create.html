@@ -438,7 +438,8 @@
             <i class="fas fa-bars"></i>
         </button>
         <div class="logo-container">
-            <img th:src="@{/images/University_of_Peradeniya_logo.png}" alt="University Logo" class="logo-img">
+            <img th:src="@{/static.images/University_of_Peradeniya_logo.png}" alt="University Logo">
+
             <h1 style="margin: 0; font-size: 1.5rem;">Asset Management System</h1>
         </div>
         <nav class="main-nav">
@@ -476,23 +477,21 @@
             <h1><i class="fas fa-plus-circle"></i> Create New Asset</h1>
         </div>
 
-        <form th:action="@{/Asset/save}" th:object="${asset}" method="post" >
-
-            <!-- Asset Basic Information Section -->
+        <form th:action="@{/Asset/save}" th:object="${asset}" method="post">
             <div class="form-section">
                 <h3><i class="fas fa-info-circle"></i> Asset Information</h3>
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="assetId" class="form-label">Asset ID</label>
-                        <input type="text" class="form-control" id="assetId" required>
+                        <input type="text" th:field="*{assetId}" class="form-control" id="assetId" required>
                     </div>
                     <div class="form-group">
                         <label for="name" class="form-label">Asset Name</label>
-                        <input type="text" class="form-control" id="name" required>
+                        <input type="text" th:field="*{name}" class="form-control" id="name" required>
                     </div>
                     <div class="form-group">
                         <label for="type" class="form-label">Type</label>
-                        <select class="form-select" id="type" required>
+                        <select th:field="*{type}" class="form-select" id="type" required>
                             <option value="">Select Type</option>
                             <option value="electronics">Electronics</option>
                             <option value="furniture">Furniture</option>
@@ -502,32 +501,31 @@
                     </div>
                     <div class="form-group">
                         <label for="brand" class="form-label">Brand</label>
-                        <input type="text" class="form-control" id="brand" required>
+                        <input type="text" th:field="*{brand}" class="form-control" id="brand" required>
                     </div>
                     <div class="form-group">
                         <label for="model" class="form-label">Model</label>
-                        <input type="text" class="form-control" id="model" required>
+                        <input type="text" th:field="*{model}" class="form-control" id="model" required>
                     </div>
                     <div class="form-group">
                         <label for="location" class="form-label">Location</label>
-                        <input type="text" class="form-control" id="location" required>
+                        <select th:field="*{location}" class="form-select" id="location" required>
+                            <option th:each="loc : ${locations}" th:value="${loc}" th:text="${loc.departmentName}"></option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="specification" class="form-label">Specification</label>
-                        <textarea class="form-control" id="specification" rows="2"></textarea>
+                        <textarea th:field="*{specification}" class="form-control" id="specification" rows="2"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="purchaseDate" class="form-label">Purchase Date</label>
-                        <input type="date" class="form-control" id="purchaseDate" required>
+                        <input type="date" th:field="*{purchaseDate}" class="form-control" id="purchaseDate" required>
                     </div>
                     <div class="form-group">
                         <label for="activityStatus" class="form-label">Activity Status</label>
-                        <select class="form-select" id="activityStatus" required>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
-                            <option value="maintenance">Maintenance</option>
-                            <option value="condemn">Condemn</option>
-
+                        <select th:field="*{activityStatus}" class="form-select" id="activityStatus" required>
+                            <option th:value="true">Active</option>
+                            <option th:value="false">Inactive</option>
                         </select>
                     </div>
                 </div>
@@ -539,15 +537,15 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="warrantyId" class="form-label">Warranty ID</label>
-                        <input type="text" class="form-control" id="warrantyId">
+                        <input type="text" th:field="*{warrantyId}" class="form-control" id="warrantyId">
                     </div>
                     <div class="form-group">
                         <label for="warrantyDate" class="form-label">Warranty Date</label>
-                        <input type="date" class="form-control" id="warrantyDate">
+                        <input type="date" th:field="*{warrantyDate}" class="form-control" id="warrantyDate">
                     </div>
                     <div class="form-group">
                         <label for="warrantyPeriod" class="form-label">Warranty Period (months)</label>
-                        <input type="number" class="form-control" id="warrantyPeriod">
+                        <input type="number" th:field="*{warrantyPeriod}" class="form-control" id="warrantyPeriod">
                     </div>
                 </div>
             </div>
@@ -558,23 +556,7 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="purchaseStore" class="form-label">Purchase Store</label>
-                        <input type="text" class="form-control" id="purchaseStore">
-                    </div>
-                    <div class="form-group">
-                        <label for="venderId" class="form-label">Vender ID</label>
-                        <input type="text" class="form-control" id="venderId">
-                    </div>
-                    <div class="form-group">
-                        <label for="venderName" class="form-label">Vender Name</label>
-                        <input type="text" class="form-control" id="venderName">
-                    </div>
-                    <div class="form-group">
-                        <label for="address" class="form-label">Address</label>
-                        <textarea class="form-control" id="address" rows="2"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="contactNo" class="form-label">Contact No</label>
-                        <input type="tel" class="form-control" id="contactNo">
+                        <input type="text" th:field="*{purchaseStore}" class="form-control" id="purchaseStore">
                     </div>
                 </div>
             </div>
@@ -585,6 +567,7 @@
                 <button type="submit" class="btn btn-primary">Save Asset</button>
             </div>
         </form>
+
     </main>
 </div>
 
