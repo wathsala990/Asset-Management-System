@@ -3,6 +3,8 @@ package com.example.AMS.controller;
 import com.example.AMS.model.Asset;
 import com.example.AMS.service.H_AssetService;
 import com.example.AMS.service.M_LocationService;
+import com.example.AMS.service.VenderService;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,16 +12,21 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 
 @Controller
 @RequestMapping("/Asset")
 public class H_AssetController {
+
     @Autowired
     private H_AssetService assetService;
 
     @Autowired
     private M_LocationService locationService;
+
+    @Autowired
+    private VenderService venderService; //
 
     // Home page - List all assets
     @GetMapping("")
@@ -35,6 +42,7 @@ public class H_AssetController {
     public String showAddForm(Model model) {
         model.addAttribute("asset", new Asset());
         model.addAttribute("locations", locationService.getAllLocations());
+        model.addAttribute("venders", venderService.getAllVenders());
         model.addAttribute("assetTypes", List.of("Laptop", "Desktop", "Monitor", "Printer", "Server", "Network Equipment"));
         return "Asset/Asset_create";
     }
@@ -97,5 +105,4 @@ public class H_AssetController {
     public String homeRedirect() {
         return "redirect:/Asset";
     }
-
 }

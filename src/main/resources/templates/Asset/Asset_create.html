@@ -510,7 +510,10 @@
                     <div class="form-group">
                         <label for="location" class="form-label">Location</label>
                         <select th:field="*{location}" class="form-select" id="location" required>
-                            <option th:each="loc : ${locations}" th:value="${loc}" th:text="${loc.departmentName}"></option>
+                            <option disabled selected value="">Select a location</option>
+                            <option th:value="true">Cisco Networking Lab 01</option>
+                            <option th:value="true">Main Student Lab </option>
+                            <option th:value="true">Director's office</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -526,6 +529,9 @@
                         <select th:field="*{activityStatus}" class="form-select" id="activityStatus" required>
                             <option th:value="true">Active</option>
                             <option th:value="false">Inactive</option>
+                            <option th:value="true">Maintain</option>
+                            <option th:value="false">Condemn</option>
+
                         </select>
                     </div>
                 </div>
@@ -558,13 +564,28 @@
                         <label for="purchaseStore" class="form-label">Purchase Store</label>
                         <input type="text" th:field="*{purchaseStore}" class="form-control" id="purchaseStore">
                     </div>
+                    <div class="form-group">
+                        <label for="vender" class="form-label">Vendor</label>
+                        <select th:field="*{vender}" class="form-select" id="vender" required>
+                            <option disabled selected value="">Select a vendor</option>
+                            <option th:each="vend : ${venders}" th:value="${vend}" th:text="${vend.venderName + ' - ' + vend.address}"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="venderAddress" class="form-label">Vendor Address</label>
+                        <input type="text" th:value="${#strings.defaultString(asset.vender?.address, '')}" class="form-control" id="venderAddress" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactNo" class="form-label">Contact Number</label>
+                        <input type="text" th:value="${#strings.defaultString(asset.vender?.contactNo, '')}" class="form-control" id="contactNo" readonly>
+                    </div>
                 </div>
             </div>
 
             <!-- Form Actions -->
             <div class="form-actions">
                 <a th:href="@{/Asset}" class="btn btn-secondary">Cancel</a>
-                <button type="submit" class="btn btn-primary">Save Asset</button>
+                <button type="submit"  class="btn btn-primary">Save Asset</button>
             </div>
         </form>
 

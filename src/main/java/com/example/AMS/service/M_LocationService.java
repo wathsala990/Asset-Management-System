@@ -16,22 +16,22 @@ public class M_LocationService {
         this.locationRepository = locationRepository;
     }
 
-    // Fetch all locations
+
     public List<Location> getAllLocations() {
         return locationRepository.findAll();
     }
 
-    // Get a location by ID
+
     public Optional<Location> getLocationById(String locationID) {
         return locationRepository.findById(locationID);
     }
 
-    // Save or update a location
+
     public void saveLocation(Location location) {
         locationRepository.save(location);
     }
 
-    // Delete a location by ID
+
     public void deleteLocation(String locationID) {
         locationRepository.deleteById(locationID);
     }
