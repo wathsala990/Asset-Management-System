@@ -565,19 +565,20 @@
                         <input type="text" th:field="*{purchaseStore}" class="form-control" id="purchaseStore">
                     </div>
                     <div class="form-group">
-                        <label for="vender" class="form-label">Vendor</label>
-                        <select th:field="*{vender}" class="form-select" id="vender" required>
-                            <option disabled selected value="">Select a vendor</option>
-                            <option th:each="vend : ${venders}" th:value="${vend}" th:text="${vend.venderName + ' - ' + vend.address}"></option>
-                        </select>
+                        <label for="venderId" class="form-label">Vendor ID</label>
+                        <input type="text" th:field="*{venderId}" class="form-control" id="venderId">
                     </div>
                     <div class="form-group">
-                        <label for="venderAddress" class="form-label">Vendor Address</label>
-                        <input type="text" th:value="${#strings.defaultString(asset.vender?.address, '')}" class="form-control" id="venderAddress" readonly>
+                        <label for="venderName" class="form-label">Vendor Name</label>
+                        <input type="text" th:field="*{venderName}" class="form-control" id="venderName">
+                    </div>
+                    <div class="form-group">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" th:field="*{address}" class="form-control" id="address">
                     </div>
                     <div class="form-group">
                         <label for="contactNo" class="form-label">Contact Number</label>
-                        <input type="text" th:value="${#strings.defaultString(asset.vender?.contactNo, '')}" class="form-control" id="contactNo" readonly>
+                        <input type="text" th:field="*{contactNo}" class="form-control" id="contactNo">
                     </div>
                 </div>
             </div>

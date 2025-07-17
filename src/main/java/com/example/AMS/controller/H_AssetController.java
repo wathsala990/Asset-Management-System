@@ -3,9 +3,6 @@ package com.example.AMS.controller;
 import com.example.AMS.model.Asset;
 import com.example.AMS.service.H_AssetService;
 import com.example.AMS.service.M_LocationService;
-import com.example.AMS.service.VenderService;
-
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -25,25 +23,21 @@ public class H_AssetController {
     @Autowired
     private M_LocationService locationService;
 
-    @Autowired
-    private VenderService venderService; //
-
     // Home page - List all assets
     @GetMapping("")
     public String getAssetsPage(Model model) {
         model.addAttribute("assets", assetService.getAllAssets());
-        model.addAttribute("newAsset", new Asset());
-        model.addAttribute("locations", locationService.getAllLocations());
         return "Asset/Asset_home";
     }
 
-    // Show add form
+    // Show add asset form
     @GetMapping("/create")
     public String showAddForm(Model model) {
         model.addAttribute("asset", new Asset());
         model.addAttribute("locations", locationService.getAllLocations());
-        model.addAttribute("venders", venderService.getAllVenders());
-        model.addAttribute("assetTypes", List.of("Laptop", "Desktop", "Monitor", "Printer", "Server", "Network Equipment"));
+        model.addAttribute("assetTypes", List.of(
+                "Laptop", "Desktop", "Monitor", "Printer", "Server", "Network Equipment"
+        ));
         return "Asset/Asset_create";
     }
 
@@ -51,8 +45,14 @@ public class H_AssetController {
     @PostMapping("/save")
     public String saveAsset(@Valid @ModelAttribute("asset") Asset asset,
                             BindingResult bindingResult,
+                            Model model,
                             RedirectAttributes redirectAttributes) {
+
         if (bindingResult.hasErrors()) {
+            model.addAttribute("locations", locationService.getAllLocations());
+            model.addAttribute("assetTypes", List.of(
+                    "Laptop", "Desktop", "Monitor", "Printer", "Server", "Network Equipment"
+            ));
             return "Asset/Asset_create";
         }
 
@@ -67,8 +67,28 @@ public class H_AssetController {
         Asset asset = assetService.getAssetById(assetId);
         model.addAttribute("asset", asset);
         model.addAttribute("locations", locationService.getAllLocations());
-        model.addAttribute("assetTypes", List.of("Laptop", "Desktop", "Monitor", "Printer", "Server", "Network Equipment"));
+        model.addAttribute("assetTypes", List.of(
+                "Laptop", "Desktop", "Monitor", "Printer", "Server", "Network Equipment"
+        ));
         return "Asset/Asset_edit";
+    }
+
+    // Handle edit (update) submission
+    @PostMapping("/{assetId}/update")
+    public String updateAsset(@PathVariable String assetId,
+                              @Valid @ModelAttribute("asset") Asset asset,
+                              BindingResult bindingResult,
+                              Model model,
+                              RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("locations", locationService.getAllLocations());
+            model.addAttribute("assetTypes", List.of("Laptop", "Desktop", "Monitor", "Printer", "Server", "Network Equipment"));
+            return "Asset/Asset_edit";
+        }
+        asset.setAssetId(assetId); // Ensure asset ID is set for update
+        assetService.saveAsset(asset);
+        redirectAttributes.addFlashAttribute("message", "Asset updated successfully");
+        return "redirect:/Asset";
     }
 
     // Delete asset
@@ -93,10 +113,13 @@ public class H_AssetController {
         return "Asset/Asset_home";
     }
 
-    // Show single asset
+    // Show single asset (possibly with venders if you want)
     @GetMapping("/show")
-    public String showAsset(@PathVariable String assetId, Model model) {
-        model.addAttribute("asset", assetService.getAssetById(assetId));
+    public String showAsset(@RequestParam String assetId, Model model) {
+        Asset asset = assetService.getAssetById(assetId);
+        model.addAttribute("asset", asset);
+        // Optionally, if you have venders in asset
+        // model.addAttribute("venders", asset.getVenders());
         return "Asset/Asset_show";
     }
 
