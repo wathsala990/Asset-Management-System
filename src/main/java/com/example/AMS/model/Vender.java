@@ -13,6 +13,8 @@ public class Vender {
     @JoinColumn(name = "asset_id")
     private Asset asset;
 
+
+
     // Getters and Setters
 
     public String getVenderId() { return venderId; }

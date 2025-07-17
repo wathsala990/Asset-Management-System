@@ -22,6 +22,7 @@ public class Asset {
     @JoinColumn(name = "locationId")
     private Location location;
 
+
     // Getters and Setters
     public String getAssetId() {
         return assetId;
