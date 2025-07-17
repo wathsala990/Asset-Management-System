@@ -3,6 +3,7 @@ package com.example.AMS.controller;
 import com.example.AMS.model.Asset;
 import com.example.AMS.service.H_AssetService;
 import com.example.AMS.service.M_LocationService;
+import com.example.AMS.service.VenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +24,10 @@ public class H_AssetController {
     @Autowired
     private M_LocationService locationService;
 
+    @Autowired
+    private VenderService venderService;
+
+
     // Home page - List all assets
     @GetMapping("")
     public String getAssetsPage(Model model) {
@@ -35,11 +40,13 @@ public class H_AssetController {
     public String showAddForm(Model model) {
         model.addAttribute("asset", new Asset());
         model.addAttribute("locations", locationService.getAllLocations());
+       // model.addAttribute("venders", VenderService.getAllVenders());
         model.addAttribute("assetTypes", List.of(
                 "Laptop", "Desktop", "Monitor", "Printer", "Server", "Network Equipment"
         ));
         return "Asset/Asset_create";
     }
+
 
     // Save new asset or update existing one
     @PostMapping("/save")
@@ -50,6 +57,7 @@ public class H_AssetController {
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("locations", locationService.getAllLocations());
+            //model.addAttribute("venders", VenderService.getAllVenders());
             model.addAttribute("assetTypes", List.of(
                     "Laptop", "Desktop", "Monitor", "Printer", "Server", "Network Equipment"
             ));
@@ -60,6 +68,7 @@ public class H_AssetController {
         redirectAttributes.addFlashAttribute("message", "Asset information saved successfully");
         return "redirect:/Asset";
     }
+
 
     // Show edit form
     @GetMapping("/{assetId}/edit")

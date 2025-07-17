@@ -22,6 +22,18 @@ public class Asset {
     @JoinColumn(name = "locationId")
     private Location location;
 
+    @ManyToOne
+    @JoinColumn(name = "venderId")
+    private Vender vender;
+
+    public Vender getVender() {
+        return vender;
+    }
+
+    public void setVender(Vender vender) {
+        this.vender = vender;
+    }
+
 
     // Getters and Setters
     public String getAssetId() {
