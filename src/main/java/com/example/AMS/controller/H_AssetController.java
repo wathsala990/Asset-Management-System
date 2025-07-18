@@ -37,15 +37,13 @@ public class H_AssetController {
 
     // Show add asset form
     @GetMapping("/create")
-    public String showAddForm(Model model) {
-        model.addAttribute("asset", new Asset());
-        model.addAttribute("locations", locationService.getAllLocations());
-        model.addAttribute("venders", venderService.getAllVenders());
-        model.addAttribute("assetTypes", List.of(
-                "Laptop", "Desktop", "Monitor", "Printer", "Server", "Network Equipment"
-        ));
+    public String createAssetForm(Model model) {
+        model.addAttribute("asset", new Asset()); // Form object
+        model.addAttribute("locations", locationService.getAllLocations()); // For location dropdown
+        model.addAttribute("venders", venderService.getAllVenders());       // For vender dropdown
         return "Asset/Asset_create";
     }
+
 
 
     // Save new asset or update existing one

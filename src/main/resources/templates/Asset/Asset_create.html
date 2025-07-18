@@ -569,8 +569,15 @@
                         <input type="text" th:field="*{vender.venderId}" class="form-control" id="venderId">
                     </div>
                     <div class="form-group">
-                        <label for="venderName" class="form-label">Vendor Name</label>
-                        <input type="text" th:field="*{vender.venderName}" class="form-control" id="venderName">
+                        <label for="vender">Vender</label>
+                        <select class="form-control" id="vender" th:field="*{vender}">
+                            <option value="">-- Select Vender --</option>
+                            <option th:each="v : ${venders}"
+                                    th:value="${v}"
+                                    th:text="${v.venderName}">
+                            </option>
+                        </select>
+
                     </div>
                     <div class="form-group">
                         <label for="address" class="form-label">Address</label>

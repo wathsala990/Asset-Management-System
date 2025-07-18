@@ -23,7 +23,7 @@ public class Asset {
     private Location location;
 
     @ManyToOne
-    @JoinColumn(name = "venderId")
+    @JoinColumn(name = "vender_id")
     private Vender vender;
 
     public Vender getVender() {
