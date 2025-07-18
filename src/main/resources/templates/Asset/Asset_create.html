@@ -573,7 +573,7 @@
                         <select class="form-control" id="vender" th:field="*{vender}">
                             <option value="">-- Select Vender --</option>
                             <option th:each="v : ${venders}"
-                                    th:value="${v}"
+                                    th:value="${v.venderId}"
                                     th:text="${v.venderName}">
                             </option>
                         </select>

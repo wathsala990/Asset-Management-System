@@ -31,9 +31,9 @@ public class Asset {
     }
 
     public void setVender(Vender vender) {
+
         this.vender = vender;
     }
-
 
     // Getters and Setters
     public String getAssetId() {

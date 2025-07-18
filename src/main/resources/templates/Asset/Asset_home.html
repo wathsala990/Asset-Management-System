@@ -577,6 +577,7 @@
                     <th>Asset Name</th>
                     <th>Type</th>
                     <th>Location</th>
+                    <th>Purchase Store</th>
                     <th>Activity Status</th>
                     <th>Purchase Date</th>
                     <th>Actions</th>
@@ -588,6 +589,7 @@
                     <td th:text="${asset.name}"></td>
                     <td th:text="${asset.type}"></td>
                     <td th:text="${location.departmentName}"></td>
+                    <td th:text="${asset.purchaseStore}"></td>
                     <td>
                         <span th:if="${asset.activityStatus}" class="status-badge status-active">Active</span>
                         <span th:unless="${asset.activityStatus}" class="status-badge status-inactive">Inactive</span>
