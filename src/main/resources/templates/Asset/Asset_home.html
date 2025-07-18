@@ -583,11 +583,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="bg-white border-b" th:each="asset : ${assetsList}">
+                <tr class="bg-white border-b" th:each="asset : ${assets}">
                     <td th:text="${asset.assetId}"></td>
                     <td th:text="${asset.name}"></td>
                     <td th:text="${asset.type}"></td>
-                    <td th:text="${location.name}"></td>
+                    <td th:text="${location.departmentName}"></td>
                     <td>
                         <span th:if="${asset.activityStatus}" class="status-badge status-active">Active</span>
                         <span th:unless="${asset.activityStatus}" class="status-badge status-inactive">Inactive</span>

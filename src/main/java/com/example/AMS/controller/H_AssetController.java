@@ -40,7 +40,7 @@ public class H_AssetController {
     public String showAddForm(Model model) {
         model.addAttribute("asset", new Asset());
         model.addAttribute("locations", locationService.getAllLocations());
-       // model.addAttribute("venders", VenderService.getAllVenders());
+        model.addAttribute("venders", venderService.getAllVenders());
         model.addAttribute("assetTypes", List.of(
                 "Laptop", "Desktop", "Monitor", "Printer", "Server", "Network Equipment"
         ));
