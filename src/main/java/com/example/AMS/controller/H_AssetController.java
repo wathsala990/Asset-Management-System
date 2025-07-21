@@ -93,7 +93,7 @@ public class H_AssetController {
 
         assetService.saveAsset(asset);
         redirectAttributes.addFlashAttribute("message", "Asset saved successfully!");
-        return "redirect:/Asset_home";
+        return "redirect:/Asset";
     }
 
     // Show edit form
@@ -157,5 +157,13 @@ public class H_AssetController {
         }
         model.addAttribute("asset", asset);
         return "Asset/Asset_show";
+    }
+
+
+    // Show home page
+    @GetMapping
+    public String viewAssets(Model model) {
+        model.addAttribute("assets", assetService.getAllAssets());
+        return "Asset_home";
     }
 }
