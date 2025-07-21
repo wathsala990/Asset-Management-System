@@ -571,7 +571,11 @@
                     <div class="form-group">
                         <label for="vender">Vender</label>
                         <select class="form-control" id="vender" th:field="*{vender}">
-                            <option value="">-- Select Vender --</option>
+                            <option value="">Select Vender</option>
+                            <option value="">Chama Computers</option>
+                            <option value="">PowerLink</option>
+                            <option value="">LBS Computers</option>
+                            <option value="">MS Solutions</option>
                             <option th:each="v : ${venders}"
                                     th:value="${v.venderId}"
                                     th:text="${v.venderName}">
