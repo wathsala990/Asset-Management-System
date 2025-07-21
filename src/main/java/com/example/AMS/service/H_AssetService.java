@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class H_AssetService {
@@ -13,31 +14,24 @@ public class H_AssetService {
     @Autowired
     private H_AssetRepository assetRepository;
 
+    // Get all assets
     public List<Asset> getAllAssets() {
         return assetRepository.findAll();
     }
 
+    // Get asset by ID
     public Asset getAssetById(String assetId) {
-        return assetRepository.findById(assetId).orElse(null);
+        Optional<Asset> optionalAsset = assetRepository.findById(assetId);
+        return optionalAsset.orElse(null);
     }
 
-    public Asset saveAsset(Asset asset) {
-        return assetRepository.save(asset);
+    // Save or update an asset
+    public void saveAsset(Asset asset) {
+        assetRepository.save(asset);
     }
 
+    // Delete asset by ID
     public void deleteAsset(String assetId) {
         assetRepository.deleteById(assetId);
-    }
-
-    public List<Asset> getActiveAssets() {
-        return assetRepository.findByActivityStatus(true);
-    }
-
-    public List<Asset> getAssetsByType(String type) {
-        return assetRepository.findByType(type);
-    }
-
-    public List<Asset> searchAssetsByName(String name) {
-        return assetRepository.findByNameContaining(name);
     }
 }
