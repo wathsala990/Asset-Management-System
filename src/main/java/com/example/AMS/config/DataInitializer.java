@@ -1,7 +1,7 @@
-package com.example.Login.config;
+package com.example.AMS.config;
 
-import com.example.Login.model.Role;
-import com.example.Login.repository.RoleRepository;
+import com.example.AMS.model.Role;
+import com.example.AMS.repository.RoleRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

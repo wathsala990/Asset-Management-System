@@ -1,11 +1,11 @@
-package com.example.Login.controller.admin;
+package com.example.AMS.controller.admin;
 
-import com.example.Login.dto.UserDto;
-import com.example.Login.service.AdminUserService;
+import com.example.AMS.dto.UserDto;
+import com.example.AMS.service.AdminUserService;
 
 import java.util.List;
 
-import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/admin")
-@PreAuthorize("hasRole('ROLE_ADMIN')")
+//@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class AdminUserController {
 
     private final AdminUserService adminUserService;
