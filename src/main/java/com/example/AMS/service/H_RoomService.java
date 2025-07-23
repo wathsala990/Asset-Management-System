@@ -1,7 +1,7 @@
 package com.example.AMS.service;
 
 import com.example.AMS.model.Room;
-import com.example.AMS.repository.H_RoomRepository;
+import com.example.AMS.repository.M_RoomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +11,10 @@ import java.util.Optional;
 @Service
 public class H_RoomService {
 
-    private final H_RoomRepository roomRepository;
+    private final M_RoomRepository roomRepository;
 
     @Autowired
-    public H_RoomService(H_RoomRepository roomRepository) {
+    public H_RoomService(M_RoomRepository roomRepository) {
         this.roomRepository = roomRepository;
     }
 

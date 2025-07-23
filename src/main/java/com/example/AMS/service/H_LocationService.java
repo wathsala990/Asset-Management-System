@@ -1,7 +1,7 @@
 package com.example.AMS.service;
 
 import com.example.AMS.model.Location;
-import com.example.AMS.repository.H_LocationRepository;
+import com.example.AMS.repository.M_LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +11,10 @@ import java.util.Optional;
 @Service
 public class H_LocationService {
 
-    private final H_LocationRepository locationRepository;
+    private final M_LocationRepository locationRepository;
 
     @Autowired
-    public H_LocationService(H_LocationRepository locationRepository) {
+    public H_LocationService(M_LocationRepository locationRepository) {
         this.locationRepository = locationRepository;
     }
 
