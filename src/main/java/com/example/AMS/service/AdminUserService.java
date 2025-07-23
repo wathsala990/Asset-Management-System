@@ -2,8 +2,10 @@ package com.example.AMS.service;
 
 import com.example.AMS.dto.UserDto;
 import com.example.AMS.model.User;
+import com.example.AMS.model.Role; // Ensure this import exists
 import com.example.AMS.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,7 +27,7 @@ public class AdminUserService {
 
     private UserDto convertToDto(User user) {
         Set<String> roleNames = user.getRoles().stream()
-                .map(role -> role.getName())
+                .map(role -> role.getName()) // Role class must have getName()
                 .collect(Collectors.toSet());
 
         return new UserDto(

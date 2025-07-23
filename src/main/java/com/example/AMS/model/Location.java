@@ -6,17 +6,17 @@ import java.util.Date;
 public class Location {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long locationId;
+    private String locationId;
     private Date transferDate;
     private String departmentName;
     private Date startDate;
     private Date endDate;
 
     // Getters and Setters
-    public Long getLocationId() {
+    public String getLocationId() {
         return locationId;
     }
-    public void setLocationId(Long locationId) {
+    public void setLocationId(String locationId) {
         this.locationId = locationId;
     }
     public Date getTransferDate() {
