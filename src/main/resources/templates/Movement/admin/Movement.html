@@ -1,31 +1,36 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asset Management System | University of Peradeniya</title>
+    <title>Asset Movement - UoP Asset Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #800000;
             --primary-dark: #600000;
             --primary-light: #a04040;
+            --secondary-color: #f8f9fa;
             --accent-color: #ffc107;
-            --text-light: #f8f9fa;
             --text-dark: #343a40;
+            --text-light: #f8f9fa;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
         }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-color);
             color: var(--text-dark);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background-color: #f5f5f5;
+            margin: 0;
         }
-        
+
         /* Header Styles */
         .main-header {
             background-color: var(--primary-color);
@@ -36,7 +41,7 @@
             top: 0;
             z-index: 1000;
         }
-        
+
         .header-container {
             display: flex;
             justify-content: space-between;
@@ -45,27 +50,27 @@
             margin: 0 auto;
             padding: 0 20px;
         }
-        
+
         .logo-container {
             display: flex;
             align-items: center;
             transition: var(--transition);
         }
-        
+
         .logo-container:hover {
             transform: translateX(3px);
         }
-        
+
         .logo-img {
             height: 40px;
             margin-right: 10px;
             transition: var(--transition);
         }
-        
+
         .logo-img:hover {
             transform: scale(1.05);
         }
-        
+
         .main-nav ul {
             display: flex;
             list-style: none;
@@ -73,12 +78,12 @@
             padding: 0;
             align-items: center;
         }
-        
+
         .main-nav li {
             margin-left: 15px;
             position: relative;
         }
-        
+
         .main-nav a {
             color: white;
             text-decoration: none;
@@ -87,12 +92,12 @@
             transition: var(--transition);
             display: inline-block;
         }
-        
+
         .main-nav a:not(.login-btn):hover {
             background-color: rgba(255, 255, 255, 0.15);
             transform: translateY(-2px);
         }
-        
+
         .main-nav a:not(.login-btn)::after {
             content: '';
             position: absolute;
@@ -104,11 +109,11 @@
             transition: var(--transition);
             transform: translateX(-50%);
         }
-        
+
         .main-nav a:not(.login-btn):hover::after {
             width: 70%;
         }
-        
+
         .login-btn {
             background-color: var(--accent-color);
             color: #212529;
@@ -120,15 +125,20 @@
             border: 2px solid transparent;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
+
         .login-btn:hover {
             background-color: #e0a800;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-color: rgba(0, 0, 0, 0.1);
         }
-        
+
         /* Sidebar Styles */
+        .d-flex.flex-grow-1 {
+            flex: 1;
+            display: flex;
+        }
+
         .sidebar {
             width: 250px;
             background: linear-gradient(180deg, var(--primary-color), var(--primary-dark));
@@ -139,13 +149,15 @@
             transition: var(--transition);
             box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
             padding-top: 1rem;
+            flex-shrink: 0;
         }
-        
+
         .sidebar-menu {
             padding: 0;
             list-style: none;
+            margin: 0;
         }
-        
+
         .menu-item {
             display: block;
             padding: 0.8rem 1.5rem;
@@ -158,19 +170,19 @@
             border-radius: 0 4px 4px 0;
             position: relative;
         }
-        
+
         .menu-item:hover {
             background-color: rgba(255, 255, 255, 0.1);
             border-left: 4px solid var(--accent-color);
             transform: translateX(5px);
         }
-        
+
         .menu-item.active {
             background-color: rgba(255, 255, 255, 0.2);
             border-left: 4px solid var(--accent-color);
             font-weight: 500;
         }
-        
+
         .menu-item::before {
             content: '';
             position: absolute;
@@ -182,52 +194,68 @@
             transition: var(--transition);
             z-index: -1;
         }
-        
+
         .menu-item:hover::before {
             width: 100%;
         }
-        
+
         /* Main Content Styles */
-        .main-content {
+        .main-content-container {
             flex: 1;
             padding: 2rem;
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow);
             margin: 1rem;
+            overflow-y: auto;
         }
-        
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Form Styles */
+        .form-card {
+            max-width: 600px;
+            margin: 0 auto;
+            border: none;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+        }
+
         /* Footer Styles */
         .main-footer {
             background-color: var(--primary-color);
             color: var(--text-light);
             padding: 40px 0;
         }
-        
+
         .footer-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
-        
+
         .footer-row {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
         }
-        
+
         .footer-col {
             width: 25%;
             margin-bottom: 20px;
         }
-        
+
         .footer-col h4 {
             color: var(--accent-color);
             margin-bottom: 1.2rem;
             position: relative;
             padding-bottom: 0.5rem;
         }
-        
+
         .footer-col h4::after {
             content: '';
             position: absolute;
@@ -237,21 +265,21 @@
             height: 2px;
             background-color: var(--accent-color);
         }
-        
+
         .footer-col ul {
             list-style: none;
             padding: 0;
         }
-        
+
         .footer-col li {
             margin-bottom: 0.6rem;
             transition: var(--transition);
         }
-        
+
         .footer-col li:hover {
             transform: translateX(5px);
         }
-        
+
         .footer-col a {
             color: white;
             text-decoration: none;
@@ -259,17 +287,17 @@
             display: inline-block;
             padding: 0.2rem 0;
         }
-        
+
         .footer-col a:hover {
             color: var(--accent-color);
             text-decoration: none;
         }
-        
+
         .social-icons {
             display: flex;
             margin-top: 1.5rem;
         }
-        
+
         .social-icons a {
             color: white;
             margin-right: 15px;
@@ -283,18 +311,18 @@
             transition: var(--transition);
             background-color: rgba(255, 255, 255, 0.1);
         }
-        
+
         .social-icons a:hover {
             background-color: var(--accent-color);
             color: var(--text-dark);
             transform: translateY(-3px);
         }
-        
+
         .newsletter-form {
             display: flex;
             margin-top: 1.5rem;
         }
-        
+
         .newsletter-form input {
             flex: 1;
             padding: 0.6rem;
@@ -302,7 +330,7 @@
             border-radius: 4px 0 0 4px;
             background-color: rgba(255, 255, 255, 0.9);
         }
-        
+
         .newsletter-form button {
             background-color: var(--accent-color);
             color: #212529;
@@ -313,112 +341,63 @@
             transition: var(--transition);
             cursor: pointer;
         }
-        
+
         .newsletter-form button:hover {
             background-color: #e0a800;
         }
-        
+
         .footer-divider {
             border-color: rgba(255,255,255,0.1);
             margin: 20px 0;
         }
-        
+
         .footer-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 0.9rem;
         }
-        
-        /* Button Styles */
-        .btn-hero {
-            padding: 0.8rem 1.8rem;
-            font-weight: 600;
-            border-radius: 4px;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .btn-hero-primary {
-            background-color: var(--accent-color);
-            color: #212529;
-            border: 2px solid transparent;
-        }
-        
-        .btn-hero-primary:hover {
-            background-color: #e0a800;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn-hero-outline {
-            border: 2px solid white;
-            color: white;
-            background-color: transparent;
-        }
-        
-        .btn-hero-outline:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Card Styles */
-        .feature-card {
-            border: none;
-            border-radius: 8px;
-            transition: var(--transition);
-            height: 100%;
-            border-top: 4px solid var(--primary-color);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-        
+
         /* Responsive Adjustments */
         @media (max-width: 992px) {
             .footer-col {
                 width: 50%;
             }
-            
+
             .sidebar {
                 width: 70px;
                 overflow: hidden;
             }
-            
+
             .menu-text {
                 display: none;
             }
         }
-        
+
         @media (max-width: 768px) {
             .header-container {
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .main-nav {
                 margin-top: 1rem;
                 width: 100%;
             }
-            
+
             .main-nav ul {
                 justify-content: center;
                 flex-wrap: wrap;
             }
-            
+
             .main-nav li {
                 margin: 0.3rem;
             }
-            
+
             .footer-col {
                 width: 100%;
             }
-            
+
             .sidebar {
                 position: fixed;
                 height: 100vh;
@@ -427,11 +406,11 @@
                 transform: translateX(-100%);
                 padding-top: 60px;
             }
-            
+
             .sidebar.active {
                 transform: translateX(0);
             }
-            
+
             .mobile-menu-btn {
                 display: block !important;
                 background: none;
@@ -442,146 +421,789 @@
                 margin-right: 1rem;
                 transition: var(--transition);
             }
-            
+
             .mobile-menu-btn:hover {
                 color: var(--accent-color);
                 transform: scale(1.1);
             }
-            
-            .btn-hero {
-                padding: 0.7rem 1.5rem;
-                font-size: 0.9rem;
-                margin-bottom: 0.5rem;
+
+            .main-content-container {
+                margin: 0.5rem;
+                padding: 1.5rem;
             }
         }
-        
+
         .mobile-menu-btn {
             display: none;
+        }
+
+        .table thead th {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            border-bottom: 2px solid var(--primary-dark);
+        }
+        .table-hover tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .table-responsive {
+            margin-top: 1rem;
+        }
+        .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+        }
+        .btn-info:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+        }
+
+        /* Movement specific styles */
+        .location-card {
+            border-left: 4px solid var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .location-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge-location {
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        .badge-room {
+            background-color: var(--accent-color);
+            color: var(--text-dark);
+        }
+
+        .asset-status {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-available {
+            background-color: #28a745;
+        }
+
+        .status-assigned {
+            background-color: #007bff;
+        }
+
+        .status-maintenance {
+            background-color: #ffc107;
+        }
+
+        .status-condemned {
+            background-color: #dc3545;
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="main-header">
-        <div class="header-container">
-            <button class="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="logo-container">
-                <img src="https://upload.wikimedia.org/wikipedia/en/c/cc/University_of_Peradeniya_crest.png" alt="University Logo" class="logo-img">
+<!-- Header -->
+<header class="main-header">
+    <div class="header-container">
+        <button class="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="logo-container">
+            <img src="https://upload.wikimedia.org/wikipedia/en/c/cc/University_of_Peradeniya_crest.png" alt="University Logo" class="logo-img">
+            <div>
+                <h5 class="mb-0 text-light">University of Peradeniya</h5>
+                <small class="text-light">Asset Management System - Admin</small>
+            </div>
+        </div>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="/adminhome">Home</a></li>
+                <li><a th:href="@{/}" class="btn btn-outline-light">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div class="d-flex flex-grow-1" style="min-height: 80vh;">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <nav>
+            <ul class="sidebar-menu">
+                <li><a href="/admin/home" class="menu-item">Dashboard</a></li>
+                <li><a href="/admin/adminUserHistory" class="menu-item">User History</a></li>
+                <li><a href="/adminMaintain" class="menu-item">Maintain</a></li>
+                <li><a href="/adminCondemn" class="menu-item">Condemn</a></li>
+                <li><a href="/adminAssetHistory" class="menu-item">Asset History</a></li>
+                <li><a href="/admin/adminAsset" class="menu-item">Asset</a></li>
+                <li><a href="/adminInvoice" class="menu-item">Invoice</a></li>
+                <li><a href="/adminMovement" class="menu-item active">Movement</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content-container">
+        <div class="main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0" style="color: var(--primary-color);">Asset Movement Management</h3>
                 <div>
-                    <h5 class="mb-0 text-light">University of Peradeniya</h5>
-                    <small class="text-light">Asset Management System - Admin</small>
+                    <button class="btn btn-primary me-2" style="background-color: var(--primary-color); border-color: var(--primary-dark);" data-bs-toggle="modal" data-bs-target="#addLocationModal">
+                        <i class="fas fa-map-marker-alt"></i> Add Location
+                    </button>
+                    <button class="btn btn-primary" style="background-color: var(--primary-color); border-color: var(--primary-dark);" data-bs-toggle="modal" data-bs-target="#addRoomModal">
+                        <i class="fas fa-door-open"></i> Add Room
+                    </button>
                 </div>
             </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="/adminhome">Home</a></li>
-                    <li><a th:href="@{/}" class="btn btn-outline-light">Logout</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
 
-    <!-- Main Content with Sidebar -->
-    <div class="d-flex flex-grow-1">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <nav>
-                <ul class="sidebar-menu">
-                    <li><a href="/admin/home" class="menu-item">Dashboard</a></li>
-                    <li><a href="/admin/adminUserHistory" class="menu-item">User History</a></li>
-                    <li><a href="/adminMaintain" class="menu-item">Maintain</a></li>
-                    <li><a href="/adminCondemn" class="menu-item">Condemn</a></li>
-                    <li><a href="/adminAssetHistory" class="menu-item">Asset History</a></li>
-                    <li><a href="/admin/adminAsset" class="menu-item">Asset</a></li>
-                    <li><a href="/adminInvoice" class="menu-item">Invoice</a></li>
-                    <li><a href="/adminMovement" class="menu-item active">Movement</a></li>
-                </ul>
-            </nav>
-        </aside>
+            <!-- Location and Room Management Tabs -->
+            <ul class="nav nav-tabs mb-4" id="movementTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locations" type="button" role="tab" aria-controls="locations" aria-selected="true">
+                        <i class="fas fa-map-marked-alt me-2"></i>Locations
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="rooms-tab" data-bs-toggle="tab" data-bs-target="#rooms" type="button" role="tab" aria-controls="rooms" aria-selected="false">
+                        <i class="fas fa-door-closed me-2"></i>Rooms
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="movements-tab" data-bs-toggle="tab" data-bs-target="#movements" type="button" role="tab" aria-controls="movements" aria-selected="false">
+                        <i class="fas fa-exchange-alt me-2"></i>Movement History
+                    </button>
+                </li>
+            </ul>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <h1>Admin - Movement</h1>
-        </main>
-    </div>
+            <div class="tab-content" id="movementTabsContent">
+                <!-- Locations Tab -->
+                <div class="tab-pane fade show active" id="locations" role="tabpanel" aria-labelledby="locations-tab">
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 location-card">
+                                <div class="card-header" style="background-color: var(--primary-color); color: white;">
+                                    <h5 class="mb-0">IT Center</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <span class="badge badge-location">Main Building</span>
+                                        <span class="text-muted">12 Assets</span>
+                                    </div>
+                                    <p class="card-text">Primary location for IT equipment and servers.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">Last updated: 3 mins ago</small>
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewLocationModal">
+                                            View Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100 location-card">
+                                <div class="card-header" style="background-color: var(--primary-color); color: white;">
+                                    <h5 class="mb-0">Computer Lab A</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-3">
+                                        <span class="badge badge-location">Science Faculty</span>
+                                        <span class="text-muted">25 Assets</span>
+                                    </div>
+                                    <p class="card-text">Student computer lab with 30 workstations.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">Last updated: 1 hour ago</small>
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewLocationModal">
+                                            View Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-container">
-            <div class="footer-row">
-                <div class="footer-col">
-                    <h4>University of Peradeniya</h4>
-                    <p>The University of Peradeniya is a leading higher education institution in Sri Lanka, committed to excellence in teaching, research, and innovation.</p>
-                    <div class="social-icons">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead style="background-color: #800000; color: #fff;">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Location ID</th>
+                                <th scope="col">Department</th>
+                                <th scope="col">Transfer Date</th>
+                                <th scope="col">Assets</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="location, iterStat : ${locations}">
+                                <td th:text="${iterStat.count}"></td>
+                                <td th:text="${location.locationId}"></td>
+                                <td th:text="${location.departmentName}"></td>
+                                <td th:text="${#temporals.format(location.transferDate, 'yyyy-MM-dd')}"></td>
+                                <td>12</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#editLocationModal">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(locations)}">
+                                <td colspan="6" class="text-center text-danger">No locations found in the database.</td>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="footer-col">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="/home">Home</a></li>
-                        <li><a href="/about">About</a></li>
-                        <li><a href="/contactUs">Contact</a></li>
-                        <li><a th:href="@{/login}">Login</a></li>
-                    </ul>
+
+                <!-- Rooms Tab -->
+                <div class="tab-pane fade" id="rooms" role="tabpanel" aria-labelledby="rooms-tab">
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center" style="background-color: var(--primary-color); color: white;">
+                                    <h5 class="mb-0">Server Room</h5>
+                                    <span class="badge badge-room">IT Center</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Primary server room with climate control.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">8 Assets</small>
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewRoomModal">
+                                            View Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center" style="background-color: var(--primary-color); color: white;">
+                                    <h5 class="mb-0">Lab 101</h5>
+                                    <span class="badge badge-room">Computer Lab A</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Main computer lab with 30 workstations.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">30 Assets</small>
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewRoomModal">
+                                            View Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header d-flex justify-content-between align-items-center" style="background-color: var(--primary-color); color: white;">
+                                    <h5 class="mb-0">Storage Room</h5>
+                                    <span class="badge badge-room">IT Center</span>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Equipment storage and spare parts.</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">15 Assets</small>
+                                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewRoomModal">
+                                            View Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead style="background-color: #800000; color: #fff;">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Room ID</th>
+                                <th scope="col">Room Name</th>
+                                <th scope="col">Location</th>
+                                <th scope="col">Assets</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="room, iterStat : ${rooms}">
+                                <td th:text="${iterStat.count}"></td>
+                                <td th:text="${room.roomId}"></td>
+                                <td th:text="${room.roomName}"></td>
+                                <td th:text="${room.location.departmentName}"></td>
+                                <td>8</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#editRoomModal">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(rooms)}">
+                                <td colspan="6" class="text-center text-danger">No rooms found in the database.</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="footer-col">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="#">User Guide</a></li>
-                        <li><a href="#">FAQs</a></li>
-                        <li><a href="#">Training Videos</a></li>
-                        <li><a href="#">System Updates</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Newsletter</h4>
-                    <p>Subscribe to receive updates and system announcements.</p>
-                    <form class="newsletter-form">
-                        <input type="email" placeholder="Your Email">
-                        <button type="submit">Subscribe</button>
-                    </form>
+
+                <!-- Movement History Tab -->
+                <div class="tab-pane fade" id="movements" role="tabpanel" aria-labelledby="movements-tab">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead style="background-color: #800000; color: #fff;">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Asset</th>
+                                <th scope="col">From</th>
+                                <th scope="col">To</th>
+                                <th scope="col">Room</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Moved By</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>
+                                    <span class="asset-status status-available"></span>
+                                    PC-001 (Dell Optiplex)
+                                </td>
+                                <td>IT Center</td>
+                                <td>Computer Lab A</td>
+                                <td>Lab 101</td>
+                                <td>2023-05-15</td>
+                                <td>Admin User</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-info">
+                                        <i class="fas fa-info-circle"></i> Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>
+                                    <span class="asset-status status-assigned"></span>
+                                    LAP-045 (HP EliteBook)
+                                </td>
+                                <td>Storage Room</td>
+                                <td>IT Center</td>
+                                <td>Office 12</td>
+                                <td>2023-04-28</td>
+                                <td>IT Staff</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-info">
+                                        <i class="fas fa-info-circle"></i> Details
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr th:each="movement, iterStat : ${movements}">
+                                <td th:text="${iterStat.count}"></td>
+                                <td>
+                                    <span th:classappend="${movement.asset.activityStatus} ? 'status-available' : 'status-maintenance'"></span>
+                                    <span th:text="${movement.asset.assetId} + ' (' + ${movement.asset.name} + ')'"></span>
+                                </td>
+                                <td th:text="${movement.fromLocation.departmentName}"></td>
+                                <td th:text="${movement.toLocation.departmentName}"></td>
+                                <td th:text="${movement.room?.roomName} ?: 'N/A'"></td>
+                                <td th:text="${#temporals.format(movement.movementDate, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${movement.movedBy}"></td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-info">
+                                        <i class="fas fa-info-circle"></i> Details
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-            <hr class="footer-divider">
-            <div class="footer-bottom">
-                <p>&copy; 2023 University of Peradeniya. All rights reserved.</p>
-                <p>Asset Management System v2.1</p>
+
+            <!-- Add Location Modal -->
+            <div class="modal fade" id="addLocationModal" tabindex="-1" aria-labelledby="addLocationModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addLocationModalLabel" style="color: var(--primary-color);">Add New Location</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form th:action="@{/admin/adminLocation}" th:object="${location}" method="post">
+                                <div class="container-fluid">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <label for="locationId" class="form-label">Location ID</label>
+                                            <input type="text" class="form-control" id="locationId" th:field="*{locationId}" placeholder="Enter location ID" required />
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="departmentName" class="form-label">Department Name</label>
+                                            <input type="text" class="form-control" id="departmentName" th:field="*{departmentName}" placeholder="Enter department name" required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="transferDate" class="form-label">Transfer Date</label>
+                                            <input type="date" class="form-control" id="transferDate" th:field="*{transferDate}" required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="startDate" class="form-label">Start Date</label>
+                                            <input type="date" class="form-control" id="startDate" th:field="*{startDate}" required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="endDate" class="form-label">End Date (Optional)</label>
+                                            <input type="date" class="form-control" id="endDate" th:field="*{endDate}" />
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="submit" class="btn btn-primary px-4" style="background-color: var(--primary-color); border-color: var(--primary-dark);">
+                                            <i class="fas fa-save me-2"></i> Save Location
+                                        </button>
+                                    </div>
+                                    <div th:if="${success}" class="alert alert-success mt-3 text-center">Location added successfully!</div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Room Modal -->
+            <div class="modal fade" id="addRoomModal" tabindex="-1" aria-labelledby="addRoomModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addRoomModalLabel" style="color: var(--primary-color);">Add New Room</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form th:action="@{/admin/adminRoom}" th:object="${room}" method="post">
+                                <div class="container-fluid">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <label for="roomId" class="form-label">Room ID</label>
+                                            <input type="text" class="form-control" id="roomId" th:field="*{roomId}" placeholder="Enter room ID" required />
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="roomName" class="form-label">Room Name</label>
+                                            <input type="text" class="form-control" id="roomName" th:field="*{roomName}" placeholder="Enter room name" required />
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="location" class="form-label">Location</label>
+                                            <select class="form-select" id="location" th:field="*{location}" required>
+                                                <option value="">Select Location</option>
+                                                <option th:each="loc : ${locations}" th:value="${loc.locationId}" th:text="${loc.departmentName}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="submit" class="btn btn-primary px-4" style="background-color: var(--primary-color); border-color: var(--primary-dark);">
+                                            <i class="fas fa-save me-2"></i> Save Room
+                                        </button>
+                                    </div>
+                                    <div th:if="${success}" class="alert alert-success mt-3 text-center">Room added successfully!</div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Location Modal -->
+            <div class="modal fade" id="viewLocationModal" tabindex="-1" aria-labelledby="viewLocationModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewLocationModalLabel" style="color: var(--primary-color);">Location Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><strong>Location ID:</strong> <span>LOC-001</span></li>
+                                <li class="list-group-item"><strong>Department:</strong> <span>IT Center</span></li>
+                                <li class="list-group-item"><strong>Transfer Date:</strong> <span>2023-01-15</span></li>
+                                <li class="list-group-item"><strong>Start Date:</strong> <span>2023-01-01</span></li>
+                                <li class="list-group-item"><strong>Assets Count:</strong> <span>12</span></li>
+                                <li class="list-group-item"><strong>Rooms:</strong>
+                                    <span class="badge bg-primary me-1">Server Room</span>
+                                    <span class="badge bg-primary">Storage Room</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" style="background-color: var(--primary-color); border-color: var(--primary-dark);">Edit Location</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Location Modal -->
+            <div class="modal fade" id="editLocationModal" tabindex="-1" aria-labelledby="editLocationModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editLocationModalLabel" style="color: var(--primary-color);">Edit Location</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="container-fluid">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <label for="editLocationId" class="form-label">Location ID</label>
+                                            <input type="text" class="form-control" id="editLocationId" value="LOC-001" readonly />
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="editDepartmentName" class="form-label">Department Name</label>
+                                            <input type="text" class="form-control" id="editDepartmentName" value="IT Center" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="editTransferDate" class="form-label">Transfer Date</label>
+                                            <input type="date" class="form-control" id="editTransferDate" value="2023-01-15" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="editStartDate" class="form-label">Start Date</label>
+                                            <input type="date" class="form-control" id="editStartDate" value="2023-01-01" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="editEndDate" class="form-label">End Date (Optional)</label>
+                                            <input type="date" class="form-control" id="editEndDate" />
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="button" class="btn btn-primary px-4" style="background-color: var(--primary-color); border-color: var(--primary-dark);">
+                                            <i class="fas fa-save me-2"></i> Update Location
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- View Room Modal -->
+            <div class="modal fade" id="viewRoomModal" tabindex="-1" aria-labelledby="viewRoomModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewRoomModalLabel" style="color: var(--primary-color);">Room Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><strong>Room ID:</strong> <span>RM-101</span></li>
+                                <li class="list-group-item"><strong>Room Name:</strong> <span>Server Room</span></li>
+                                <li class="list-group-item"><strong>Location:</strong> <span>IT Center</span></li>
+                                <li class="list-group-item"><strong>Assets Count:</strong> <span>8</span></li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" style="background-color: var(--primary-color); border-color: var(--primary-dark);">Edit Room</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Room Modal -->
+            <div class="modal fade" id="editRoomModal" tabindex="-1" aria-labelledby="editRoomModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editRoomModalLabel" style="color: var(--primary-color);">Edit Room</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="container-fluid">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <label for="editRoomId" class="form-label">Room ID</label>
+                                            <input type="text" class="form-control" id="editRoomId" value="RM-101" readonly />
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="editRoomName" class="form-label">Room Name</label>
+                                            <input type="text" class="form-control" id="editRoomName" value="Server Room" />
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="editRoomLocation" class="form-label">Location</label>
+                                            <select class="form-select" id="editRoomLocation">
+                                                <option selected>IT Center</option>
+                                                <option>Computer Lab A</option>
+                                                <option>Science Faculty</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="button" class="btn btn-primary px-4" style="background-color: var(--primary-color); border-color: var(--primary-dark);">
+                                            <i class="fas fa-save me-2"></i> Update Room
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Move Asset Modal -->
+            <div class="modal fade" id="moveAssetModal" tabindex="-1" aria-labelledby="moveAssetModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="moveAssetModalLabel" style="color: var(--primary-color);">Move Asset</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="container-fluid">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <label class="form-label">Asset</label>
+                                            <input type="text" class="form-control" value="PC-001 (Dell Optiplex)" readonly />
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="currentLocation" class="form-label">Current Location</label>
+                                            <input type="text" class="form-control" id="currentLocation" value="IT Center" readonly />
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="newLocation" class="form-label">New Location</label>
+                                            <select class="form-select" id="newLocation">
+                                                <option selected>Select Location</option>
+                                                <option>Computer Lab A</option>
+                                                <option>Science Faculty</option>
+                                                <option>Engineering Faculty</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="newRoom" class="form-label">Room (Optional)</label>
+                                            <select class="form-select" id="newRoom">
+                                                <option selected>Select Room</option>
+                                                <option>Lab 101</option>
+                                                <option>Lab 102</option>
+                                                <option>Office 12</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="moveDate" class="form-label">Move Date</label>
+                                            <input type="date" class="form-control" id="moveDate" />
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="moveReason" class="form-label">Reason</label>
+                                            <textarea class="form-control" id="moveReason" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="button" class="btn btn-primary px-4" style="background-color: var(--primary-color); border-color: var(--primary-dark);">
+                                            <i class="fas fa-exchange-alt me-2"></i> Move Asset
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </footer>
+    </main>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Mobile menu toggle functionality
-        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('active');
-        });
-        
-        // Add active class to current nav item
-        document.querySelectorAll('.main-nav a').forEach(link => {
-            link.addEventListener('click', function() {
-                document.querySelectorAll('.main-nav a').forEach(item => {
-                    item.classList.remove('active');
-                });
-                this.classList.add('active');
+<!-- Footer -->
+<footer class="main-footer">
+    <div class="footer-container">
+        <div class="footer-row">
+            <div class="footer-col">
+                <h4>University of Peradeniya</h4>
+                <p>The University of Peradeniya is a leading higher education institution in Sri Lanka, committed to excellence in teaching, research, and innovation.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/adminhome">Home</a></li>
+                    <li><a href="/adminabout">About</a></li>
+                    <li><a href="/admincontactUs">Contact</a></li>
+                    <li><a th:href="@{/login}">Login</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">User Guide</a></li>
+                    <li><a href="#">FAQs</a></li>
+                    <li><a href="#">Training Videos</a></li>
+                    <li><a href="#">System Updates</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <p>Subscribe to receive updates and system announcements.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your Email">
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <hr class="footer-divider">
+        <div class="footer-bottom">
+            <p>&copy; 2025 University of Peradeniya. All rights reserved.</p>
+            <p>Asset Management System v2.1</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Mobile menu toggle functionality
+    document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.toggle('active');
+    });
+
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', function(event) {
+        const sidebar = document.querySelector('.sidebar');
+        const mobileBtn = document.querySelector('.mobile-menu-btn');
+
+        if (window.innerWidth <= 768 &&
+            !sidebar.contains(event.target) &&
+            !mobileBtn.contains(event.target)) {
+            sidebar.classList.remove('active');
+        }
+    });
+
+    // Initialize tab functionality
+    const tabElms = document.querySelectorAll('button[data-bs-toggle="tab"]');
+    tabElms.forEach(tabElm => {
+        tabElm.addEventListener('click', function(event) {
+            event.preventDefault();
+            const tabTarget = this.getAttribute('data-bs-target');
+            const tabPane = document.querySelector(tabTarget);
+
+            // Hide all tab panes
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('show', 'active');
             });
-        });
-        
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
+
+            // Show selected tab pane
+            tabPane.classList.add('show', 'active');
+
+            // Update active tab button
+            document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
+                tab.classList.remove('active');
             });
+            this.classList.add('active');
         });
-    </script>
+    });
+</script>
 </body>
 </html>
