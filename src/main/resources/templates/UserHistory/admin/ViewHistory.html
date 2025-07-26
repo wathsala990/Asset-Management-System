@@ -196,7 +196,64 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin: 1rem;
         }
-        
+
+        /* Card-based detail view styles */
+        .detail-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .detail-value .badge {
+            font-size: 0.9rem;
+            padding: 0.5em 0.8em;
+            border-radius: 0.35rem;
+        }
+
+        /* Responsive grid for details */
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Centered Header Styles */
+        .page-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .page-header h2 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
         /* Footer Styles */
         .main-footer {
             background-color: var(--primary-color);
@@ -331,54 +388,16 @@
         }
         
         /* Button Styles */
-        .btn-hero {
-            padding: 0.8rem 1.8rem;
-            font-weight: 600;
-            border-radius: 4px;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+        .btn-primary {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
         }
-        
-        .btn-hero-primary {
-            background-color: var(--accent-color);
-            color: #212529;
-            border: 2px solid transparent;
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark) !important;
+            border-color: var(--primary-dark) !important;
         }
-        
-        .btn-hero-primary:hover {
-            background-color: #e0a800;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn-hero-outline {
-            border: 2px solid white;
-            color: white;
-            background-color: transparent;
-        }
-        
-        .btn-hero-outline:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Card Styles */
-        .feature-card {
-            border: none;
-            border-radius: 8px;
-            transition: var(--transition);
-            height: 100%;
-            border-top: 4px solid var(--primary-color);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-        
+
         /* Responsive Adjustments */
         @media (max-width: 992px) {
             .footer-col {
@@ -392,6 +411,10 @@
             
             .menu-text {
                 display: none;
+            }
+
+            .detail-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             }
         }
         
@@ -447,11 +470,9 @@
                 color: var(--accent-color);
                 transform: scale(1.1);
             }
-            
-            .btn-hero {
-                padding: 0.7rem 1.5rem;
-                font-size: 0.9rem;
-                margin-bottom: 0.5rem;
+
+            .detail-grid {
+                grid-template-columns: 1fr;
             }
         }
         
@@ -461,7 +482,6 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header class="main-header">
         <div class="header-container">
             <button class="mobile-menu-btn">
@@ -470,43 +490,83 @@
             <div class="logo-container">
                 <img src="https://upload.wikimedia.org/wikipedia/en/c/cc/University_of_Peradeniya_crest.png" alt="University Logo" class="logo-img">
                 <div>
-                    <h5 class="mb-0">University of Peradeniya</h5>
-                    <small>Asset Management System </small>
+                    <h5 class="mb-0 text-light">University of Peradeniya</h5>
+                    <small class="text-light">Asset Management System - Admin</small>
                 </div>
             </div>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="/user/home">Home</a></li>
+                    <li><a href="/adminhome">Home</a></li>
                     <li><a th:href="@{/}" class="btn btn-outline-light">Logout</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <!-- Main Content with Sidebar -->
     <div class="d-flex flex-grow-1">
-        <!-- Sidebar -->
         <aside class="sidebar">
             <nav>
                 <ul class="sidebar-menu">
-                    <li><a href="/user-history" class="menu-item">User History</a></li>
-                    <li><a href="/Maintain" class="menu-item">Maintain</a></li>
-                    <li><a href="/Condemn" class="menu-item">Condemn</a></li>
-                    <li><a href="/AssetHistory" class="menu-item active">Asset History</a></li>
-                    <li><a href="/Assets" class="menu-item">Asset</a></li>
-                    <li><a href="/Invoice" class="menu-item">Invoice</a></li>
-                    <li><a href="/Movement" class="menu-item">Movement</a></li>
+                    <li><a href="/admin/home" class="menu-item">Dashboard</a></li>
+                    <li><a href="/admin/adminUserHistory" class="menu-item active">User History</a></li>
+                    <li><a href="/adminMaintain" class="menu-item">Maintain</a></li>
+                    <li><a href="/adminCondemn" class="menu-item">Condemn</a></li>
+                    <li><a href="/adminAssetHistory" class="menu-item">Asset History</a></li>
+                    <li><a href="/admin/adminAsset" class="menu-item">Asset</a></li>
+                    <li><a href="/adminInvoice" class="menu-item">Invoice</a></li>
+                    <li><a href="/adminMovement" class="menu-item">Movement</a></li>
                 </ul>
             </nav>
         </aside>
 
-        <!-- Main Content -->
         <main class="main-content">
-            <h1>Asset History</h1>
+            <div class="container-fluid">
+                <div class="page-header">
+                    <h2>Asset History Record Details</h2>
+                </div>
+
+                <div class="detail-card">
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">User Name</span>
+                            <span class="detail-value" th:text="${history.userName}">Name</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Job Role</span>
+                            <span class="detail-value" th:text="${history.jobRole}">Role</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Description</span>
+                            <span class="detail-value" th:text="${history.userDescription}">Desc</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Asset</span>
+                            <span class="detail-value" th:text="${history.asset.name} + ' (' + ${history.asset.assetId} + ')'"></span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Location</span>
+                            <span class="detail-value" th:text="${history.location.departmentName}">Dept</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Period</span>
+                            <span class="detail-value">
+                                <span th:text="${#dates.format(history.startDate, 'yyyy-MM-dd')}"></span> to
+                                <span th:if="${history.endDate != null}" th:text="${#dates.format(history.endDate, 'yyyy-MM-dd')}"></span>
+                                <span th:if="${history.endDate == null}" class="badge bg-success">Current</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="/admin/adminUserHistory" class="btn btn-primary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to List
+                    </a>
+                </div>
+            </div>
         </main>
     </div>
 
-    <!-- Footer -->
     <footer class="main-footer">
         <div class="footer-container">
             <div class="footer-row">
@@ -526,7 +586,7 @@
                         <li><a href="/home">Home</a></li>
                         <li><a href="/about">About</a></li>
                         <li><a href="/contactUs">Contact</a></li>
-                        <li><a th:href="@{/}">Login</a></li>
+                        <li><a th:href="@{/login}">Login</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
@@ -569,16 +629,6 @@
                     item.classList.remove('active');
                 });
                 this.classList.add('active');
-            });
-        });
-        
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
             });
         });
     </script>
