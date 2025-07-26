@@ -1,5 +1,6 @@
 package com.example.AMS.repository;
 
+import com.example.AMS.model.User; // <-- Add this import
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

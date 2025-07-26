@@ -1,12 +1,9 @@
-package com.example.AMS.controller;
+package com.example.AMS.controller.director;
 
 import com.example.AMS.model.User;
-import com.example.AMS.repository.RoleRepository;
 import com.example.AMS.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +15,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
-    private final RoleRepository roleRepository;
-
 
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
@@ -124,33 +119,37 @@ public class AuthController {
     }
 
     @GetMapping("/")
-    public String landing_page(Model model) {
+    public String landingPage(Model model) {
         return "home/landing_page";
     }
 
     @GetMapping("/Asset")
-    public String Asset(Model model) {
+    public String asset(Model model) {
         return "Asset/Asset";
     }
+
     @GetMapping("/AssetHistory")
-    public String AssetHistory(Model model) {
+    public String assetHistory(Model model) {
         return "AssetHistory/AssetHistory";
     }
+
     @GetMapping("/Condemn")
-    public String Condemn(Model model) {
+    public String condemn(Model model) {
         return "Condemn/Condemn";
     }
+
     @GetMapping("/Invoice")
-    public String Invoice(Model model) {
+    public String invoice(Model model) {
         return "Invoice/Invoice";
     }
+
     @GetMapping("/Movement")
-    public String Movement(Model model) {
+    public String movement(Model model) {
         return "Movement/Movement";
     }
+
     @GetMapping("/Maintain")
-    public String Maintain(Model model) {
+    public String maintain(Model model) {
         return "Maintain/Maintain";
     }
-
 }

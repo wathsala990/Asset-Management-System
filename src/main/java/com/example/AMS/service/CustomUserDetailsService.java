@@ -1,5 +1,6 @@
 package com.example.AMS.service;
 
+import com.example.AMS.model.User;
 import com.example.AMS.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

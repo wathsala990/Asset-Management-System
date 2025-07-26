@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
                     .orElseThrow(() -> new RuntimeException("User role not found"));
             user.setRoles(Collections.singleton(userRole));
 
-            UserRepository.save(user);
+            userRepository.save(user);
 
             String token = UUID.randomUUID().toString();
             VerificationToken verificationToken = VerificationToken.builder()

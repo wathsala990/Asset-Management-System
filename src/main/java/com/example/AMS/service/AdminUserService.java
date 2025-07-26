@@ -24,9 +24,10 @@ public class AdminUserService {
     }
 
     private UserDto convertToDto(User user) {
-        Set<String> roleNames = user.getRoles().stream()
-                .map(role -> role.getName())
-                .collect(Collectors.toSet());
+        Set<String> roleNames = user.getRoles() == null ? Set.of() :
+                user.getRoles().stream()
+                        .map(role -> role.getName())
+                        .collect(Collectors.toSet());
 
         return new UserDto(
                 user.getId(),
