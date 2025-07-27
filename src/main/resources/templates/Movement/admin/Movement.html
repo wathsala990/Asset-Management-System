@@ -806,12 +806,12 @@
                                 <td th:text="${iterStat.count}"></td>
                                 <td>
                                     <span th:classappend="${movement.asset.activityStatus} ? 'status-available' : 'status-maintenance'"></span>
-                                    <span th:text="${movement.asset.assetId} + ' (' + ${movement.asset.name} + ')'"></span>
+                                    <span th:text="${asset.assetId} + ' (' + ${asset.name} + ')'"></span>
                                 </td>
-                                <td th:text="${movement.fromLocation.departmentName}"></td>
-                                <td th:text="${movement.toLocation.departmentName}"></td>
-                                <td th:text="${movement.room?.roomName} ?: 'N/A'"></td>
-                                <td th:text="${#temporals.format(movement.movementDate, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${location.fromLocation.departmentName}"></td>
+                                <td th:text="${location.toLocation.departmentName}"></td>
+                                <td th:text="${location.room.roomName} ?: 'N/A'"></td>
+                                <td th:text="${#temporals.format(location.transferDate, 'yyyy-MM-dd')}"></td>
                                 <td th:text="${movement.movedBy}"></td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-info">

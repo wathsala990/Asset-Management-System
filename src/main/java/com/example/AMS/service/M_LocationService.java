@@ -17,28 +17,11 @@ public class M_LocationService {
         this.locationRepository = locationRepository;
     }
 
-    // Get all locations
     public List<Location> getAllLocations() {
         return locationRepository.findAll();
     }
 
-    // Get location by ID
-    public Location getLocationById(Long locationId) {
-        return locationRepository.findById(locationId).orElse(null);
-    }
-
-    // Save or update location
     public Location saveLocation(Location location) {
         return locationRepository.save(location);
-    }
-
-    // Delete location
-    public void deleteLocation(Long locationId) {
-        locationRepository.deleteById(locationId);
-    }
-
-    // Check if location exists
-    public boolean locationExists(Long locationId) {
-        return locationRepository.existsById(locationId);
     }
 }
