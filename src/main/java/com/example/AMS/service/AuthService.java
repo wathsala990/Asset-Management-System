@@ -2,6 +2,7 @@ package com.example.AMS.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import com.example.AMS.model.User;
+
 public interface AuthService {
     String registerUser(User user, HttpServletRequest request);
     String verifyUser(String token);

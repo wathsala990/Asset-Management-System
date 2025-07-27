@@ -2,13 +2,20 @@ package com.example.AMS.controller.admin; // Changed package to include 'admin'
 
 import com.example.AMS.model.AssetUser;
 import com.example.AMS.service.L_AssetUserService;
+
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping; // Import RequestMapping
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -46,7 +53,7 @@ public class L_A_UserHistoryController { // Renamed class
         return "UserHistory/admin/ViewHistory";
     }
 
-        // Asset auto-suggest endpoint
+    // Asset auto-suggest endpoint
     @GetMapping("/assets/suggest")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DIRECTOR', 'ROLE_USER')")
     public @ResponseBody List<com.example.AMS.model.Asset> suggestAssets(@RequestParam("query") String query) {
