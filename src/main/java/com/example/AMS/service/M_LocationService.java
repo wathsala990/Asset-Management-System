@@ -6,16 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class M_LocationService {
 
-    private final M_LocationRepository locationRepository;
-
     @Autowired
-    public M_LocationService(M_LocationRepository locationRepository) {
-        this.locationRepository = locationRepository;
-    }
+    private M_LocationRepository locationRepository;
 
     public List<Location> getAllLocations() {
         return locationRepository.findAll();
@@ -23,5 +20,14 @@ public class M_LocationService {
 
     public Location saveLocation(Location location) {
         return locationRepository.save(location);
+    }
+
+    public Location getLocationById(Long id) {
+        Optional<Location> optional = locationRepository.findById(id);
+        return optional.orElse(null);
+    }
+
+    public void deleteLocation(Long id) {
+        locationRepository.deleteById(id);
     }
 }

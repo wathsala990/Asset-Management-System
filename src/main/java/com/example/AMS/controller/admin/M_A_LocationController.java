@@ -1,47 +1,50 @@
 package com.example.AMS.controller.admin;
 
 import com.example.AMS.model.Location;
-import com.example.AMS.model.Room;
 import com.example.AMS.service.M_LocationService;
-import com.example.AMS.service.M_RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/admin")
 public class M_A_LocationController {
 
-    private final M_LocationService locationService;
-    private final M_RoomService roomService;
-
     @Autowired
-    public M_A_LocationController(M_LocationService locationService, M_RoomService roomService) {
-        this.locationService = locationService;
-        this.roomService = roomService;
-    }
+    private M_LocationService locationService;
 
-    @GetMapping("/adminMovement")
+    @GetMapping
     public String showMovementPage(Model model) {
-        model.addAttribute("location", new Location());
-        model.addAttribute("room", new Room());
-        model.addAttribute("locations", locationService.getAllLocations());
-        model.addAttribute("rooms", roomService.getAllRooms());
+        List<Location> locations = locationService.getAllLocations();
+        model.addAttribute("locations", locations);
+        model.addAttribute("newLocation", new Location());
         return "Movement/admin/Movement";
     }
 
-    @PostMapping("/adminLocation")
-    public String addLocation(@ModelAttribute("location") Location location, Model model) {
+    @PostMapping("/location/save")
+    public String saveLocation(@ModelAttribute("newLocation") Location location) {
         locationService.saveLocation(location);
-        model.addAttribute("success", true);
-        return "redirect:/Movement/admin/Movement";
+        return "redirect:/adminMovement";
     }
 
-    @PostMapping("/adminRoom")
-    public String addRoom(@ModelAttribute("room") Room room, Model model) {
-        roomService.saveRoom(room);
-        model.addAttribute("success", true);
-        return "redirect:/Movement/admin/Movement";
+    @GetMapping("/location/edit/{id}")
+    @ResponseBody
+    public Location getLocationById(@PathVariable("id") Long id) {
+        return locationService.getLocationById(id);
+    }
+
+    @PostMapping("/location/update")
+    public String updateLocation(@ModelAttribute Location location) {
+        locationService.saveLocation(location);
+        return "redirect:/adminMovement";
+    }
+
+    @GetMapping("/location/delete/{id}")
+    public String deleteLocation(@PathVariable("id") Long id) {
+        locationService.deleteLocation(id);
+        return "redirect:/adminMovement";
     }
 }
