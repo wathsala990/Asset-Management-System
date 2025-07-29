@@ -1,3 +1,4 @@
+// M_LocationService.java
 package com.example.AMS.service;
 
 import com.example.AMS.model.Location;
@@ -6,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class M_LocationService {
+
     private final M_LocationRepository locationRepository;
 
     @Autowired
@@ -20,12 +23,12 @@ public class M_LocationService {
         return locationRepository.findAll();
     }
 
-    public Location saveLocation(Location location) {
-        return locationRepository.save(location);
+    public Optional<Location> getLocationById(String locationId) {
+        return locationRepository.findById(locationId);
     }
 
-    public Location getLocationById(String locationId) {
-        return locationRepository.findById(locationId).orElse(null);
+    public Location saveLocation(Location location) {
+        return locationRepository.save(location);
     }
 
     public void deleteLocation(String locationId) {

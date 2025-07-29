@@ -1,9 +1,12 @@
+// H_AssetService.java
 package com.example.AMS.service;
 
 import com.example.AMS.model.Asset;
 import com.example.AMS.repository.H_AssetRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class H_AssetService {
@@ -11,6 +14,10 @@ public class H_AssetService {
 
     public H_AssetService(H_AssetRepository assetRepository) {
         this.assetRepository = assetRepository;
+    }
+
+    public Optional<Asset> getAssetById(String assetId) {
+        return assetRepository.findById(assetId);
     }
 
     public Asset saveAsset(Asset asset) {

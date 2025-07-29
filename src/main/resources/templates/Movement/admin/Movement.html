@@ -552,8 +552,11 @@
                     <button class="btn btn-primary me-2" style="background-color: var(--primary-color); border-color: var(--primary-dark);" data-bs-toggle="modal" data-bs-target="#addLocationModal">
                         <i class="fas fa-map-marker-alt"></i> Add Location
                     </button>
-                    <button class="btn btn-primary" style="background-color: var(--primary-color); border-color: var(--primary-dark);" data-bs-toggle="modal" data-bs-target="#addRoomModal">
+                    <button class="btn btn-primary me-2" style="background-color: var(--primary-color); border-color: var(--primary-dark);" data-bs-toggle="modal" data-bs-target="#addRoomModal">
                         <i class="fas fa-door-open"></i> Add Room
+                    </button>
+                    <button class="btn btn-primary" style="background-color: var(--primary-color); border-color: var(--primary-dark);" data-bs-toggle="modal" data-bs-target="#allocateAssetModal">
+                        <i class="fas fa-share-square"></i> Asset Allocation
                     </button>
                 </div>
             </div>
@@ -912,6 +915,60 @@
                 </div>
             </div>
 
+            <!-- Asset Allocation Modal -->
+            <div class="modal fade" id="allocateAssetModal" tabindex="-1" aria-labelledby="allocateAssetModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="allocateAssetModalLabel" style="color: var(--primary-color);">Allocate Asset</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form th:action="@{/admin/allocateAsset}" method="post">
+                                <div class="container-fluid">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <label for="assetToAllocate" class="form-label">Select Asset</label>
+                                            <select class="form-select" id="assetToAllocate" name="assetId" required>
+                                                <option value="">Select Asset</option>
+                                                <option th:each="asset : ${assets}" th:value="${asset.assetId}" th:text="${asset.assetId} + ' (' + ${asset.name} + ')'"></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="allocateLocation" class="form-label">Select Location</label>
+                                            <select class="form-select" id="allocateLocation" name="locationId" required>
+                                                <option value="">Select Location</option>
+                                                <option th:each="loc : ${locations}" th:value="${loc.locationId}" th:text="${loc.departmentName}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="allocateRoom" class="form-label">Select Room (Optional)</label>
+                                            <select class="form-select" id="allocateRoom" name="roomId">
+                                                <option value="">Select Room</option>
+                                                <option th:each="room : ${rooms}" th:value="${room.roomId}" th:text="${room.roomName}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="allocateDate" class="form-label">Allocation Date</label>
+                                            <input type="date" class="form-control" id="allocateDate" name="allocationDate" required />
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label for="allocateNotes" class="form-label">Notes</label>
+                                            <textarea class="form-control" id="allocateNotes" name="notes" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="submit" class="btn btn-primary px-4" style="background-color: var(--primary-color); border-color: var(--primary-dark);">
+                                            <i class="fas fa-share-square me-2"></i> Allocate Asset
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- View Location Modal -->
             <div class="modal fade" id="viewLocationModal" tabindex="-1" aria-labelledby="viewLocationModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -1203,6 +1260,35 @@
             });
             this.classList.add('active');
         });
+    });
+
+    // Update room options based on selected location in allocation modal
+    document.getElementById('allocateLocation').addEventListener('change', function() {
+        const locationId = this.value;
+        const roomSelect = document.getElementById('allocateRoom');
+        
+        // Reset room options
+        roomSelect.innerHTML = '<option value="">Select Room</option>';
+        
+        if (locationId) {
+            // In a real application, you would fetch rooms for this location via AJAX
+            // Here we simulate it with a timeout
+            setTimeout(() => {
+                // Add rooms for the selected location
+                // This would come from your server in a real app
+                const rooms = [
+                    { roomId: 'RM-101', roomName: 'Server Room' },
+                    { roomId: 'RM-102', roomName: 'Storage Room' }
+                ];
+                
+                rooms.forEach(room => {
+                    const option = document.createElement('option');
+                    option.value = room.roomId;
+                    option.textContent = room.roomName;
+                    roomSelect.appendChild(option);
+                });
+            }, 300);
+        }
     });
 </script>
 </body>

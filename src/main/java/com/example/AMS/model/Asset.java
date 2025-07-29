@@ -31,6 +31,11 @@ public class Asset {
     @JoinColumn(name = "vender_id")
     private Vender vender;
 
+    @ManyToOne
+    @JoinColumn(name = "roomId")
+    private Room room;
+
+
     // Getters and Setters
 
     public String getAssetId() {
@@ -159,5 +164,14 @@ public class Asset {
 
     public void setVender(Vender vender) {
         this.vender = vender;
+    }
+
+    // Add getter and setter
+    public Room getRoom() {
+    return room;
+    }
+
+    public void setRoom(Room room) {
+    this.room = room;
     }
 }

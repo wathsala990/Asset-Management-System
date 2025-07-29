@@ -13,7 +13,7 @@ import java.util.Date;
 
 @Controller
 @RequestMapping("/admin/adminMovement")
-public class H_A_AssetController {
+public class M_AssetMovementController {
 
     private final M_AssetMovementService movementService;
     private final H_AssetService assetService;
@@ -21,7 +21,7 @@ public class H_A_AssetController {
     private final M_RoomService roomService;
 
     @Autowired
-    public H_A_AssetController(M_AssetMovementService movementService, 
+    public M_AssetMovementController(M_AssetMovementService movementService, 
                                     H_AssetService assetService, 
                                     M_LocationService locationService, 
                                     M_RoomService roomService) {
