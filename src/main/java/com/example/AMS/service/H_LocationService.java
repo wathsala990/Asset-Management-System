@@ -24,7 +24,7 @@ public class H_LocationService {
     }
 
     // Get location by ID
-    public Optional<Location> getLocationById(Long locationId) {
+    public Optional<Location> getLocationById(String locationId) {
         return locationRepository.findById(locationId);
     }
 
@@ -34,7 +34,7 @@ public class H_LocationService {
     }
 
     // Delete location by ID
-    public void deleteLocation(Long locationId) {
+    public void deleteLocation(String locationId) {
         locationRepository.deleteById(locationId);
     }
 }

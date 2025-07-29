@@ -6,13 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class M_RoomService {
+    private final M_RoomRepository roomRepository;
 
     @Autowired
-    private M_RoomRepository roomRepository;
+    public M_RoomService(M_RoomRepository roomRepository) {
+        this.roomRepository = roomRepository;
+    }
 
     public List<Room> getAllRooms() {
         return roomRepository.findAll();
@@ -23,11 +25,14 @@ public class M_RoomService {
     }
 
     public Room getRoomById(String roomId) {
-        Optional<Room> optional = roomRepository.findById(roomId);
-        return optional.orElse(null);
+        return roomRepository.findById(roomId).orElse(null);
     }
 
     public void deleteRoom(String roomId) {
         roomRepository.deleteById(roomId);
+    }
+
+    public List<Room> getRoomsByLocation(String locationId) {
+        return roomRepository.findByLocation_LocationId(locationId);
     }
 }
