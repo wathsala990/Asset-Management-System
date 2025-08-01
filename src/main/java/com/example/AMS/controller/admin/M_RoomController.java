@@ -10,7 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/admin/adminRoom")
+@RequestMapping("/adminRoom")
 public class M_RoomController {
 
     private final M_RoomService roomService;

@@ -1,4 +1,3 @@
-// M_AssetMovementController.java
 package com.example.AMS.controller.admin;
 
 import com.example.AMS.model.*;
@@ -12,7 +11,7 @@ import java.security.Principal;
 import java.util.Date;
 
 @Controller
-@RequestMapping("/admin/adminMovement")
+@RequestMapping("/adminMovement") 
 public class M_AssetMovementController {
 
     private final M_AssetMovementService movementService;
@@ -37,7 +36,7 @@ public class M_AssetMovementController {
         model.addAttribute("assets", assetService.getAllAssets());
         model.addAttribute("locations", locationService.getAllLocations());
         model.addAttribute("rooms", roomService.getAllRooms());
-        return "Movement/admin/Movement";
+        return "Movement/admin/Movement";  // Verify this template path is correct
     }
 
     @PostMapping("/allocateAsset")
@@ -70,6 +69,6 @@ public class M_AssetMovementController {
         
         movementService.saveMovement(movement);
         
-        return "redirect:/admin/adminMovement";
+        return "redirect:/admin/adminMovement"; 
     }
 }

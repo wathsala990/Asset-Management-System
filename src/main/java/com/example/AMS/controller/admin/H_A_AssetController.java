@@ -1,75 +1,42 @@
-// M_AssetMovementController.java
 package com.example.AMS.controller.admin;
 
-import com.example.AMS.model.*;
-import com.example.AMS.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.AMS.model.Asset;
+import com.example.AMS.service.H_AssetService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
-import java.util.Date;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/admin/adminMovement")
+@RequestMapping("/admin")
 public class H_A_AssetController {
-
-    private final M_AssetMovementService movementService;
     private final H_AssetService assetService;
-    private final M_LocationService locationService;
-    private final M_RoomService roomService;
 
-    @Autowired
-    public H_A_AssetController(M_AssetMovementService movementService, 
-                                    H_AssetService assetService, 
-                                    M_LocationService locationService, 
-                                    M_RoomService roomService) {
-        this.movementService = movementService;
+    public H_A_AssetController(H_AssetService assetService) {
         this.assetService = assetService;
-        this.locationService = locationService;
-        this.roomService = roomService;
     }
-
-    @GetMapping
-    public String showMovementManagementPage(Model model) {
-        model.addAttribute("movements", movementService.getAllMovements());
+    // Show all assets and provide empty asset for modal form
+    @GetMapping("/adminAsset")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DIRECTOR')")
+    public String showAssets(Model model) {
         model.addAttribute("assets", assetService.getAllAssets());
-        model.addAttribute("locations", locationService.getAllLocations());
-        model.addAttribute("rooms", roomService.getAllRooms());
-        return "Movement/admin/Movement";
+        model.addAttribute("asset", new Asset());
+        return "Asset/admin/AddAsset";
     }
 
-    @PostMapping("/allocateAsset")
-    public String allocateAsset(@RequestParam String assetId,
-                               @RequestParam String locationId,
-                               @RequestParam(required = false) String roomId,
-                               @RequestParam Date allocationDate,
-                               @RequestParam(required = false) String notes,
-                               Principal principal) {
-        
-        Asset asset = assetService.getAssetById(assetId).orElseThrow();
-        Location fromLocation = asset.getLocation();
-        Location toLocation = locationService.getLocationById(locationId).orElseThrow();
-        Room room = roomId != null ? roomService.getRoomById(roomId).orElse(null) : null;
-        
-        // Update asset's current location and room
-        asset.setLocation(toLocation);
-        asset.setRoom(room);
+    // Handle asset add from modal form
+    @PostMapping("/adminAsset")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DIRECTOR')")
+    public String addAsset(@ModelAttribute("asset") Asset asset, Model model) {
         assetService.saveAsset(asset);
-        
-        // Record the movement
-        M_AssetMovement movement = new M_AssetMovement();
-        movement.setAsset(asset);
-        movement.setFromLocation(fromLocation);
-        movement.setToLocation(toLocation);
-        movement.setRoom(room);
-        movement.setMovementDate(allocationDate);
-        movement.setMovedBy(principal.getName());
-        movement.setNotes(notes);
-        
-        movementService.saveMovement(movement);
-        
-        return "redirect:/admin/adminMovement";
+        model.addAttribute("success", true);
+        // After adding, reload all assets and show success
+        model.addAttribute("assets", assetService.getAllAssets());
+        model.addAttribute("asset", new Asset());
+        return "Asset/admin/AddAsset";
     }
+
 }

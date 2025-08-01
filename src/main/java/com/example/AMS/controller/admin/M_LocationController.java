@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/admin/adminLocation")
+@RequestMapping("/adminLocation")
 public class M_LocationController {
 
     private final M_LocationService locationService;

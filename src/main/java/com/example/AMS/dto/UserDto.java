@@ -2,7 +2,6 @@ package com.example.AMS.dto;
 
 import lombok.Data;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Data
 public class UserDto {
