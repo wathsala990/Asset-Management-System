@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Controller
 @RequestMapping("/adminMovement") 
 public class M_AssetMovementController {
@@ -43,20 +45,19 @@ public class M_AssetMovementController {
     public String allocateAsset(@RequestParam String assetId,
                                @RequestParam String locationId,
                                @RequestParam(required = false) String roomId,
-                               @RequestParam Date allocationDate,
+                               @RequestParam("allocationDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date allocationDate,
                                @RequestParam(required = false) String notes,
                                Principal principal) {
-        
         Asset asset = assetService.getAssetById(assetId).orElseThrow();
         Location fromLocation = asset.getLocation();
         Location toLocation = locationService.getLocationById(locationId).orElseThrow();
-        Room room = roomId != null ? roomService.getRoomById(roomId).orElse(null) : null;
-        
+        Room room = (roomId != null && !roomId.isEmpty()) ? roomService.getRoomById(roomId).orElse(null) : null;
+
         // Update asset's current location and room
         asset.setLocation(toLocation);
         asset.setRoom(room);
         assetService.saveAsset(asset);
-        
+
         // Record the movement
         M_AssetMovement movement = new M_AssetMovement();
         movement.setAsset(asset);
@@ -66,9 +67,9 @@ public class M_AssetMovementController {
         movement.setMovementDate(allocationDate);
         movement.setMovedBy(principal.getName());
         movement.setNotes(notes);
-        
+
         movementService.saveMovement(movement);
-        
-        return "redirect:/admin/adminMovement"; 
+
+        return "redirect:/adminMovement";
     }
 }
