@@ -9,12 +9,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice(assignableTypes = {
-    M_LocationController.class, 
-    M_RoomController.class, 
+    M_LocationController.class,
+    M_RoomController.class,
     M_AssetMovementController.class
 })
 public class M_MovementExceptionHandler {
-
     @ExceptionHandler(Exception.class)
     public String handleException(Exception e, Model model) {
         model.addAttribute("error", e.getMessage());
