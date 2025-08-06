@@ -551,7 +551,7 @@
                 <div>
                     <button class="btn btn-primary me-2"
                     style="background-color: var(--primary-color); border-color: var(--primary-dark);"
-                    onclick="window.location.href='/adminLocation'">
+                    data-bs-toggle="modal" data-bs-target="#addLocationModal">
                     <i class="fas fa-map-marker-alt"></i> Add Location
                     </button>
                     <button class="btn btn-primary me-2" style="background-color: var(--primary-color); border-color: var(--primary-dark);" data-bs-toggle="modal" data-bs-target="#addRoomModal">
@@ -636,7 +636,8 @@
                                 <th scope="col">Location ID</th>
                                 <th scope="col">Department</th>
                                 <th scope="col">Transfer Date</th>
-                                <th scope="col">Assets</th>
+                                <th scope="col">StartDate</th>
+                                <th scope="col">EndDate</th>
                                 <th scope="col">Actions</th>
                             </tr>
                             </thead>
@@ -646,6 +647,8 @@
                                 <td th:text="${location.locationId}"></td>
                                 <td th:text="${location.departmentName}"></td>
                                 <td th:text="${#temporals.format(location.transferDate, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${#temporals.format(location.startDate, 'yyyy-MM-dd')}"></td>
+                                <td th:text="${#temporals.format(location.endDate, 'yyyy-MM-dd')}"></td>
                                 <td>12</td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#editLocationModal">
@@ -926,7 +929,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form th:action="@{/allocateAsset}" method="post">
+                            <form th:action="@{/adminMovement/allocateAsset}" method="post">
                                 <div class="container-fluid">
                                     <div class="row g-3">
                                         <div class="col-md-12">
