@@ -51,4 +51,10 @@ public class M_LocationController {
         locationService.deleteLocation(id);
         return "redirect:/admin/adminLocation";
     }
+
+    @PostMapping("/adminLocation")
+    public String addLocation(@ModelAttribute Location location) {
+        locationService.saveLocation(location);
+        return "redirect:/adminMovement";
+    }
 }

@@ -56,4 +56,11 @@ public class M_RoomController {
         roomService.deleteRoom(id);
         return "redirect:/admin/adminRoom";
     }
+
+    @PostMapping("/adminRoom")
+    public String addRoom(@ModelAttribute Room room, @RequestParam String location) {
+        room.setLocation(locationService.getLocationById(location).orElse(null));
+        roomService.saveRoom(room);
+        return "redirect:/adminMovement";
+    }
 }
