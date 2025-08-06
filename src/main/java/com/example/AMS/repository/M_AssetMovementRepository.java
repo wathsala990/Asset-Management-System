@@ -9,5 +9,7 @@ import java.util.List;
 
 @Repository
 public interface M_AssetMovementRepository extends JpaRepository<M_AssetMovement, Long> {
-       List<M_AssetMovement> findByAssetOrderByMovementDateDesc(Asset asset);
+
+    List<M_AssetMovement> findByAssetOrderByMovementDateDesc(Asset asset);
+
 }
