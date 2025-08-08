@@ -10,48 +10,47 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.security.Principal;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/adminMovement")
 public class M_AssetMovementController {
 
-    private final M_AssetMovementService movementService;
-    private final H_AssetService assetService;
-    private final M_LocationService locationService;
-    private final M_RoomService roomService;
+    @Autowired
+    private M_AssetService assetService;
 
     @Autowired
-    public M_AssetMovementController(M_AssetMovementService movementService,
-                                     H_AssetService assetService,
-                                     M_LocationService locationService,
-                                     M_RoomService roomService) {
-        this.movementService = movementService;
-        this.assetService = assetService;
-        this.locationService = locationService;
-        this.roomService = roomService;
-    }
+    private M_LocationService locationService;
+
+    @Autowired
+    private M_RoomService roomService;
+
+    @Autowired
+    private M_AssetMovementService movementService;
 
     @GetMapping
     public String showMovementPage(Model model) {
-        model.addAttribute("movements", movementService.getAllMovements());
-        model.addAttribute("assets", assetService.getAllAssets());
-        model.addAttribute("locations", locationService.getAllLocations());
-        model.addAttribute("rooms", roomService.getAllRooms());
-        model.addAttribute("location", new Location());
-        model.addAttribute("room", new Room());
+        List<Location> locations = locationService.getAllLocations();
+        List<Room> rooms = roomService.getAllRooms();
+        List<M_AssetMovement> movements = movementService.getAllMovements();
+
+        model.addAttribute("locations", locations);
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("movements", movements);
+
         return "Movement/admin/Movement";
     }
 
     @PostMapping("/allocateAsset")
     public String allocateAsset(@RequestParam String assetId,
-                               @RequestParam String locationId,
+                               @RequestParam String locationId, // Change to String
                                @RequestParam(required = false) String roomId,
                                @RequestParam("allocationDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date allocationDate,
                                @RequestParam(required = false) String notes,
                                Principal principal) {
         Asset asset = assetService.getAssetById(assetId).orElseThrow();
         Location fromLocation = asset.getLocation();
-        Location toLocation = locationService.getLocationById(locationId).orElseThrow();
+        Location toLocation = locationService.getLocationById(locationId).orElseThrow(); // Pass String
         Room room = (roomId != null && !roomId.isEmpty()) ? roomService.getRoomById(roomId).orElse(null) : null;
 
         asset.setLocation(toLocation);
@@ -79,10 +78,13 @@ public class M_AssetMovementController {
     }
 
     @PostMapping("/addRoom")
-    public String addRoom(@ModelAttribute Room room, @RequestParam String locationId) {
-        Location location = locationService.getLocationById(locationId).orElseThrow();
+    public String addRoom(@ModelAttribute Room room, @RequestParam String locationId) { // Change to String
+        Location location = locationService.getLocationById(locationId).orElseThrow(); // Pass String
         room.setLocation(location);
         roomService.saveRoom(room);
         return "redirect:/adminMovement";
     }
+
+    // Optionally, add edit/update/delete methods for locations and rooms here if you want to handle them on the same page.
+    
 }
