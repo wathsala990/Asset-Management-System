@@ -5,12 +5,13 @@ import java.util.Date;
 @Entity
 public class Location {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String locationId;
+    private String locationId; // Change from Long to String
+
     private Date transferDate;
     private String departmentName;
     private Date startDate;
     private Date endDate;
+    private String description; // Add this line
 
     // Getters and Setters
     public String getLocationId() { return locationId; }
@@ -23,5 +24,7 @@ public class Location {
     public void setStartDate(Date startDate) { this.startDate = startDate; }
     public Date getEndDate() { return endDate; }
     public void setEndDate(Date endDate) { this.endDate = endDate; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }
 
