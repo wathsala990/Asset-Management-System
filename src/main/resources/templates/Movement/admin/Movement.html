@@ -504,63 +504,122 @@
         <main class="main-content">
             <div class="container mt-4">
                 <h2 class="mb-4">Asset Movement Management</h2>
-                <div>
-                    <button class="btn btn-danger">Add Location</button>
-                    <button class="btn btn-danger">Add Room</button>
-                    <button class="btn btn-danger">Asset Allocation</button>
+                <!-- Buttons aligned right, colors same as footer -->
+                <div class="d-flex justify-content-end mb-3">
+                    <button class="btn" style="background-color: #800000; color: #fff; margin-right: 10px;" data-bs-toggle="modal" data-bs-target="#addLocationModal">
+                        <i class="fa fa-plus"></i> Add Location
+                    </button>
+                    <button class="btn" style="background-color: #800000; color: #fff; margin-right: 10px;" data-bs-toggle="modal" data-bs-target="#addRoomModal">
+                        <i class="fa fa-door-open"></i> Add Room
+                    </button>
+                    <button class="btn" style="background-color: #800000; color: #fff;" data-bs-toggle="modal" data-bs-target="#assetAllocationModal">
+                        <i class="fa fa-share-square"></i> Asset Allocation
+                    </button>
                 </div>
                 <ul class="nav nav-tabs mt-4">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Locations</a>
+                        <a class="nav-link active" data-bs-toggle="tab" href="#locationsTab">Locations</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Rooms</a>
+                        <a class="nav-link" data-bs-toggle="tab" href="#roomsTab">Rooms</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Movement History</a>
+                        <a class="nav-link" data-bs-toggle="tab" href="#movementTab">Movement History</a>
                     </li>
                 </ul>
-                <div class="row mt-4">
-                    <div class="col-md-6" th:each="location : ${locations}">
-                        <div class="card mb-3">
-                            <div class="card-header bg-danger text-white">
-                                <span th:text="${location.departmentName}">Location Name</span>
-                            </div>
-                            <div class="card-body">
-                                <span class="badge bg-secondary" th:text="${location.locationId}">Location ID</span>
-                                <p th:text="${location.description}">Description</p>
-                                <p>Last updated: <span th:text="${#dates.format(location.transferDate, 'dd MMM yyyy HH:mm')}">Date</span></p>
-                                <a class="btn btn-outline-primary" href="#">View Details</a>
-                            </div>
-                        </div>
+                <div class="tab-content mt-4">
+                    <!-- Locations Tab -->
+                    <div class="tab-pane fade show active" id="locationsTab">
+                        <table class="table table-bordered">
+                            <thead class="table-danger">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Location ID</th>
+                                    <th>Department</th>
+                                    <th>Description</th>
+                                    <th>Transfer Date</th>
+                                    <th>StartDate</th>
+                                    <th>EndDate</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="loc, iterStat : ${locations}">
+                                    <td th:text="${iterStat.count}"></td>
+                                    <td th:text="${loc.locationId}"></td>
+                                    <td th:text="${loc.departmentName}"></td>
+                                    <td th:text="${loc.description}"></td>
+                                    <td th:text="${#dates.format(loc.transferDate, 'dd-MM-yyyy')}"></td>
+                                    <td th:text="${#dates.format(loc.startDate, 'dd-MM-yyyy')}"></td>
+                                    <td th:text="${#dates.format(loc.endDate, 'dd-MM-yyyy')}"></td>
+                                    <td>
+                                        <a th:href="@{'/adminMovement/location/view/' + ${loc.locationId}}" class="btn btn-outline-primary btn-sm"><i class="fa fa-eye"></i></a>
+                                        <a th:href="@{'/adminMovement/location/edit/' + ${loc.locationId}}" class="btn btn-outline-warning btn-sm"><i class="fa fa-edit"></i></a>
+                                        <a th:href="@{'/adminMovement/location/delete/' + ${loc.locationId}}" class="btn btn-outline-danger btn-sm" th:onclick="return confirm('Are you sure you want to delete this location?');"><i class="fa fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Rooms Tab -->
+                    <div class="tab-pane fade" id="roomsTab">
+                        <table class="table table-bordered">
+                            <thead class="table-danger">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Room ID</th>
+                                    <th>Room Name</th>
+                                    <th>Location</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="room, iterStat : ${rooms}">
+                                    <td th:text="${iterStat.count}"></td>
+                                    <td th:text="${room.roomId}"></td>
+                                    <td th:text="${room.roomName}"></td>
+                                    <td th:text="${room.location.departmentName}"></td>
+                                    <td>
+                                        <a th:href="@{'/adminMovement/room/view/' + ${room.roomId}}" class="btn btn-outline-primary btn-sm"><i class="fa fa-eye"></i></a>
+                                        <a th:href="@{'/adminMovement/room/edit/' + ${room.roomId}}" class="btn btn-outline-warning btn-sm"><i class="fa fa-edit"></i></a>
+                                        <a th:href="@{'/adminMovement/room/delete/' + ${room.roomId}}" class="btn btn-outline-danger btn-sm" th:onclick="return confirm('Are you sure you want to delete this room?');"><i class="fa fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Movement History Tab -->
+                    <div class="tab-pane fade" id="movementTab">
+                        <table class="table table-bordered">
+                            <thead class="table-danger">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Asset ID</th>
+                                    <th>From Location</th>
+                                    <th>To Location</th>
+                                    <th>Room</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="move, iterStat : ${movements}">
+                                    <td th:text="${iterStat.count}"></td>
+                                    <td th:text="${move.asset != null ? move.asset.assetId : ''}"></td>
+                                    <td th:text="${move.fromLocation != null ? move.fromLocation.departmentName : ''}"></td>
+                                    <td th:text="${move.toLocation != null ? move.toLocation.departmentName : ''}"></td>
+                                    <td th:text="${move.room != null ? move.room.roomName : ''}"></td>
+                                    <td th:text="${move.movementDate != null ? #dates.format(move.movementDate, 'dd-MM-yyyy') : ''}"></td>
+                                    <td>
+                                        <a th:href="@{'/adminMovement/movement/view/' + ${move.movementId}}" class="btn btn-outline-primary btn-sm"><i class="fa fa-eye"></i></a>
+                                        <a th:href="@{'/adminMovement/movement/edit/' + ${move.movementId}}" class="btn btn-outline-warning btn-sm"><i class="fa fa-edit"></i></a>
+                                        <a th:href="@{'/adminMovement/movement/delete/' + ${move.movementId}}" class="btn btn-outline-danger btn-sm" th:onclick="return confirm('Are you sure you want to delete this movement record?');"><i class="fa fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <table class="table table-bordered mt-4">
-                    <thead class="table-danger">
-                        <tr>
-                            <th>#</th>
-                            <th>Location ID</th>
-                            <th>Department</th>
-                            <th>Transfer Date</th>
-                            <th>StartDate</th>
-                            <th>EndDate</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="location, iterStat : ${locations}">
-                            <td th:text="${iterStat.count}">1</td>
-                            <td th:text="${location.locationId}">L005</td>
-                            <td th:text="${location.departmentName}">networking lab</td>
-                            <td th:text="${#dates.format(location.transferDate, 'dd-MM-yyyy')}"></td>
-                            <td th:text="${#dates.format(location.startDate, 'dd-MM-yyyy')}"></td>
-                            <td th:text="${#dates.format(location.endDate, 'dd-MM-yyyy')}"></td>
-                            <td>
-                                <!-- Actions like Edit/Delete/View -->
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </main>
     </div>
@@ -613,6 +672,128 @@
             </div>
         </div>
     </footer>
+
+    <!-- Add Location Modal -->
+    <div class="modal fade" id="addLocationModal" tabindex="-1" aria-labelledby="addLocationModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <form th:action="@{/adminMovement/addLocation}" method="post" th:object="${location}">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addLocationModalLabel">Add/Edit Location</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="locationId" class="form-label">Location ID</label>
+                <input type="text" class="form-control" id="locationId" th:field="*{locationId}" required>
+              </div>
+              <div class="mb-3">
+                <label for="departmentName" class="form-label">Department</label>
+                <input type="text" class="form-control" id="departmentName" th:field="*{departmentName}" required>
+              </div>
+              <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <input type="text" class="form-control" id="description" th:field="*{description}">
+              </div>
+              <div class="mb-3">
+                <label for="transferDate" class="form-label">Transfer Date</label>
+                <input type="date" class="form-control" id="transferDate" th:field="*{transferDate}">
+              </div>
+              <div class="mb-3">
+                <label for="startDate" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="startDate" th:field="*{startDate}">
+              </div>
+              <div class="mb-3">
+                <label for="endDate" class="form-label">End Date</label>
+                <input type="date" class="form-control" id="endDate" th:field="*{endDate}">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Save</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Add Room Modal -->
+    <div class="modal fade" id="addRoomModal" tabindex="-1" aria-labelledby="addRoomModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <form th:action="@{/adminMovement/addRoom}" method="post" th:object="${room}">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addRoomModalLabel">Add/Edit Room</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="roomId" class="form-label">Room ID</label>
+                <input type="text" class="form-control" id="roomId" th:field="*{roomId}" required>
+              </div>
+              <div class="mb-3">
+                <label for="roomName" class="form-label">Room Name</label>
+                <input type="text" class="form-control" id="roomName" th:field="*{roomName}" required>
+              </div>
+              <div class="mb-3">
+                <label for="locationIdRoom" class="form-label">Location</label>
+                <select class="form-select" id="locationIdRoom" th:field="*{location.locationId}">
+                  <option th:each="loc : ${locations}" th:value="${loc.locationId}" th:text="${loc.departmentName}"></option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Save</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Asset Allocation Modal -->
+    <div class="modal fade" id="assetAllocationModal" tabindex="-1" aria-labelledby="assetAllocationModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <form th:action="@{/adminMovement/allocateAsset}" method="post">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="assetAllocationModalLabel">Asset Allocation</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="assetId" class="form-label">Asset ID</label>
+                <input type="text" class="form-control" id="assetId" name="assetId" required>
+              </div>
+              <div class="mb-3">
+                <label for="locationIdAlloc" class="form-label">To Location</label>
+                <select class="form-select" id="locationIdAlloc" name="locationId">
+                  <option th:each="loc : ${locations}" th:value="${loc.locationId}" th:text="${loc.departmentName}"></option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="roomIdAlloc" class="form-label">Room</label>
+                <select class="form-select" id="roomIdAlloc" name="roomId">
+                  <option th:each="room : ${rooms}" th:value="${room.roomId}" th:text="${room.roomName}"></option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="allocationDate" class="form-label">Allocation Date</label>
+                <input type="date" class="form-control" id="allocationDate" name="allocationDate" required>
+              </div>
+              <div class="mb-3">
+                <label for="notes" class="form-label">Notes</label>
+                <textarea class="form-control" id="notes" name="notes"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Allocate</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>

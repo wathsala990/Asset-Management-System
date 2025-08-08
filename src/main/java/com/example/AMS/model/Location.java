@@ -12,6 +12,7 @@ public class Location {
     private Date startDate;
     private Date endDate;
     private String description; // Add this line
+    private boolean deleted = false;
 
     // Getters and Setters
     public String getLocationId() { return locationId; }
@@ -26,5 +27,7 @@ public class Location {
     public void setEndDate(Date endDate) { this.endDate = endDate; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+    public boolean isDeleted() { return deleted; }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
 }
 
