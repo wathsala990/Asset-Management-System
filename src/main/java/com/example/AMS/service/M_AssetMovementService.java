@@ -43,28 +43,22 @@ public class M_AssetMovementService {
         return movementRepository.findByAssetOrderByMovementDateDesc(asset);
     }
 
-    public void allocateAsset(String assetId, String locationId, String roomId, Date allocationDate, String notes, String movedBy) {
-        Asset asset = assetRepository.findById(assetId).orElse(null);
-        Location toLocation = locationRepository.findById(locationId).orElse(null);
-        Room room = (roomId != null && !roomId.isEmpty()) ? roomRepository.findById(roomId).orElse(null) : null;
-
+    // Corrected allocateAsset method
+    public void allocateAsset(String assetId, String locationId, String roomId, Date allocationDate, String notes) {
         M_AssetMovement movement = new M_AssetMovement();
+
+        // Fetch asset, location, room
+        Asset asset = assetRepository.findById(assetId).orElse(null);
+        Location location = locationRepository.findById(locationId).orElse(null);
+        Room room = roomRepository.findById(roomId).orElse(null);
+
         movement.setAsset(asset);
-        movement.setFromLocation(asset != null ? asset.getLocation() : null);
-        movement.setToLocation(toLocation);
+        movement.setFromLocation(location); // If you have a separate fromLocation, update accordingly
+        movement.setToLocation(location);   // If you have a separate toLocation, update accordingly
         movement.setRoom(room);
         movement.setMovementDate(allocationDate);
-        // If you have notes and movedBy fields in M_AssetMovement, set them here:
-        // movement.setNotes(notes);
-        // movement.setMovedBy(movedBy);
+        movement.setNotes(notes);
 
         movementRepository.save(movement);
-
-        // Optionally update asset's location and room
-        if (asset != null) {
-            asset.setLocation(toLocation);
-            asset.setRoom(room);
-            assetRepository.save(asset);
-        }
     }
 }

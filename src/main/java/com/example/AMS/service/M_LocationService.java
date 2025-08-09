@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class M_LocationService {
@@ -20,18 +19,31 @@ public class M_LocationService {
     }
 
     public List<Location> getAllLocations() {
-        return locationRepository.findAll();
+        return locationRepository.findByDeletedFalse();
     }
 
-    public Optional<Location> getLocationById(String locationId) {
-        return locationRepository.findById(locationId);
+    public Location getLocationById(String locationId) {
+        return locationRepository.findById(locationId).orElse(null);
     }
 
     public Location saveLocation(Location location) {
         return locationRepository.save(location);
     }
 
+    public void updateLocation(String locationId, Location location) {
+        location.setLocationId(locationId);
+        locationRepository.save(location);
+    }
+
     public void deleteLocation(String locationId) {
         locationRepository.deleteById(locationId);
+    }
+
+    public void softDeleteLocation(String locationId) {
+        Location location = getLocationById(locationId);
+        if (location != null) {
+            location.setDeleted(true);
+            locationRepository.save(location);
+        }
     }
 }
