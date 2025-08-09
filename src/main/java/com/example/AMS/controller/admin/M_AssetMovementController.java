@@ -13,7 +13,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.Date;
 
 @Controller
@@ -51,19 +50,56 @@ public class M_AssetMovementController {
     }
 
     @PostMapping("/addRoom")
-    public String addRoom(@ModelAttribute Room room) {
+    public String addRoom(@Valid @ModelAttribute("room") Room room, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("locations", locationService.getAllLocations());
+            model.addAttribute("rooms", roomService.getAllRooms());
+            model.addAttribute("movements", movementService.getAllMovements());
+            model.addAttribute("location", new Location());
+            return "Movement/admin/Movement";
+        }
         roomService.saveRoom(room);
         return "redirect:/adminMovement";
     }
 
     @PostMapping("/allocateAsset")
     public String allocateAsset(@RequestParam String assetId,
-                               @RequestParam String locationId,
-                               @RequestParam(required = false) String roomId,
-                               @RequestParam("allocationDate") @DateTimeFormat(pattern = "yyyy-MM-dd") Date allocationDate,
-                               @RequestParam(required = false) String notes,
-                               Principal principal) {
-        movementService.allocateAsset(assetId, locationId, roomId, allocationDate, notes, principal.getName());
+                            @RequestParam String fromLocationId,
+                            @RequestParam String toLocationId,
+                            @RequestParam String roomId,
+                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date allocationDate,
+                            @RequestParam(required = false) String notes) {
+        movementService.allocateAsset(assetId, fromLocationId, toLocationId, allocationDate, notes);
+        return "redirect:/adminMovement";
+    }
+
+    @GetMapping("/location/view/{locationId}")
+    public String viewLocation(@PathVariable String locationId, Model model) {
+        Location location = locationService.getLocationById(locationId);
+        model.addAttribute("location", location);
+        // Add other needed attributes (rooms, movements, etc.)
+        return "Movement/admin/LocationView"; // Create this Thymeleaf template
+    }
+
+    @GetMapping("/location/edit/{locationId}")
+    public String editLocationForm(@PathVariable String locationId, Model model) {
+        Location location = locationService.getLocationById(locationId);
+        model.addAttribute("location", location);
+        return "Movement/admin/LocationEdit"; // Create this Thymeleaf template
+    }
+
+    @PostMapping("/location/edit/{locationId}")
+    public String editLocation(@PathVariable String locationId, @Valid @ModelAttribute("location") Location location, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "Movement/admin/LocationEdit";
+        }
+        locationService.updateLocation(locationId, location);
+        return "redirect:/adminMovement";
+    }
+
+    @GetMapping("/location/delete/{locationId}")
+    public String deleteLocation(@PathVariable String locationId) {
+        locationService.softDeleteLocation(locationId); // Implement soft delete in your service
         return "redirect:/adminMovement";
     }
 }
