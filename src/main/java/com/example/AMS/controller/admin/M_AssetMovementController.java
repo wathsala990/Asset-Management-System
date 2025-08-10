@@ -102,4 +102,10 @@ public class M_AssetMovementController {
         locationService.softDeleteLocation(locationId); // Implement soft delete in your service
         return "redirect:/adminMovement";
     }
+
+    @PostMapping("/adminMovement/location/update")
+    public String updateLocation(@ModelAttribute("location") Location location, BindingResult result, Model model) {
+        // ...update logic...
+        return "redirect:/adminMovement";
+    }
 }
