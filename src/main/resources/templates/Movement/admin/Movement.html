@@ -554,7 +554,7 @@
                                     <td th:text="${#dates.format(loc.startDate, 'dd-MM-yyyy')}"></td>
                                     <td th:text="${#dates.format(loc.endDate, 'dd-MM-yyyy')}"></td>
                                     <td>
-                                        <!-- View Button triggers modal and passes data attributes -->
+                                        <!-- View Button -->
                                         <button 
                                             class="btn btn-outline-primary btn-sm"
                                             data-bs-toggle="modal"
@@ -562,13 +562,27 @@
                                             th:attr="data-location-id=${loc.locationId},
                                                      data-department-name=${loc.departmentName},
                                                      data-description=${loc.description},
-                                                     data-transfer-date=${#dates.format(loc.transferDate, 'dd-MM-yyyy')},
-                                                     data-start-date=${#dates.format(loc.startDate, 'dd-MM-yyyy')},
-                                                     data-end-date=${#dates.format(loc.endDate, 'dd-MM-yyyy')}"
+                                                     data-transfer-date=${#dates.format(loc.transferDate, 'yyyy-MM-dd')},
+                                                     data-start-date=${#dates.format(loc.startDate, 'yyyy-MM-dd')},
+                                                     data-end-date=${#dates.format(loc.endDate, 'yyyy-MM-dd')}"
                                         >
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <a th:href="@{'/adminMovement/location/edit/' + ${loc.locationId}}" class="btn btn-outline-warning btn-sm"><i class="fa fa-edit"></i></a>
+                                        <!-- Edit Button (modal) -->
+                                        <button 
+                                            class="btn btn-outline-warning btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editLocationModal"
+                                            th:attr="data-location-id=${loc.locationId},
+                                                     data-department-name=${loc.departmentName},
+                                                     data-description=${loc.description},
+                                                     data-transfer-date=${#dates.format(loc.transferDate, 'yyyy-MM-dd')},
+                                                     data-start-date=${#dates.format(loc.startDate, 'yyyy-MM-dd')},
+                                                     data-end-date=${#dates.format(loc.endDate, 'yyyy-MM-dd')}"
+                                        >
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <!-- Delete Button -->
                                         <a th:href="@{'/adminMovement/location/delete/' + ${loc.locationId}}" class="btn btn-outline-danger btn-sm" th:onclick="return confirm('Are you sure you want to delete this location?');"><i class="fa fa-trash"></i></a>
                                     </td>
                                 </tr>
@@ -594,7 +608,7 @@
                                     <td th:text="${room.roomName}"></td>
                                     <td th:text="${room.location.departmentName}"></td>
                                     <td>
-                                        <!-- View Button triggers modal and passes data attributes -->
+                                        <!-- View Button -->
                                         <button 
                                             class="btn btn-outline-primary btn-sm"
                                             data-bs-toggle="modal"
@@ -605,7 +619,18 @@
                                         >
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <a th:href="@{'/adminMovement/room/edit/' + ${room.roomId}}" class="btn btn-outline-warning btn-sm"><i class="fa fa-edit"></i></a>
+                                        <!-- Edit Button (modal) -->
+                                        <button 
+                                            class="btn btn-outline-warning btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editRoomModal"
+                                            th:attr="data-room-id=${room.roomId},
+                                                     data-room-name=${room.roomName},
+                                                     data-location=${room.location.departmentName}"
+                                        >
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <!-- Delete Button -->
                                         <a th:href="@{'/adminMovement/room/delete/' + ${room.roomId}}" class="btn btn-outline-danger btn-sm" th:onclick="return confirm('Are you sure you want to delete this room?');"><i class="fa fa-trash"></i></a>
                                     </td>
                                 </tr>
@@ -635,7 +660,7 @@
                                     <td th:text="${move.room != null ? move.room.roomName : ''}"></td>
                                     <td th:text="${move.movementDate != null ? #dates.format(move.movementDate, 'dd-MM-yyyy') : ''}"></td>
                                     <td>
-                                        <!-- View Button triggers modal and passes data attributes -->
+                                        <!-- View Button -->
                                         <button 
                                             class="btn btn-outline-primary btn-sm"
                                             data-bs-toggle="modal"
@@ -645,11 +670,25 @@
                                                      data-from-location=${move.fromLocation != null ? move.fromLocation.departmentName : ''},
                                                      data-to-location=${move.toLocation != null ? move.toLocation.departmentName : ''},
                                                      data-room-name=${move.room != null ? move.room.roomName : ''},
-                                                     data-movement-date=${move.movementDate != null ? #dates.format(move.movementDate, 'dd-MM-yyyy') : ''}"
+                                                     data-movement-date=${move.movementDate != null ? #dates.format(move.movementDate, 'yyyy-MM-dd') : ''}"
                                         >
                                             <i class="fa fa-eye"></i>
                                         </button>
-                                        <a th:href="@{'/adminMovement/movement/edit/' + ${move.movementId}}" class="btn btn-outline-warning btn-sm"><i class="fa fa-edit"></i></a>
+                                        <!-- Edit Button (modal) -->
+                                        <button 
+                                            class="btn btn-outline-warning btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editMovementModal"
+                                            th:attr="data-movement-id=${move.movementId},
+                                                     data-asset-id=${move.asset != null ? move.asset.assetId : ''},
+                                                     data-from-location=${move.fromLocation != null ? move.fromLocation.departmentName : ''},
+                                                     data-to-location=${move.toLocation != null ? move.toLocation.departmentName : ''},
+                                                     data-room-name=${move.room != null ? move.room.roomName : ''},
+                                                     data-movement-date=${move.movementDate != null ? #dates.format(move.movementDate, 'yyyy-MM-dd') : ''}"
+                                        >
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                        <!-- Delete Button -->
                                         <a th:href="@{'/adminMovement/movement/delete/' + ${move.movementId}}" class="btn btn-outline-danger btn-sm" th:onclick="return confirm('Are you sure you want to delete this movement record?');"><i class="fa fa-trash"></i></a>
                                     </td>
                                 </tr>
@@ -919,6 +958,117 @@
       </div>
     </div>
 
+    <!-- Edit Location Modal -->
+    <div class="modal fade" id="editLocationModal" tabindex="-1" aria-labelledby="editLocationModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <form method="post" action="/adminMovement/location/update">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editLocationModalLabel">Edit Location</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="editLocationId" name="locationId">
+              <div class="mb-3">
+                <label for="editDepartmentName" class="form-label">Department</label>
+                <input type="text" class="form-control" id="editDepartmentName" name="departmentName" required>
+              </div>
+              <div class="mb-3">
+                <label for="editDescription" class="form-label">Description</label>
+                <input type="text" class="form-control" id="editDescription" name="description">
+              </div>
+              <div class="mb-3">
+                <label for="editTransferDate" class="form-label">Transfer Date</label>
+                <input type="date" class="form-control" id="editTransferDate" name="transferDate">
+              </div>
+              <div class="mb-3">
+                <label for="editStartDate" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="editStartDate" name="startDate">
+              </div>
+              <div class="mb-3">
+                <label for="editEndDate" class="form-label">End Date</label>
+                <input type="date" class="form-control" id="editEndDate" name="endDate">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Update</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit Room Modal -->
+    <div class="modal fade" id="editRoomModal" tabindex="-1" aria-labelledby="editRoomModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <form method="post" action="/adminMovement/room/update">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editRoomModalLabel">Edit Room</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="editRoomId" name="roomId">
+              <div class="mb-3">
+                <label for="editRoomName" class="form-label">Room Name</label>
+                <input type="text" class="form-control" id="editRoomName" name="roomName" required>
+              </div>
+              <div class="mb-3">
+                <label for="editRoomLocation" class="form-label">Location</label>
+                <input type="text" class="form-control" id="editRoomLocation" name="locationName" readonly>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Update</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Edit Movement Modal -->
+    <div class="modal fade" id="editMovementModal" tabindex="-1" aria-labelledby="editMovementModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <form method="post" action="/adminMovement/movement/update">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editMovementModalLabel">Edit Movement</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" id="editMovementId" name="movementId">
+              <div class="mb-3">
+                <label for="editAssetId" class="form-label">Asset ID</label>
+                <input type="text" class="form-control" id="editAssetId" name="assetId" readonly>
+              </div>
+              <div class="mb-3">
+                <label for="editFromLocation" class="form-label">From Location</label>
+                <input type="text" class="form-control" id="editFromLocation" name="fromLocation" readonly>
+              </div>
+              <div class="mb-3">
+                <label for="editToLocation" class="form-label">To Location</label>
+                <input type="text" class="form-control" id="editToLocation" name="toLocation" required>
+              </div>
+              <div class="mb-3">
+                <label for="editRoomName" class="form-label">Room</label>
+                <input type="text" class="form-control" id="editRoomName" name="roomName" readonly>
+              </div>
+              <div class="mb-3">
+                <label for="editMovementDate" class="form-label">Date</label>
+                <input type="date" class="form-control" id="editMovementDate" name="movementDate" required>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Update</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Mobile menu toggle functionality
@@ -983,6 +1133,39 @@
                     document.getElementById('modalMovementDate').textContent = button.getAttribute('data-movement-date');
                 });
             }
+        });
+
+        // Edit Location Modal
+        document.querySelectorAll('[data-bs-target="#editLocationModal"]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.getElementById('editLocationId').value = btn.getAttribute('data-location-id');
+                document.getElementById('editDepartmentName').value = btn.getAttribute('data-department-name');
+                document.getElementById('editDescription').value = btn.getAttribute('data-description');
+                document.getElementById('editTransferDate').value = btn.getAttribute('data-transfer-date');
+                document.getElementById('editStartDate').value = btn.getAttribute('data-start-date');
+                document.getElementById('editEndDate').value = btn.getAttribute('data-end-date');
+            });
+        });
+
+        // Edit Room Modal
+        document.querySelectorAll('[data-bs-target="#editRoomModal"]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.getElementById('editRoomId').value = btn.getAttribute('data-room-id');
+                document.getElementById('editRoomName').value = btn.getAttribute('data-room-name');
+                document.getElementById('editRoomLocation').value = btn.getAttribute('data-location');
+            });
+        });
+
+        // Edit Movement Modal
+        document.querySelectorAll('[data-bs-target="#editMovementModal"]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.getElementById('editMovementId').value = btn.getAttribute('data-movement-id');
+                document.getElementById('editAssetId').value = btn.getAttribute('data-asset-id');
+                document.getElementById('editFromLocation').value = btn.getAttribute('data-from-location');
+                document.getElementById('editToLocation').value = btn.getAttribute('data-to-location');
+                document.getElementById('editRoomName').value = btn.getAttribute('data-room-name');
+                document.getElementById('editMovementDate').value = btn.getAttribute('data-movement-date');
+            });
         });
     </script>
 </body>
