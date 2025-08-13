@@ -495,7 +495,7 @@
                     <li><a href="/AssetHistory" class="menu-item">Asset History</a></li>
                     <li><a href="/Assets" class="menu-item">Asset</a></li>
                     <li><a href="/Invoice" class="menu-item">Invoice</a></li>
-                    <li><a href="/Movement" class="menu-item active">Movement</a></li>
+                    <li><a href="/adminMovement" class="menu-item active">Movement</a></li>
                 </ul>
             </nav>
         </aside>
@@ -516,20 +516,20 @@
                         <i class="fa fa-share-square"></i> Asset Allocation
                     </button>
                 </div>
-                <ul class="nav nav-tabs mt-4">
+                <ul class="nav nav-tabs mt-4" id="movementTabs" role="tablist">
                     <li class="nav-item">
-                        <a class="nav-link active" data-bs-toggle="tab" href="#locationsTab">Locations</a>
+                        <a class="nav-link" id="locations-tab" data-bs-toggle="tab" href="#locationsTab" role="tab">Locations</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#roomsTab">Rooms</a>
+                        <a class="nav-link" id="rooms-tab" data-bs-toggle="tab" href="#roomsTab" role="tab">Rooms</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" data-bs-toggle="tab" href="#movementTab">Movement History</a>
+                        <a class="nav-link" id="movement-tab" data-bs-toggle="tab" href="#movementTab" role="tab">Movement History</a>
                     </li>
                 </ul>
                 <div class="tab-content mt-4">
                     <!-- Locations Tab -->
-                    <div class="tab-pane fade show active" id="locationsTab">
+                    <div class="tab-pane fade" id="locationsTab" role="tabpanel" aria-labelledby="locations-tab">
                         <!-- Locations Table -->
                         <table class="table table-bordered">
                             <thead class="table-danger">
@@ -590,7 +590,7 @@
                         </table>
                     </div>
                     <!-- Rooms Tab -->
-                    <div class="tab-pane fade" id="roomsTab">
+                    <div class="tab-pane fade" id="roomsTab" role="tabpanel" aria-labelledby="rooms-tab">
                         <table class="table table-bordered">
                             <thead class="table-danger">
                                 <tr>
@@ -638,7 +638,7 @@
                         </table>
                     </div>
                     <!-- Movement History Tab -->
-                    <div class="tab-pane fade" id="movementTab">
+                    <div class="tab-pane fade" id="movementTab" role="tabpanel" aria-labelledby="movement-tab">
                         <table class="table table-bordered">
                             <thead class="table-danger">
                                 <tr>
@@ -648,6 +648,7 @@
                                     <th>To Location</th>
                                     <th>Room</th>
                                     <th>Date</th>
+                                    <th>Notes</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -659,6 +660,7 @@
                                     <td th:text="${move.toLocation != null ? move.toLocation.departmentName : ''}"></td>
                                     <td th:text="${move.room != null ? move.room.roomName : ''}"></td>
                                     <td th:text="${move.movementDate != null ? #dates.format(move.movementDate, 'dd-MM-yyyy') : ''}"></td>
+                                    <td th:text="${move.notes}"></td>
                                     <td>
                                         <!-- View Button -->
                                         <button 
@@ -669,8 +671,10 @@
                                                      data-asset-id=${move.asset != null ? move.asset.assetId : ''},
                                                      data-from-location=${move.fromLocation != null ? move.fromLocation.departmentName : ''},
                                                      data-to-location=${move.toLocation != null ? move.toLocation.departmentName : ''},
+                                                     data-to-location-id=${move.toLocation != null ? move.toLocation.locationId : ''},
                                                      data-room-name=${move.room != null ? move.room.roomName : ''},
-                                                     data-movement-date=${move.movementDate != null ? #dates.format(move.movementDate, 'yyyy-MM-dd') : ''}"
+                                                     data-movement-date=${move.movementDate != null ? #dates.format(move.movementDate, 'yyyy-MM-dd') : ''},
+                                                     data-notes=${move.notes}"
                                         >
                                             <i class="fa fa-eye"></i>
                                         </button>
@@ -682,9 +686,12 @@
                                             th:attr="data-movement-id=${move.movementId},
                                                      data-asset-id=${move.asset != null ? move.asset.assetId : ''},
                                                      data-from-location=${move.fromLocation != null ? move.fromLocation.departmentName : ''},
+                                                     data-from-location-id=${move.fromLocation != null ? move.fromLocation.locationId : ''},
                                                      data-to-location=${move.toLocation != null ? move.toLocation.departmentName : ''},
+                                                     data-to-location-id=${move.toLocation != null ? move.toLocation.locationId : ''},
                                                      data-room-name=${move.room != null ? move.room.roomName : ''},
-                                                     data-movement-date=${move.movementDate != null ? #dates.format(move.movementDate, 'yyyy-MM-dd') : ''}"
+                                                     data-movement-date=${move.movementDate != null ? #dates.format(move.movementDate, 'yyyy-MM-dd') : ''},
+                                                     data-notes=${move.notes}"
                                         >
                                             <i class="fa fa-edit"></i>
                                         </button>
@@ -946,9 +953,11 @@
               <dt class="col-sm-4">To Location</dt>
               <dd class="col-sm-8" id="modalToLocation"></dd>
               <dt class="col-sm-4">Room</dt>
-              <dd class="col-sm-8" id="modalRoomName"></dd>
+              <dd class="col-sm-8" id="modalMovementRoomName"></dd>
               <dt class="col-sm-4">Date</dt>
               <dd class="col-sm-8" id="modalMovementDate"></dd>
+              <dt class="col-sm-4">Notes</dt>
+              <dd class="col-sm-8" id="modalMovementNotes"></dd>
             </dl>
           </div>
           <div class="modal-footer">
@@ -1041,23 +1050,36 @@
               <input type="hidden" id="editMovementId" name="movementId">
               <div class="mb-3">
                 <label for="editAssetId" class="form-label">Asset ID</label>
-                <input type="text" class="form-control" id="editAssetId" name="assetId" readonly>
+                <select class="form-select" id="editAssetId" name="assetId" required>
+                    <option value="">Select asset</option>
+                    <option th:each="a : ${assets}" th:value="${a.assetId}" th:text="${a.assetId}"></option>
+                </select>
               </div>
               <div class="mb-3">
-                <label for="editFromLocation" class="form-label">From Location</label>
-                <input type="text" class="form-control" id="editFromLocation" name="fromLocation" readonly>
+                <label for="editFromLocationId" class="form-label">From Location</label>
+                <select class="form-select" id="editFromLocationId" name="fromLocationId" required>
+                    <option value="">Select location</option>
+                    <option th:each="loc : ${locations}" th:value="${loc.locationId}" th:text="${loc.departmentName}"></option>
+                </select>
               </div>
               <div class="mb-3">
-                <label for="editToLocation" class="form-label">To Location</label>
-                <input type="text" class="form-control" id="editToLocation" name="toLocation" required>
+                <label for="editToLocationId" class="form-label">To Location</label>
+                <select class="form-select" id="editToLocationId" name="toLocationId" required>
+                    <option value="">Select location</option>
+                    <option th:each="loc : ${locations}" th:value="${loc.locationId}" th:text="${loc.departmentName}"></option>
+                </select>
               </div>
               <div class="mb-3">
-                <label for="editRoomName" class="form-label">Room</label>
-                <input type="text" class="form-control" id="editRoomName" name="roomName" readonly>
+                <label for="editMovementRoomName" class="form-label">Room</label>
+                <input type="text" class="form-control" id="editMovementRoomName" name="roomName" readonly>
               </div>
               <div class="mb-3">
                 <label for="editMovementDate" class="form-label">Date</label>
                 <input type="date" class="form-control" id="editMovementDate" name="movementDate" required>
+              </div>
+              <div class="mb-3">
+                <label for="editMovementNotes" class="form-label">Notes</label>
+                <textarea class="form-control" id="editMovementNotes" name="notes"></textarea>
               </div>
             </div>
             <div class="modal-footer">
@@ -1097,6 +1119,21 @@
         });
 
         document.addEventListener('DOMContentLoaded', function () {
+            // Activate tab from query parameter
+            const params = new URLSearchParams(window.location.search);
+            const tab = params.get('tab');
+            let defaultTab = 'locations-tab';
+            if (tab === 'movement') defaultTab = 'movement-tab';
+            if (tab === 'rooms') defaultTab = 'rooms-tab';
+            const triggerEl = document.querySelector(`#${defaultTab}`);
+            if (triggerEl) {
+                const tabInstance = new bootstrap.Tab(triggerEl);
+                tabInstance.show();
+            } else {
+                // fallback: show locations tab
+                const locTrigger = document.querySelector('#locations-tab');
+                if (locTrigger) new bootstrap.Tab(locTrigger).show();
+            }
             // Location modal
             var locationViewModal = document.getElementById('locationViewModal');
             if(locationViewModal){
@@ -1129,8 +1166,10 @@
                     document.getElementById('modalAssetId').textContent = button.getAttribute('data-asset-id');
                     document.getElementById('modalFromLocation').textContent = button.getAttribute('data-from-location');
                     document.getElementById('modalToLocation').textContent = button.getAttribute('data-to-location');
-                    document.getElementById('modalRoomName').textContent = button.getAttribute('data-room-name');
+                    document.getElementById('modalMovementRoomName').textContent = button.getAttribute('data-room-name');
                     document.getElementById('modalMovementDate').textContent = button.getAttribute('data-movement-date');
+                    var notes = button.getAttribute('data-notes');
+                    document.getElementById('modalMovementNotes').textContent = notes ? notes : '';
                 });
             }
         });
@@ -1160,11 +1199,21 @@
         document.querySelectorAll('[data-bs-target="#editMovementModal"]').forEach(function(btn) {
             btn.addEventListener('click', function() {
                 document.getElementById('editMovementId').value = btn.getAttribute('data-movement-id');
-                document.getElementById('editAssetId').value = btn.getAttribute('data-asset-id');
-                document.getElementById('editFromLocation').value = btn.getAttribute('data-from-location');
-                document.getElementById('editToLocation').value = btn.getAttribute('data-to-location');
-                document.getElementById('editRoomName').value = btn.getAttribute('data-room-name');
+                // set asset select
+                var assetId = btn.getAttribute('data-asset-id') || '';
+                document.getElementById('editAssetId').value = assetId;
+                // set from location select
+                var fromLocId = btn.getAttribute('data-from-location-id') || '';
+                var fromSelect = document.getElementById('editFromLocationId');
+                if (fromSelect) fromSelect.value = fromLocId;
+                // set to location select
+                var toLocId = btn.getAttribute('data-to-location-id');
+                document.getElementById('editToLocationId').value = toLocId ? toLocId : '';
+                // other fields
+                document.getElementById('editMovementRoomName').value = btn.getAttribute('data-room-name');
                 document.getElementById('editMovementDate').value = btn.getAttribute('data-movement-date');
+                var notes = btn.getAttribute('data-notes');
+                document.getElementById('editMovementNotes').value = notes ? notes : '';
             });
         });
     </script>
