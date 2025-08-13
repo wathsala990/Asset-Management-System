@@ -1,15 +1,19 @@
 package com.example.AMS.model;
 import jakarta.persistence.*;
 import java.util.Date;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 public class Location {
     @Id
     private String locationId; // Change from Long to String
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date transferDate;
     private String departmentName;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date startDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
     private String description; // Add this line
     private boolean deleted = false;
