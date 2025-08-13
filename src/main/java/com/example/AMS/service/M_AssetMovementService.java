@@ -49,15 +49,23 @@ public class M_AssetMovementService {
 
         // Fetch asset, location, room
         Asset asset = assetRepository.findById(assetId).orElse(null);
-        Location location = locationRepository.findById(locationId).orElse(null);
+        Location toLocation = locationRepository.findById(locationId).orElse(null);
         Room room = roomRepository.findById(roomId).orElse(null);
+        Location fromLocation = (asset != null) ? asset.getLocation() : null;
 
         movement.setAsset(asset);
-        movement.setFromLocation(location); // If you have a separate fromLocation, update accordingly
-        movement.setToLocation(location);   // If you have a separate toLocation, update accordingly
+        movement.setFromLocation(fromLocation);
+        movement.setToLocation(toLocation);
         movement.setRoom(room);
         movement.setMovementDate(allocationDate);
         movement.setNotes(notes);
+
+        // Update asset current state to reflect the allocation
+        if (asset != null) {
+            asset.setLocation(toLocation);
+            asset.setRoom(room);
+            assetRepository.save(asset);
+        }
 
         movementRepository.save(movement);
     }
