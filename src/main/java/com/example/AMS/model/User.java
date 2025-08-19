@@ -17,7 +17,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false)
+    @Column(name = "full_name", nullable = false)
     private String fullName;
 
     @Column(nullable = false, unique = true)
@@ -28,13 +28,21 @@ public class User {
     private String password;
 
     private String description;
+
     private boolean enabled;
+
+
+    @Column(nullable = true)
+    private String phone;
+
+    @Column(name = "profile_photo_url")
+    private String profilePhotoUrl;
 
     @Builder.Default
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 }
