@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -22,58 +23,58 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
     private final CustomOAuth2UserService oAuth2UserService;
-    private final com.example.AMS.config.CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        // Public access
-                        .requestMatchers(
-                                "/", "/register", "/login", "/verify",
-                                "/reset-password/**", "/forgot-password",
-                                "/css/**", "/js/**", "/images/**",
-                                "/webjars/**", "/check-username", "/access-denied"
-                        ).permitAll()
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(auth -> auth
+                // Public access
+                .requestMatchers(
+                    "/", "/register", "/login", "/verify",
+                    "/reset-password/**", "/forgot-password",
+                    "/css/**", "/js/**", "/images/**",
+                    "/webjars/**", "/check-username", "/access-denied"
+                ).permitAll()
 
-                        // Specific access
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/director/**").hasRole("DIRECTOR")
-                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN", "DIRECTOR")
+                // Specific access
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/director/**").hasRole("DIRECTOR")
+                .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN", "DIRECTOR")
 
-                        // ✅ Give access to /user-history endpoint
-                        .requestMatchers("/user-history").hasAnyRole("USER", "ADMIN", "DIRECTOR")
+                // ✅ Give access to /user-history endpoint
+                .requestMatchers("/user-history").hasAnyRole("USER", "ADMIN", "DIRECTOR")
 
-                        // Any other request must be authenticated
-                        .anyRequest().authenticated()
+                // Any other request must be authenticated
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                .loginPage("/login")
+                .successHandler(customAuthenticationSuccessHandler)
+                .failureUrl("/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/login?logout=true")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+            )
+            .oauth2Login(oauth -> oauth
+                .loginPage("/login")
+                .successHandler(customAuthenticationSuccessHandler)
+                .userInfoEndpoint(user -> user.userService(oAuth2UserService))
+                .failureUrl("/login?error=oauth")
+                .authorizationEndpoint(auth -> auth
+                    .baseUri("/oauth2/authorization")
                 )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .successHandler(customAuthenticationSuccessHandler)
-                        .failureUrl("/login?error=true")
-                        .permitAll()
-                )
-                .logout(logout -> logout
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                        .logoutSuccessUrl("/login?logout=true")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID")
-                        .permitAll()
-                )
-                .oauth2Login(oauth -> oauth
-                        .loginPage("/login")
-                        .successHandler(customAuthenticationSuccessHandler)
-                        .userInfoEndpoint(user -> user.userService(oAuth2UserService))
-                        .failureUrl("/login?error=oauth")
-                        .authorizationEndpoint(auth -> auth
-                                .baseUri("/oauth2/authorization")
-                        )
-                )
-                .exceptionHandling(exception -> exception
-                        .accessDeniedPage("/access-denied")
-                )
-                .authenticationProvider(authenticationProvider());
+            )
+            .exceptionHandling(exception -> exception
+                .accessDeniedPage("/access-denied")
+            )
+            .authenticationProvider(authenticationProvider());
 
         return http.build();
     }
