@@ -79,6 +79,11 @@ public class Asset {
 
     public Location getLocation() { return location; }
     public void setLocation(Location location) { this.location = location; }
+
+    public void setRoom(Room room) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setRoom'");
+    }
 }
 
 
