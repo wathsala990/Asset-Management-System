@@ -9,7 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMapping; // Import RequestMapping
+import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @Controller
@@ -21,7 +22,7 @@ public class L_UserHistoryController { // Renamed class
         this.assetUserService = assetUserService;
     }
 
-    @GetMapping("/user-history") // Relative to /
+    @GetMapping("/UserHistory") // Relative to /
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DIRECTOR', 'ROLE_USER')")
     public String getUserHistory(Model model,
                                  Authentication authentication) {
@@ -38,7 +39,7 @@ public class L_UserHistoryController { // Renamed class
         return "UserHistory/UserHistory";
     }
 
-    @GetMapping("/user-history/view/{id}") // Relative to /
+    @GetMapping("/UserHistory/view/{id}") // Relative to /
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DIRECTOR', 'ROLE_USER')")
     public String viewHistoryRecord(@PathVariable Long id, Model model) {
         AssetUser history = assetUserService.getUserHistoryById(id);
