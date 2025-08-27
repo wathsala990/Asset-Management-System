@@ -1,7 +1,10 @@
 package com.example.AMS.controller.admin; // Changed package to include 'admin'
 
+import com.example.AMS.model.Asset;
 import com.example.AMS.model.AssetUser;
+import com.example.AMS.model.User;
 import com.example.AMS.service.L_AssetUserService;
+import com.example.AMS.repository.UserRepository;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
@@ -23,9 +26,11 @@ import java.util.List;
 @RequestMapping("/admin") // Base mapping for admin-related paths
 public class L_A_UserHistoryController { // Renamed class
     private final L_AssetUserService assetUserService;
+    private final UserRepository userRepository;
 
-    public L_A_UserHistoryController(L_AssetUserService assetUserService) {
+    public L_A_UserHistoryController(L_AssetUserService assetUserService, UserRepository userRepository) {
         this.assetUserService = assetUserService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/adminUserHistory") // Relative to /admin
@@ -39,6 +44,26 @@ public class L_A_UserHistoryController { // Renamed class
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch("ROLE_USER"::equals) &&
                 authentication.getAuthorities().size() == 1;
+
+        // Add user info for header (like H_A_AssetController)
+        if (authentication != null) {
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username).orElse(null);
+            if (user != null) {
+                model.addAttribute("username", user.getUsername());
+                model.addAttribute("email", user.getEmail());
+                String role = user.getRoles().stream().findFirst().map(r -> r.getName().replace("ROLE_", "")).orElse("");
+                model.addAttribute("role", role);
+            } else {
+                model.addAttribute("username", username);
+                model.addAttribute("email", "");
+                model.addAttribute("role", "");
+            }
+        } else {
+            model.addAttribute("username", "");
+            model.addAttribute("email", "");
+            model.addAttribute("role", "");
+        }
 
         model.addAttribute("userHistories", userHistories);
         model.addAttribute("isRegularUser", isRegularUser);
