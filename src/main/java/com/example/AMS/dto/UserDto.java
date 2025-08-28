@@ -20,4 +20,9 @@ public class UserDto {
         this.roles = roles;
         this.enabled = enabled;
     }
+
+    public UserDto(Long id2, String username2, String fullName2, String email2, String profilePhotoUrl,
+            Set<String> roleNames, boolean enabled2) {
+        //TODO Auto-generated constructor stub
+    }
 }
