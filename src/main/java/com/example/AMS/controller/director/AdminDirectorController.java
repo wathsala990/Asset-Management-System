@@ -1,25 +1,69 @@
 package com.example.AMS.controller.director;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.AMS.model.User;
+import com.example.AMS.repository.UserRepository;
+
 @Controller
 @RequestMapping
 public class AdminDirectorController {
 
+    @Autowired
+    private UserRepository userRepository;
+
     @GetMapping("/user/home")
-    public String userHome() {
+    public String userHome(Model model, Authentication authentication) {
+        if (authentication != null) {
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username).orElse(null);
+            if (user != null) {
+                model.addAttribute("username", user.getUsername());
+                model.addAttribute("email", user.getEmail());
+                model.addAttribute("profilePhotoUrl", user.getProfilePhotoUrl());
+            } else {
+                model.addAttribute("username", username);
+                model.addAttribute("email", "");
+                model.addAttribute("profilePhotoUrl", null);
+            }
+        } else {
+            model.addAttribute("username", "");
+            model.addAttribute("email", "");
+            model.addAttribute("profilePhotoUrl", null);
+        }
         return "Dashboard/user-home";
     }
 
     // Admin Dashboard - Accessible only by ADMIN role
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/home")
-    public String adminHome() {
-        return "Dashboard/admin-home"; // Maps to src/main/resources/templates/admin-home.html
+    public String adminHome(Model model, Authentication authentication) {
+        if (authentication != null) {
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username).orElse(null);
+            if (user != null) {
+                model.addAttribute("username", user.getUsername());
+                model.addAttribute("email", user.getEmail());
+                // Get first role name (or empty if none)
+                String role = user.getRoles().stream().findFirst().map(r -> r.getName().replace("ROLE_", "")).orElse("");
+                model.addAttribute("role", role);
+            } else {
+                model.addAttribute("username", username);
+                model.addAttribute("email", "");
+                model.addAttribute("role", "");
+            }
+        } else {
+            model.addAttribute("username", "");
+            model.addAttribute("email", "");
+            model.addAttribute("role", "");
+        }
+        return "Dashboard/admin-home";
     }
 
     // Director Dashboard - Accessible only by DIRECTOR role
@@ -54,63 +98,167 @@ public class AdminDirectorController {
     }
 
     @GetMapping("/directorhome")
-    public String DiretorhomePage(Model model) {
+    public String DirectorhomePage(Model model) {
         return "home/director/home";
     }
 
     //admin
-    @GetMapping("/adminAsset")
-    public String AdminAsset(Model model) {
-        return "Asset/admin/Asset";
-    }
-    @GetMapping("/adminAssetHistory")
-    public String AdminAssetHistory(Model model) {
-        return "AssetHistory/admin/AssetHistory";
-    }
-    @GetMapping("/adminCondemn")
-    public String AdminCondemn(Model model) {
-        return "Condemn/admin/Condemn";
-    }
-    @GetMapping("/adminInvoice")
-    public String AdminInvoice(Model model) {
-        return "Invoice/admin/Invoice";
-    }
-    // @GetMapping("/adminMovement")
-    // public String AdminMovement(Model model) {
-    //     return "Movement/admin/Movement";
+    // @GetMapping("/admin/adminAsset")
+    // public String AdminAsset(Model model) {
+    //     return "Asset/admin/Asset";
     // }
-    
-    @GetMapping("/adminMaintain")
-    public String AdminMaintain(Model model) {
-        return "Maintain/admin/Maintain";
+    @GetMapping("/admin/adminAssetAllocation")
+    public String AdminAssetAllocation(Model model, Authentication authentication) {
+        if (authentication != null) {
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username).orElse(null);
+            if (user != null) {
+                model.addAttribute("username", user.getUsername());
+                model.addAttribute("email", user.getEmail());
+                String role = user.getRoles().stream().findFirst().map(r -> r.getName().replace("ROLE_", "")).orElse("");
+                model.addAttribute("role", role);
+            } else {
+                model.addAttribute("username", username);
+                model.addAttribute("email", "");
+                model.addAttribute("role", "");
+            }
+        } else {
+            model.addAttribute("username", "");
+            model.addAttribute("email", "");
+            model.addAttribute("role", "");
+        }
+        return "AssetAllocation/admin/AssetAllocation";
     }
 
-    //director
-    @GetMapping("/directorAsset")
-    public String DirectorAsset(Model model) {
-        return "Asset/director/Asset";
+
+     @GetMapping("/admin/adminCondemn")
+    public String AdminCondemn(Model model, Authentication authentication) {
+        if (authentication != null) {
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username).orElse(null);
+            if (user != null) {
+                model.addAttribute("username", user.getUsername());
+                model.addAttribute("email", user.getEmail());
+                String role = user.getRoles().stream().findFirst().map(r -> r.getName().replace("ROLE_", "")).orElse("");
+                model.addAttribute("role", role);
+            } else {
+                model.addAttribute("username", username);
+                model.addAttribute("email", "");
+                model.addAttribute("role", "");
+            }
+        } else {
+            model.addAttribute("username", "");
+            model.addAttribute("email", "");
+            model.addAttribute("role", "");
+        }
+        return "Condemn/admin/Condemn";
     }
-    @GetMapping("/directorAssetHistory")
-    public String DirectorAssetHistory(Model model) {
-        return "AssetHistory/director/AssetHistory";
-    }
-    @GetMapping("/directorCondemn")
-    public String DirectorCondemn(Model model) {
+
+    @GetMapping("/director/Condemn")
+    public String DirectorCondemn(Model model, Authentication authentication) {
+        if (authentication != null) {
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username).orElse(null);
+            if (user != null) {
+                model.addAttribute("username", user.getUsername());
+                model.addAttribute("email", user.getEmail());
+                String role = user.getRoles().stream().findFirst().map(r -> r.getName().replace("ROLE_", "")).orElse("");
+                model.addAttribute("role", role);
+            } else {
+                model.addAttribute("username", username);
+                model.addAttribute("email", "");
+                model.addAttribute("role", "");
+            }
+        } else {
+            model.addAttribute("username", "");
+            model.addAttribute("email", "");
+            model.addAttribute("role", "");
+        }
         return "Condemn/director/Condemn";
     }
-    @GetMapping("/directorInvoice")
-    public String DirectorInvoice(Model model) {
-        return "Invoice/director/Invoice";
+
+
+
+    // @GetMapping("/admin/adminCondemn")
+    // public String AdminCondemn(Model model) {
+    //     return "Condemn/admin/Condemn";
+    // }
+    // @GetMapping("/adminInvoice")
+    // public String AdminInvoice(Model model) {
+    //     return "Invoice/admin/Invoice";
+    // }
+    @GetMapping("/admin/adminMovement")
+    public String AdminMovement(Model model) {
+        return "Movement/admin/Movement";
     }
-    @GetMapping("/directorMovement")
+    
+    // @GetMapping("/admin/adminMaintain")
+    // public String AdminMaintain(Model model) {
+    //     return "Maintain/admin/Maintain";
+    // }
+
+    //director
+    // @GetMapping("/director/directorAsset")
+    // public String DirectorAsset(Model model) {
+    //     return "Asset/director/Asset";
+    // }
+    @GetMapping("/director/directorAssetAllocation")
+    public String DirectorAssetAllocationPage(Model model, Authentication authentication) {
+        if (authentication != null) {
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username).orElse(null);
+            if (user != null) {
+                model.addAttribute("username", user.getUsername());
+                model.addAttribute("email", user.getEmail());
+                String role = user.getRoles().stream().findFirst().map(r -> r.getName().replace("ROLE_", "")).orElse("");
+                model.addAttribute("role", role);
+            } else {
+                model.addAttribute("username", username);
+                model.addAttribute("email", "");
+                model.addAttribute("role", "");
+            }
+        } else {
+            model.addAttribute("username", "");
+            model.addAttribute("email", "");
+            model.addAttribute("role", "");
+        }
+        return "AssetAllocation/director/AssetAllocation";
+    }
+    @GetMapping("/director/directorCondemn")
+    public String DirectorCondemnPage(Model model, Authentication authentication) {
+        if (authentication != null) {
+            String username = authentication.getName();
+            User user = userRepository.findByUsername(username).orElse(null);
+            if (user != null) {
+                model.addAttribute("username", user.getUsername());
+                model.addAttribute("email", user.getEmail());
+                String role = user.getRoles().stream().findFirst().map(r -> r.getName().replace("ROLE_", "")).orElse("");
+                model.addAttribute("role", role);
+            } else {
+                model.addAttribute("username", username);
+                model.addAttribute("email", "");
+                model.addAttribute("role", "");
+            }
+        } else {
+            model.addAttribute("username", "");
+            model.addAttribute("email", "");
+            model.addAttribute("role", "");
+        }
+        return "Condemn/director/Condemn";
+    }
+    // @GetMapping("/directorInvoice")
+    // public String DirectorInvoice(Model model) {
+    //     return "Invoice/director/Invoice";
+    // }
+    @GetMapping("/director/directorMovement")
     public String DirectorMovement(Model model) {
         return "Movement/director/Movement";
     }
-    
-    @GetMapping("/directorMaintain")
-    public String DirectorMaintain(Model model) {
-        return "Maintain/director/Maintain";
-    }
+
+    // @GetMapping("/director/directorMaintain")
+    // public String DirectorMaintain(Model model) {
+    //     return "Maintain/director/Maintain";
+    // }
 
     
 }
