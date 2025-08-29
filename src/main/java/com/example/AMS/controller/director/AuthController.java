@@ -1,9 +1,14 @@
 package com.example.AMS.controller.director;
 
 import com.example.AMS.model.User;
+import com.example.AMS.repository.RoleRepository;
+import com.example.AMS.repository.UserRepository;
 import com.example.AMS.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +20,9 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+
 
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
@@ -103,8 +111,8 @@ public class AuthController {
 
     @PostMapping("/reset-password")
     public String resetPassword(@RequestParam String token,
-                                @RequestParam String password,
-                                Model model) {
+                                 @RequestParam String password,
+                                 Model model) {
         try {
             String result = authService.resetPassword(token, password);
             if ("success".equals(result)) {
@@ -119,37 +127,47 @@ public class AuthController {
     }
 
     @GetMapping("/")
-    public String landingPage(Model model) {
+    public String landing_page(Model model) {
         return "home/landing_page";
     }
 
-    @GetMapping("/Asset")
-    public String asset(Model model) {
-        return "Asset/Asset";
-    }
-
-    @GetMapping("/AssetHistory")
-    public String assetHistory(Model model) {
-        return "AssetHistory/AssetHistory";
-    }
-
+    // @GetMapping("/Asset")
+    // public String Asset(Model model) {
+    //     return "Asset/Asset";
+    // }
+    // @GetMapping("/AssetAllocation")
+    // public String AssetAllocation(Model model) {
+    //     return "AssetAllocation/AssetAllocation";
+    // }
     @GetMapping("/Condemn")
-    public String condemn(Model model) {
+    public String Condemn(Model model, Authentication authentication) {
+        if (authentication != null) {
+            String uname = authentication.getName();
+            User user = userRepository.findByUsername(uname).orElse(null);
+            if (user != null) {
+                model.addAttribute("username", user.getUsername());
+                model.addAttribute("profilePhotoUrl", user.getProfilePhotoUrl());
+            } else {
+                model.addAttribute("username", uname);
+                model.addAttribute("profilePhotoUrl", null);
+            }
+        } else {
+            model.addAttribute("username", "");
+            model.addAttribute("profilePhotoUrl", null);
+        }
         return "Condemn/Condemn";
     }
-
-    @GetMapping("/Invoice")
-    public String invoice(Model model) {
-        return "Invoice/Invoice";
-    }
-
+    // @GetMapping("/Invoice")
+    // public String Invoice(Model model) {
+    //     return "Invoice/Invoice";
+    // }
     @GetMapping("/Movement")
-    public String movement(Model model) {
+    public String Movement(Model model) {
         return "Movement/Movement";
     }
+    // @GetMapping("/Maintain")
+    // public String Maintain(Model model) {
+    //     return "Maintain/Maintain";
+    // }
 
-    @GetMapping("/Maintain")
-    public String maintain(Model model) {
-        return "Maintain/Maintain";
-    }
 }
