@@ -41,9 +41,9 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return Collections.emptySet();
         }
         return Arrays.stream(emailString.split(","))
-                .map(String::trim)
-                .map(String::toLowerCase) // Convert to lowercase for case-insensitive comparison
-                .collect(Collectors.toSet());
+                     .map(String::trim)
+                     .map(String::toLowerCase) // Convert to lowercase for case-insensitive comparison
+                     .collect(Collectors.toSet());
     }
 
     @Override
@@ -62,50 +62,50 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         // Check if user already exists by email
         User user = userRepository.findByEmail(userEmailLowerCase)
-                .orElseGet(() -> {
-                    // If not, create a new user
-                    User newUser = new User();
-                    newUser.setEmail(userEmailLowerCase);
-                    newUser.setFullName(name);
-                    newUser.setUsername(generateUniqueUsername(userEmailLowerCase)); // Generate unique username
-                    newUser.setEnabled(true); // OAuth2 users are enabled by default as email is verified by provider
-                    newUser.setPassword("oauth2_user_no_password"); // Set a dummy password for non-traditional login
+            .orElseGet(() -> {
+                // If not, create a new user
+                User newUser = new User();
+                newUser.setEmail(userEmailLowerCase);
+                newUser.setFullName(name);
+                newUser.setUsername(generateUniqueUsername(userEmailLowerCase)); // Generate unique username
+                newUser.setEnabled(true); // OAuth2 users are enabled by default as email is verified by provider
+                newUser.setPassword("oauth2_user_no_password"); // Set a dummy password for non-traditional login
 
-                    // Determine role based on configured emails for new OAuth2 users
-                    Set<Role> assignedRoles = new HashSet<>();
-                    Set<String> adminEmails = getEmailSet(adminEmailsString);
-                    Set<String> directorEmails = getEmailSet(directorEmailsString);
+                // Determine role based on configured emails for new OAuth2 users
+                Set<Role> assignedRoles = new HashSet<>();
+                Set<String> adminEmails = getEmailSet(adminEmailsString);
+                Set<String> directorEmails = getEmailSet(directorEmailsString);
 
-                    if (adminEmails.contains(userEmailLowerCase)) {
-                        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
-                                .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_ADMIN' not found."));
-                        assignedRoles.add(adminRole);
-                    } else if (directorEmails.contains(userEmailLowerCase)) {
-                        Role directorRole = roleRepository.findByName("ROLE_DIRECTOR")
-                                .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_DIRECTOR' not found."));
-                        assignedRoles.add(directorRole);
-                    } else {
-                        // Default to ROLE_USER for all other emails
-                        Role userRole = roleRepository.findByName("ROLE_USER")
-                                .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_USER' not found."));
-                        assignedRoles.add(userRole);
-                    }
-                    newUser.setRoles(assignedRoles); // Assign the determined role(s)
+                if (adminEmails.contains(userEmailLowerCase)) {
+                    Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+                            .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_ADMIN' not found."));
+                    assignedRoles.add(adminRole);
+                } else if (directorEmails.contains(userEmailLowerCase)) {
+                    Role directorRole = roleRepository.findByName("ROLE_DIRECTOR")
+                            .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_DIRECTOR' not found."));
+                    assignedRoles.add(directorRole);
+                } else {
+                    // Default to ROLE_USER for all other emails
+                    Role userRole = roleRepository.findByName("ROLE_USER")
+                            .orElseThrow(() -> new RuntimeException("Error: Role 'ROLE_USER' not found."));
+                    assignedRoles.add(userRole);
+                }
+                newUser.setRoles(assignedRoles); // Assign the determined role(s)
 
-                    // Save the new user to the database
-                    return userRepository.save(newUser);
-                });
+                // Save the new user to the database
+                return userRepository.save(newUser);
+            });
 
         // Convert user's roles to Spring Security GrantedAuthorities
         Set<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toSet());
+            .map(role -> new SimpleGrantedAuthority(role.getName()))
+            .collect(Collectors.toSet());
 
         // Return a DefaultOAuth2User with collected information
         return new DefaultOAuth2User(
-                authorities,
-                attributes,
-                "email" // "email" is used as the userNameAttributeName for Google
+            authorities,
+            attributes,
+            "email" // "email" is used as the userNameAttributeName for Google
         );
     }
 

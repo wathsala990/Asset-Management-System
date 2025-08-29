@@ -34,9 +34,9 @@ public class AuthServiceImpl implements AuthService {
             return Collections.emptySet();
         }
         return Arrays.stream(emailString.split(","))
-                .map(String::trim)
-                .map(String::toLowerCase)
-                .collect(Collectors.toSet());
+                     .map(String::trim)
+                     .map(String::toLowerCase)
+                     .collect(Collectors.toSet());
     }
 
     @Override
