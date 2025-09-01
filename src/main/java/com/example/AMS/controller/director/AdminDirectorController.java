@@ -189,7 +189,8 @@ public class AdminDirectorController {
     // }
     @GetMapping("/admin/adminMovement")
     public String AdminMovement(Model model) {
-        return "Movement/admin/Movement";
+    // Redirect to controller that populates model attributes and handles Movement logic
+    return "redirect:/adminMovement";
     }
     
     // @GetMapping("/admin/adminMaintain")
