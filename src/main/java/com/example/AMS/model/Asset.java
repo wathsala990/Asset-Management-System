@@ -1,21 +1,27 @@
 package com.example.AMS.model;
+
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 public class Asset {
+
     @Id
     private String assetId;
+
     private String name;
     private String type;
     private String serialNumber;
     private String model;
     private String specification;
-    private java.time.LocalDate purchaseDate;
-    @Column(name = "activity_status")
+
+    private LocalDate purchaseDate;
+
+    @Column(name = "activity_status", nullable = false)
     private boolean activityStatus = true;
+
     private String warrantyId;
-    private java.time.LocalDate warrantyDate;
+    private LocalDate warrantyDate;
     private String warrantyPeriod;
     private String purchaseStore;
 
@@ -27,17 +33,17 @@ public class Asset {
     @JoinColumn(name = "locationId")
     private Location location;
 
-    @Column(name = "deleted")
+    @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
+
+    // --- Getters & Setters ---
     public boolean isDeleted() {
         return deleted;
     }
-
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
 
-    // Getters and Setters
     public String getAssetId() { return assetId; }
     public void setAssetId(String assetId) { this.assetId = assetId; }
 
@@ -56,8 +62,8 @@ public class Asset {
     public String getSpecification() { return specification; }
     public void setSpecification(String specification) { this.specification = specification; }
 
-    public java.time.LocalDate getPurchaseDate() { return purchaseDate; }
-    public void setPurchaseDate(java.time.LocalDate purchaseDate) { this.purchaseDate = purchaseDate; }
+    public LocalDate getPurchaseDate() { return purchaseDate; }
+    public void setPurchaseDate(LocalDate purchaseDate) { this.purchaseDate = purchaseDate; }
 
     public boolean isActivityStatus() { return activityStatus; }
     public void setActivityStatus(boolean activityStatus) { this.activityStatus = activityStatus; }
@@ -65,8 +71,8 @@ public class Asset {
     public String getWarrantyId() { return warrantyId; }
     public void setWarrantyId(String warrantyId) { this.warrantyId = warrantyId; }
 
-    public java.time.LocalDate getWarrantyDate() { return warrantyDate; }
-    public void setWarrantyDate(java.time.LocalDate warrantyDate) { this.warrantyDate = warrantyDate; }
+    public LocalDate getWarrantyDate() { return warrantyDate; }
+    public void setWarrantyDate(LocalDate warrantyDate) { this.warrantyDate = warrantyDate; }
 
     public String getWarrantyPeriod() { return warrantyPeriod; }
     public void setWarrantyPeriod(String warrantyPeriod) { this.warrantyPeriod = warrantyPeriod; }
@@ -81,9 +87,6 @@ public class Asset {
     public void setLocation(Location location) { this.location = location; }
 
     public void setRoom(Room room) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'setRoom'");
     }
 }
-
-
