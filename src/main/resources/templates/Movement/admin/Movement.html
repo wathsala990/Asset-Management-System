@@ -3,27 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asset Management System | University of Peradeniya</title>
+    <title>Asset Movement | University of Peradeniya</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #800000;
             --primary-dark: #600000;
             --primary-light: #a04040;
+            --secondary-color: #f8f9fa;
             --accent-color: #ffc107;
-            --text-light: #f8f9fa;
             --text-dark: #343a40;
+            --text-light: #f8f9fa;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             --transition: all 0.3s ease;
+            --gradient-primary: linear-gradient(135deg, #800000 0%, #a04040 100%);
+            --gradient-light: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
         }
         
+        /* Base Styles */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             color: var(--text-dark);
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            background-color: #f5f5f5;
+            margin: 0;
         }
         
         /* Header Styles */
@@ -57,9 +64,10 @@
         }
         
         .logo-img {
-            height: 40px;
-            margin-right: 10px;
+            height: 50px;
+            margin-right: 15px;
             transition: var(--transition);
+            filter: brightness(1.1) drop-shadow(0 0 2px rgba(0,0,0,0.3));
         }
         
         .logo-img:hover {
@@ -93,22 +101,6 @@
             transform: translateY(-2px);
         }
         
-        .main-nav a:not(.login-btn)::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            left: 50%;
-            background-color: var(--accent-color);
-            transition: var(--transition);
-            transform: translateX(-50%);
-        }
-        
-        .main-nav a:not(.login-btn):hover::after {
-            width: 70%;
-        }
-        
         .login-btn {
             background-color: var(--accent-color);
             color: #212529;
@@ -127,11 +119,11 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-color: rgba(0, 0, 0, 0.1);
         }
-        
+
         /* Sidebar Styles */
         .sidebar {
             width: 250px;
-            background: linear-gradient(180deg, var(--primary-color), var(--primary-dark));
+            background: var(--primary-color) !important;
             color: white;
             height: calc(100vh - 60px);
             position: sticky;
@@ -186,22 +178,415 @@
         .menu-item:hover::before {
             width: 100%;
         }
-        
-        /* Main Content Styles */
+
+        /* Main Content Styles - Enhanced */
         .main-content {
             flex: 1;
+            padding: 2.5rem;
+            background: var(--gradient-light);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin: 1.5rem;
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 20px 20px 0 0;
+        }
+
+        /* Page Header Styles - Enhanced */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
             padding: 2rem;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin: 1rem;
+            background: var(--gradient-light);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(128, 0, 0, 0.03) 0%, rgba(255, 193, 7, 0.03) 100%);
+            pointer-events: none;
         }
         
+        .page-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .page-title i {
+            margin-right: 15px;
+            padding: 12px;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
+        }
+        
+        .badge-count {
+            background: var(--gradient-primary);
+            font-size: 0.9rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+            font-weight: 600;
+        }
+
+        /* Card Styles - Enhanced */
+        .verification-card {
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            border: none;
+            overflow: hidden;
+            background: var(--gradient-light);
+            position: relative;
+        }
+
+        .verification-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+        
+        .verification-card .card-header {
+            background: rgba(128, 0, 0, 0.05);
+            border-bottom: 1px solid rgba(128, 0, 0, 0.1);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .verification-card .card-header strong {
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+        
+        .verification-card .card-header i {
+            margin-right: 10px;
+            padding: 8px;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            border-radius: 0 0 20px 20px;
+        }
+        
+        .table {
+            margin-bottom: 0;
+            background: white;
+        }
+        
+        .table thead th {
+            border-bottom: 2px solid rgba(128, 0, 0, 0.1);
+            font-weight: 600;
+            color: var(--primary-dark);
+            background: linear-gradient(135deg, rgba(128, 0, 0, 0.05) 0%, rgba(255, 193, 7, 0.05) 100%);
+            padding: 1.2rem 1.5rem;
+            font-size: 0.95rem;
+            position: relative;
+        }
+
+        .table thead th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            opacity: 0.3;
+        }
+        
+        .table tbody td {
+            padding: 1.2rem 1.5rem;
+            vertical-align: middle;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 0.95rem;
+        }
+        
+        .table-hover tbody tr {
+            transition: all 0.3s ease;
+        }
+        
+        .table-hover tbody tr:hover {
+            background: linear-gradient(135deg, rgba(128, 0, 0, 0.03) 0%, rgba(255, 193, 7, 0.03) 100%);
+            transform: translateX(5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .empty-state {
+            padding: 4rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(128, 0, 0, 0.02) 0%, rgba(255, 193, 7, 0.02) 100%);
+            border-radius: 16px;
+            margin: 2rem;
+        }
+        
+        .empty-state i {
+            color: rgba(128, 0, 0, 0.3);
+            margin-bottom: 1.5rem;
+            font-size: 3rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+        
+        .empty-state p {
+            color: #6c757d;
+            margin-bottom: 0;
+            font-size: 1.1rem;
+        }
+
+        /* Form Styles */
+        .filter-label {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.7rem;
+            display: block;
+        }
+        
+        .form-control {
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 0.25rem rgba(128, 0, 0, 0.1);
+            background: white;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            color: var(--text-light);
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(128, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #600000 0%, #800000 100%);
+            color: var(--text-light);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(128, 0, 0, 0.4);
+        }
+        
+        .btn-primary i {
+            margin-right: 10px;
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .btn-action i {
+            margin-right: 5px;
+        }
+        
+        .btn-view {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+            border: 1px solid rgba(13, 110, 253, 0.2);
+        }
+        
+        .btn-view:hover {
+            background-color: rgba(13, 110, 253, 0.2);
+            color: #0d6efd;
+            transform: translateY(-2px);
+        }
+        
+        .btn-edit {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.2);
+        }
+        
+        .btn-edit:hover {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #ffc107;
+            transform: translateY(-2px);
+        }
+        
+        .btn-delete {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+        
+        .btn-delete:hover {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            transform: translateY(-2px);
+        }
+
+        /* Nav Tabs */
+        .nav-tabs {
+            border-bottom: 2px solid rgba(128, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            padding: 1rem 1.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .nav-tabs .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: var(--transition);
+        }
+        
+        .nav-tabs .nav-link:hover::after,
+        .nav-tabs .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            background: transparent;
+            border: none;
+        }
+
+        /* Alert Styles */
+        .alert {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 1rem 1.5rem;
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, rgba(25, 135, 84, 0.1) 0%, rgba(25, 135, 84, 0.05) 100%);
+            color: #198754;
+            border-left: 4px solid #198754;
+        }
+        
+        .alert-danger {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.1) 0%, rgba(220, 53, 69, 0.05) 100%);
+            color: #dc3545;
+            border-left: 4px solid #dc3545;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 16px 16px 0 0;
+            padding: 1.5rem;
+        }
+        
+        .modal-title {
+            font-weight: 600;
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            border-radius: 0 0 16px 16px;
+        }
+
         /* Footer Styles */
         .main-footer {
             background-color: var(--primary-color);
             color: var(--text-light);
             padding: 40px 0;
+            margin-top: auto;
         }
         
         .footer-container {
@@ -219,6 +604,7 @@
         .footer-col {
             width: 25%;
             margin-bottom: 20px;
+            padding: 0 15px;
         }
         
         .footer-col h4 {
@@ -226,6 +612,7 @@
             margin-bottom: 1.2rem;
             position: relative;
             padding-bottom: 0.5rem;
+            font-size: 1.1rem;
         }
         
         .footer-col h4::after {
@@ -245,11 +632,6 @@
         
         .footer-col li {
             margin-bottom: 0.6rem;
-            transition: var(--transition);
-        }
-        
-        .footer-col li:hover {
-            transform: translateX(5px);
         }
         
         .footer-col a {
@@ -258,22 +640,23 @@
             transition: var(--transition);
             display: inline-block;
             padding: 0.2rem 0;
+            font-size: 0.9rem;
         }
         
         .footer-col a:hover {
             color: var(--accent-color);
-            text-decoration: none;
+            transform: translateX(3px);
         }
         
         .social-icons {
             display: flex;
             margin-top: 1.5rem;
+            gap: 10px;
         }
         
         .social-icons a {
             color: white;
-            margin-right: 15px;
-            font-size: 1.2rem;
+            font-size: 1rem;
             width: 36px;
             height: 36px;
             border-radius: 50%;
@@ -301,6 +684,7 @@
             border: none;
             border-radius: 4px 0 0 4px;
             background-color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
         }
         
         .newsletter-form button {
@@ -312,6 +696,7 @@
             font-weight: 600;
             transition: var(--transition);
             cursor: pointer;
+            font-size: 0.9rem;
         }
         
         .newsletter-form button:hover {
@@ -327,58 +712,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            padding-top: 20px;
         }
-        
-        /* Button Styles */
-        .btn-hero {
-            padding: 0.8rem 1.8rem;
-            font-weight: 600;
-            border-radius: 4px;
-            transition: var(--transition);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .btn-hero-primary {
-            background-color: var(--accent-color);
-            color: #212529;
-            border: 2px solid transparent;
-        }
-        
-        .btn-hero-primary:hover {
-            background-color: #e0a800;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn-hero-outline {
-            border: 2px solid white;
-            color: white;
-            background-color: transparent;
-        }
-        
-        .btn-hero-outline:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            transform: translateY(-3px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        /* Card Styles */
-        .feature-card {
-            border: none;
-            border-radius: 8px;
-            transition: var(--transition);
-            height: 100%;
-            border-top: 4px solid var(--primary-color);
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-        
+
         /* Responsive Adjustments */
         @media (max-width: 992px) {
             .footer-col {
@@ -393,8 +730,30 @@
             .menu-text {
                 display: none;
             }
+            
+            .menu-item {
+                justify-content: center;
+                padding: 0.8rem 0.5rem;
+            }
+            
+            .menu-item i {
+                margin-right: 0;
+            }
+
+            .main-content {
+                margin: 1rem;
+                padding: 2rem;
+            }
+
+            .page-header {
+                padding: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
         }
-        
+
         @media (max-width: 768px) {
             .header-container {
                 flex-direction: column;
@@ -448,13 +807,34 @@
                 transform: scale(1.1);
             }
             
-            .btn-hero {
-                padding: 0.7rem 1.5rem;
+            .main-content {
+                margin: 0.5rem;
+                padding: 1.5rem;
+                border-radius: 16px;
+            }
+            
+            .page-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .page-title {
+                font-size: 1.3rem;
+            }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .nav-tabs .nav-link {
+                padding: 0.8rem 1rem;
                 font-size: 0.9rem;
-                margin-bottom: 0.5rem;
             }
         }
-        
+
         .mobile-menu-btn {
             display: none;
         }
@@ -470,13 +850,23 @@
             <div class="logo-container">
                 <img src="https://upload.wikimedia.org/wikipedia/en/c/cc/University_of_Peradeniya_crest.png" alt="University Logo" class="logo-img">
                 <div>
-                    <h5 class="mb-0">University of Peradeniya</h5>
-                    <small>Asset Management System </small>
+                    <h5 class="mb-0 text-light">University of Peradeniya</h5>
+                    <small class="text-light">Asset Management System - Admin</small>
                 </div>
             </div>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="/user/home">Home</a></li>
+                    <li><a href="/adminhome">Home</a></li>
+                    <li sec:authorize="isAuthenticated()">
+                        <a th:href="@{/admin/profile}" href="/admin/profile" class="d-flex align-items-center text-light text-decoration-none" style="min-width:140px;">
+                            <span class="d-flex align-items-center">
+                                <img th:src="@{'https://ui-avatars.com/api/?name=' + ${username}}" src="https://ui-avatars.com/api/?name=User" th:title="${email}" alt="Avatar" width="36" height="36" class="rounded-circle me-2" style="object-fit:cover; background:#fff; border:1px solid #ccc;">
+                                <span>
+                                    <span th:text="${username}" class="fw-semibold text-truncate" style="max-width:80px;">Username</span>
+                                </span>
+                            </span>
+                        </a>
+                    </li>
                     <li><a th:href="@{/}" class="btn btn-outline-light">Logout</a></li>
                 </ul>
             </nav>
@@ -489,218 +879,334 @@
         <aside class="sidebar">
             <nav>
                 <ul class="sidebar-menu">
-                    <li><a href="/user-history" class="menu-item">User History</a></li>
-                    <li><a href="/Maintain" class="menu-item">Maintain</a></li>
-                    <li><a href="/Condemn" class="menu-item">Condemn</a></li>
-                    <li><a href="/AssetHistory" class="menu-item">Asset History</a></li>
-                    <li><a href="/Assets" class="menu-item">Asset</a></li>
-                    <li><a href="/Invoice" class="menu-item">Invoice</a></li>
-                    <li><a href="/adminMovement" class="menu-item active">Movement</a></li>
+                    <li><a href="/admin/home" class="menu-item">Dashboard</a></li>
+                    <li>
+                        <a class="menu-item d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#setupSubmenu" role="button" aria-expanded="false" aria-controls="setupSubmenu">
+                            <span>Setup</span>
+                            <i class="fas fa-chevron-down small"></i>
+                        </a>
+                        <ul class="collapse ps-4" id="setupSubmenu">
+                            <li><a href="/admin/adminInvoice" class="menu-item">Add Invoice</a></li>
+                            <li><a href="/admin/adminStaff" class="menu-item">Add Staff</a></li>
+                            <li><a href="/admin/adminAsset" class="menu-item">Add Asset</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="menu-item d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#allocationSubmenu" role="button" aria-expanded="false" aria-controls="allocationSubmenu">
+                            <span>Allocation</span>
+                            <i class="fas fa-chevron-down small"></i>
+                        </a>
+                        <ul class="collapse ps-4" id="allocationSubmenu">
+                            <li><a href="/admin/adminAssetAllocation" class="menu-item">User Allocation</a></li>
+                            <li><a href="/admin/adminMovement" class="menu-item active">Location Allocation</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/admin/adminUserHistory" class="menu-item">History</a></li>
+                    <li><a href="/admin/adminCondemn" class="menu-item">Condemn Details</a></li>
+                    <li><a href="/admin/adminMaintain" class="menu-item">Maintain Details</a></li>
+                    <li><a href="/admin/adminYearlyVerification" class="menu-item">Yearly Verification</a></li>
                 </ul>
             </nav>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="container mt-4">
-                <h2 class="mb-4">Asset Movement Management</h2>
-                <!-- Buttons aligned right, colors same as footer -->
-                <div class="d-flex justify-content-end mb-3">
-                    <button class="btn" style="background-color: #800000; color: #fff; margin-right: 10px;" data-bs-toggle="modal" data-bs-target="#addLocationModal">
-                        <i class="fa fa-plus"></i> Add Location
+            <div class="page-header">
+                <h2 class="page-title">
+                    <i class="fas fa-exchange-alt"></i>Asset Movement Management
+                </h2>
+                <span class="badge badge-count text-white">
+                    <span th:text="${locations != null ? locations.size() : 0}">0</span> locations
+                </span>
+            </div>
+
+            <!-- Success and Error Messages -->
+            <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Success!</strong> <span th:text="${successMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            
+            <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error!</strong> <span th:text="${errorMessage}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-end mb-4 gap-2">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addLocationModal">
+                    <i class="fas fa-plus me-2"></i>Add Location
+                </button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoomModal">
+                    <i class="fas fa-door-open me-2"></i>Add Room
+                </button>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#assetAllocationModal">
+                    <i class="fas fa-share-square me-2"></i>Asset Allocation
+                </button>
+            </div>
+
+            <!-- Tabs -->
+            <ul class="nav nav-tabs" id="movementTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locationsTab" type="button" role="tab">
+                        <i class="fas fa-map-marker-alt me-2"></i>Locations
                     </button>
-                    <button class="btn" style="background-color: #800000; color: #fff; margin-right: 10px;" data-bs-toggle="modal" data-bs-target="#addRoomModal">
-                        <i class="fa fa-door-open"></i> Add Room
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="rooms-tab" data-bs-toggle="tab" data-bs-target="#roomsTab" type="button" role="tab">
+                        <i class="fas fa-door-open me-2"></i>Rooms
                     </button>
-                    <button class="btn" style="background-color: #800000; color: #fff;" data-bs-toggle="modal" data-bs-target="#assetAllocationModal">
-                        <i class="fa fa-share-square"></i> Asset Allocation
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="movement-tab" data-bs-toggle="tab" data-bs-target="#movementTab" type="button" role="tab">
+                        <i class="fas fa-history me-2"></i>Movement History
                     </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content mt-4">
+                <!-- Locations Tab -->
+                <div class="tab-pane fade show active" id="locationsTab" role="tabpanel" aria-labelledby="locations-tab">
+                    <div class="card verification-card">
+                        <div class="card-header">
+                            <strong>
+                                <i class="fas fa-map-marker-alt"></i>All Locations
+                            </strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Location ID</th>
+                                            <th>Department</th>
+                                            <th>Description</th>
+                                            <th>Transfer Date</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="loc, iterStat : ${locations}">
+                                            <td th:text="${iterStat.count}"></td>
+                                            <td>
+                                                <div class="fw-semibold text-primary" th:text="${loc.locationId}"></div>
+                                            </td>
+                                            <td th:text="${loc.departmentName}"></td>
+                                            <td th:text="${loc.description}"></td>
+                                            <td th:text="${#dates.format(loc.transferDate, 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#dates.format(loc.startDate, 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#dates.format(loc.endDate, 'dd-MM-yyyy')}"></td>
+                                            <td class="text-center">
+                                                <div class="btn-group" role="group">
+                                                    <!-- View Button -->
+                                                    <button 
+                                                        class="btn btn-action btn-view btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#locationViewModal"
+                                                        th:attr="data-location-id=${loc.locationId},
+                                                                 data-department-name=${loc.departmentName},
+                                                                 data-description=${loc.description},
+                                                                 data-transfer-date=${#dates.format(loc.transferDate, 'yyyy-MM-dd')},
+                                                                 data-start-date=${#dates.format(loc.startDate, 'yyyy-MM-dd')},
+                                                                 data-end-date=${#dates.format(loc.endDate, 'yyyy-MM-dd')}"
+                                                    >
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- Edit Button -->
+                                                    <button 
+                                                        class="btn btn-action btn-edit btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editLocationModal"
+                                                        th:attr="data-location-id=${loc.locationId},
+                                                                 data-department-name=${loc.departmentName},
+                                                                 data-description=${loc.description},
+                                                                 data-transfer-date=${#dates.format(loc.transferDate, 'yyyy-MM-dd')},
+                                                                 data-start-date=${#dates.format(loc.startDate, 'yyyy-MM-dd')},
+                                                                 data-end-date=${#dates.format(loc.endDate, 'yyyy-MM-dd')}"
+                                                    >
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <!-- Delete Button -->
+                                                    <a th:href="@{'/adminMovement/location/delete/' + ${loc.locationId}}" class="btn btn-action btn-delete btn-sm" th:onclick="return confirm('Are you sure you want to delete this location?');">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${locations == null or #lists.isEmpty(locations)}">
+                                            <td colspan="8" class="empty-state">
+                                                <i class="fas fa-info-circle"></i>
+                                                <p>No locations found.</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <ul class="nav nav-tabs mt-4" id="movementTabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link" id="locations-tab" data-bs-toggle="tab" href="#locationsTab" role="tab">Locations</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="rooms-tab" data-bs-toggle="tab" href="#roomsTab" role="tab">Rooms</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" id="movement-tab" data-bs-toggle="tab" href="#movementTab" role="tab">Movement History</a>
-                    </li>
-                </ul>
-                <div class="tab-content mt-4">
-                    <!-- Locations Tab -->
-                    <div class="tab-pane fade" id="locationsTab" role="tabpanel" aria-labelledby="locations-tab">
-                        <!-- Locations Table -->
-                        <table class="table table-bordered">
-                            <thead class="table-danger">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Location ID</th>
-                                    <th>Department</th>
-                                    <th>Description</th>
-                                    <th>Transfer Date</th>
-                                    <th>StartDate</th>
-                                    <th>EndDate</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="loc, iterStat : ${locations}">
-                                    <td th:text="${iterStat.count}"></td>
-                                    <td th:text="${loc.locationId}"></td>
-                                    <td th:text="${loc.departmentName}"></td>
-                                    <td th:text="${loc.description}"></td>
-                                    <td th:text="${#dates.format(loc.transferDate, 'dd-MM-yyyy')}"></td>
-                                    <td th:text="${#dates.format(loc.startDate, 'dd-MM-yyyy')}"></td>
-                                    <td th:text="${#dates.format(loc.endDate, 'dd-MM-yyyy')}"></td>
-                                    <td>
-                                        <!-- View Button -->
-                                        <button 
-                                            class="btn btn-outline-primary btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#locationViewModal"
-                                            th:attr="data-location-id=${loc.locationId},
-                                                     data-department-name=${loc.departmentName},
-                                                     data-description=${loc.description},
-                                                     data-transfer-date=${#dates.format(loc.transferDate, 'yyyy-MM-dd')},
-                                                     data-start-date=${#dates.format(loc.startDate, 'yyyy-MM-dd')},
-                                                     data-end-date=${#dates.format(loc.endDate, 'yyyy-MM-dd')}"
-                                        >
-                                            <i class="fa fa-eye"></i>
-                                        </button>
-                                        <!-- Edit Button (modal) -->
-                                        <button 
-                                            class="btn btn-outline-warning btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editLocationModal"
-                                            th:attr="data-location-id=${loc.locationId},
-                                                     data-department-name=${loc.departmentName},
-                                                     data-description=${loc.description},
-                                                     data-transfer-date=${#dates.format(loc.transferDate, 'yyyy-MM-dd')},
-                                                     data-start-date=${#dates.format(loc.startDate, 'yyyy-MM-dd')},
-                                                     data-end-date=${#dates.format(loc.endDate, 'yyyy-MM-dd')}"
-                                        >
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <!-- Delete Button -->
-                                        <a th:href="@{'/adminMovement/location/delete/' + ${loc.locationId}}" class="btn btn-outline-danger btn-sm" th:onclick="return confirm('Are you sure you want to delete this location?');"><i class="fa fa-trash"></i></a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+
+                <!-- Rooms Tab -->
+                <div class="tab-pane fade" id="roomsTab" role="tabpanel" aria-labelledby="rooms-tab">
+                    <div class="card verification-card">
+                        <div class="card-header">
+                            <strong>
+                                <i class="fas fa-door-open"></i>All Rooms
+                            </strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Room ID</th>
+                                            <th>Room Name</th>
+                                            <th>Location</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="room, iterStat : ${rooms}">
+                                            <td th:text="${iterStat.count}"></td>
+                                            <td>
+                                                <div class="fw-semibold text-primary" th:text="${room.roomId}"></div>
+                                            </td>
+                                            <td th:text="${room.roomName}"></td>
+                                            <td th:text="${room.location.departmentName}"></td>
+                                            <td class="text-center">
+                                                <div class="btn-group" role="group">
+                                                    <!-- View Button -->
+                                                    <button 
+                                                        class="btn btn-action btn-view btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#roomViewModal"
+                                                        th:attr="data-room-id=${room.roomId},
+                                                                 data-room-name=${room.roomName},
+                                                                 data-location=${room.location.departmentName}"
+                                                    >
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- Edit Button -->
+                                                    <button 
+                                                        class="btn btn-action btn-edit btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editRoomModal"
+                                                        th:attr="data-room-id=${room.roomId},
+                                                                 data-room-name=${room.roomName},
+                                                                 data-location=${room.location.departmentName}"
+                                                    >
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <!-- Delete Button -->
+                                                    <a th:href="@{'/adminMovement/room/delete/' + ${room.roomId}}" class="btn btn-action btn-delete btn-sm" th:onclick="return confirm('Are you sure you want to delete this room?');">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${rooms == null or #lists.isEmpty(rooms)}">
+                                            <td colspan="5" class="empty-state">
+                                                <i class="fas fa-info-circle"></i>
+                                                <p>No rooms found.</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <!-- Rooms Tab -->
-                    <div class="tab-pane fade" id="roomsTab" role="tabpanel" aria-labelledby="rooms-tab">
-                        <table class="table table-bordered">
-                            <thead class="table-danger">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Room ID</th>
-                                    <th>Room Name</th>
-                                    <th>Location</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="room, iterStat : ${rooms}">
-                                    <td th:text="${iterStat.count}"></td>
-                                    <td th:text="${room.roomId}"></td>
-                                    <td th:text="${room.roomName}"></td>
-                                    <td th:text="${room.location.departmentName}"></td>
-                                    <td>
-                                        <!-- View Button -->
-                                        <button 
-                                            class="btn btn-outline-primary btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#roomViewModal"
-                                            th:attr="data-room-id=${room.roomId},
-                                                     data-room-name=${room.roomName},
-                                                     data-location=${room.location.departmentName}"
-                                        >
-                                            <i class="fa fa-eye"></i>
-                                        </button>
-                                        <!-- Edit Button (modal) -->
-                                        <button 
-                                            class="btn btn-outline-warning btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editRoomModal"
-                                            th:attr="data-room-id=${room.roomId},
-                                                     data-room-name=${room.roomName},
-                                                     data-location=${room.location.departmentName}"
-                                        >
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <!-- Delete Button -->
-                                        <a th:href="@{'/adminMovement/room/delete/' + ${room.roomId}}" class="btn btn-outline-danger btn-sm" th:onclick="return confirm('Are you sure you want to delete this room?');"><i class="fa fa-trash"></i></a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- Movement History Tab -->
-                    <div class="tab-pane fade" id="movementTab" role="tabpanel" aria-labelledby="movement-tab">
-                        <table class="table table-bordered">
-                            <thead class="table-danger">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Asset ID</th>
-                                    <th>From Location</th>
-                                    <th>To Location</th>
-                                    <th>Room</th>
-                                    <th>Date</th>
-                                    <th>Notes</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="move, iterStat : ${movements}">
-                                    <td th:text="${iterStat.count}"></td>
-                                    <td th:text="${move.asset != null ? move.asset.assetId : ''}"></td>
-                                    <td th:text="${move.fromLocation != null ? move.fromLocation.departmentName : ''}"></td>
-                                    <td th:text="${move.toLocation != null ? move.toLocation.departmentName : ''}"></td>
-                                    <td th:text="${move.room != null ? move.room.roomName : ''}"></td>
-                                    <td th:text="${move.movementDate != null ? #dates.format(move.movementDate, 'dd-MM-yyyy') : ''}"></td>
-                                    <td th:text="${move.notes}"></td>
-                                    <td>
-                                        <!-- View Button -->
-                                        <button 
-                                            class="btn btn-outline-primary btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#movementViewModal"
-                                            th:attr="data-movement-id=${move.movementId},
-                                                     data-asset-id=${move.asset != null ? move.asset.assetId : ''},
-                                                     data-from-location=${move.fromLocation != null ? move.fromLocation.departmentName : ''},
-                                                     data-to-location=${move.toLocation != null ? move.toLocation.departmentName : ''},
-                                                     data-to-location-id=${move.toLocation != null ? move.toLocation.locationId : ''},
-                                                     data-room-name=${move.room != null ? move.room.roomName : ''},
-                                                     data-movement-date=${move.movementDate != null ? #dates.format(move.movementDate, 'yyyy-MM-dd') : ''},
-                                                     data-notes=${move.notes}"
-                                        >
-                                            <i class="fa fa-eye"></i>
-                                        </button>
-                                        <!-- Edit Button (modal) -->
-                                        <button 
-                                            class="btn btn-outline-warning btn-sm"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#editMovementModal"
-                                            th:attr="data-movement-id=${move.movementId},
-                                                     data-asset-id=${move.asset != null ? move.asset.assetId : ''},
-                                                     data-from-location=${move.fromLocation != null ? move.fromLocation.departmentName : ''},
-                                                     data-from-location-id=${move.fromLocation != null ? move.fromLocation.locationId : ''},
-                                                     data-to-location=${move.toLocation != null ? move.toLocation.departmentName : ''},
-                                                     data-to-location-id=${move.toLocation != null ? move.toLocation.locationId : ''},
-                                                     data-room-name=${move.room != null ? move.room.roomName : ''},
-                                                     data-movement-date=${move.movementDate != null ? #dates.format(move.movementDate, 'yyyy-MM-dd') : ''},
-                                                     data-notes=${move.notes}"
-                                        >
-                                            <i class="fa fa-edit"></i>
-                                        </button>
-                                        <!-- Delete Button -->
-                                        <a th:href="@{'/adminMovement/movement/delete/' + ${move.movementId}}" class="btn btn-outline-danger btn-sm" th:onclick="return confirm('Are you sure you want to delete this movement record?');"><i class="fa fa-trash"></i></a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                </div>
+
+                <!-- Movement History Tab -->
+                <div class="tab-pane fade" id="movementTab" role="tabpanel" aria-labelledby="movement-tab">
+                    <div class="card verification-card">
+                        <div class="card-header">
+                            <strong>
+                                <i class="fas fa-history"></i>Movement History
+                            </strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Asset ID</th>
+                                            <th>From Location</th>
+                                            <th>To Location</th>
+                                            <th>Room</th>
+                                            <th>Date</th>
+                                            <th>Notes</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="move, iterStat : ${movements}">
+                                            <td th:text="${iterStat.count}"></td>
+                                            <td>
+                                                <div class="fw-semibold text-primary" th:text="${move.asset != null ? move.asset.assetId : ''}"></div>
+                                            </td>
+                                            <td th:text="${move.fromLocation != null ? move.fromLocation.departmentName : ''}"></td>
+                                            <td th:text="${move.toLocation != null ? move.toLocation.departmentName : ''}"></td>
+                                            <td th:text="${move.room != null ? move.room.roomName : ''}"></td>
+                                            <td th:text="${move.movementDate != null ? #dates.format(move.movementDate, 'dd-MM-yyyy') : ''}"></td>
+                                            <td th:text="${move.notes}"></td>
+                                            <td class="text-center">
+                                                <div class="btn-group" role="group">
+                                                    <!-- View Button -->
+                                                    <button 
+                                                        class="btn btn-action btn-view btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#movementViewModal"
+                                                        th:attr="data-movement-id=${move.movementId},
+                                                                 data-asset-id=${move.asset != null ? move.asset.assetId : ''},
+                                                                 data-from-location=${move.fromLocation != null ? move.fromLocation.departmentName : ''},
+                                                                 data-to-location=${move.toLocation != null ? move.toLocation.departmentName : ''},
+                                                                 data-to-location-id=${move.toLocation != null ? move.toLocation.locationId : ''},
+                                                                 data-room-name=${move.room != null ? move.room.roomName : ''},
+                                                                 data-movement-date=${move.movementDate != null ? #dates.format(move.movementDate, 'yyyy-MM-dd') : ''},
+                                                                 data-notes=${move.notes}"
+                                                    >
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <!-- Edit Button -->
+                                                    <button 
+                                                        class="btn btn-action btn-edit btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#editMovementModal"
+                                                        th:attr="data-movement-id=${move.movementId},
+                                                                 data-asset-id=${move.asset != null ? move.asset.assetId : ''},
+                                                                 data-from-location=${move.fromLocation != null ? move.fromLocation.departmentName : ''},
+                                                                 data-from-location-id=${move.fromLocation != null ? move.fromLocation.locationId : ''},
+                                                                 data-to-location=${move.toLocation != null ? move.toLocation.departmentName : ''},
+                                                                 data-to-location-id=${move.toLocation != null ? move.toLocation.locationId : ''},
+                                                                 data-room-name=${move.room != null ? move.room.roomName : ''},
+                                                                 data-movement-date=${move.movementDate != null ? #dates.format(move.movementDate, 'yyyy-MM-dd') : ''},
+                                                                 data-notes=${move.notes}"
+                                                    >
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <!-- Delete Button -->
+                                                    <a th:href="@{'/adminMovement/movement/delete/' + ${move.movementId}}" class="btn btn-action btn-delete btn-sm" th:onclick="return confirm('Are you sure you want to delete this movement record?');">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${movements == null or #lists.isEmpty(movements)}">
+                                            <td colspan="8" class="empty-state">
+                                                <i class="fas fa-info-circle"></i>
+                                                <p>No movement records found.</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -750,12 +1256,13 @@
             </div>
             <hr class="footer-divider">
             <div class="footer-bottom">
-                <p>&copy; 2023 University of Peradeniya. All rights reserved.</p>
+                <p>&copy; 2025 University of Peradeniya. All rights reserved.</p>
                 <p>Asset Management System v2.1</p>
             </div>
         </div>
     </footer>
 
+    <!-- Modals (same as in your original code, just with updated styling) -->
     <!-- Add Location Modal -->
     <div class="modal fade" id="addLocationModal" tabindex="-1" aria-labelledby="addLocationModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -767,32 +1274,32 @@
             </div>
             <div class="modal-body">
               <div class="mb-3">
-                <label for="locationId" class="form-label">Location ID</label>
+                <label for="locationId" class="form-label filter-label">Location ID</label>
                 <input type="text" class="form-control" id="locationId" th:field="*{locationId}" required>
               </div>
               <div class="mb-3">
-                <label for="departmentName" class="form-label">Department</label>
+                <label for="departmentName" class="form-label filter-label">Department</label>
                 <input type="text" class="form-control" id="departmentName" th:field="*{departmentName}" required>
               </div>
               <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
+                <label for="description" class="form-label filter-label">Description</label>
                 <input type="text" class="form-control" id="description" th:field="*{description}">
               </div>
               <div class="mb-3">
-                <label for="transferDate" class="form-label">Transfer Date</label>
+                <label for="transferDate" class="form-label filter-label">Transfer Date</label>
                 <input type="date" class="form-control" id="transferDate" th:field="*{transferDate}">
               </div>
               <div class="mb-3">
-                <label for="startDate" class="form-label">Start Date</label>
+                <label for="startDate" class="form-label filter-label">Start Date</label>
                 <input type="date" class="form-control" id="startDate" th:field="*{startDate}">
               </div>
               <div class="mb-3">
-                <label for="endDate" class="form-label">End Date</label>
+                <label for="endDate" class="form-label filter-label">End Date</label>
                 <input type="date" class="form-control" id="endDate" th:field="*{endDate}">
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-success">Save</button>
+              <button type="submit" class="btn btn-primary">Save</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
           </div>
@@ -811,22 +1318,22 @@
             </div>
             <div class="modal-body">
               <div class="mb-3">
-                <label for="roomId" class="form-label">Room ID</label>
+                <label for="roomId" class="form-label filter-label">Room ID</label>
                 <input type="text" class="form-control" id="roomId" th:field="*{roomId}" required>
               </div>
               <div class="mb-3">
-                <label for="roomName" class="form-label">Room Name</label>
+                <label for="roomName" class="form-label filter-label">Room Name</label>
                 <input type="text" class="form-control" id="roomName" th:field="*{roomName}" required>
               </div>
               <div class="mb-3">
-                <label for="locationIdRoom" class="form-label">Location</label>
+                <label for="locationIdRoom" class="form-label filter-label">Location</label>
                 <select class="form-select" id="locationIdRoom" th:field="*{location.locationId}">
                   <option th:each="loc : ${locations}" th:value="${loc.locationId}" th:text="${loc.departmentName}"></option>
                 </select>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-success">Save</button>
+              <button type="submit" class="btn btn-primary">Save</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
           </div>
@@ -845,32 +1352,32 @@
             </div>
             <div class="modal-body">
               <div class="mb-3">
-                <label for="assetId" class="form-label">Asset ID</label>
+                <label for="assetId" class="form-label filter-label">Asset ID</label>
                 <input type="text" class="form-control" id="assetId" name="assetId" required>
               </div>
               <div class="mb-3">
-                <label for="locationIdAlloc" class="form-label">To Location</label>
+                <label for="locationIdAlloc" class="form-label filter-label">To Location</label>
                 <select class="form-select" id="locationIdAlloc" name="locationId">
                   <option th:each="loc : ${locations}" th:value="${loc.locationId}" th:text="${loc.departmentName}"></option>
                 </select>
               </div>
               <div class="mb-3">
-                <label for="roomIdAlloc" class="form-label">Room</label>
+                <label for="roomIdAlloc" class="form-label filter-label">Room</label>
                 <select class="form-select" id="roomIdAlloc" name="roomId">
                   <option th:each="room : ${rooms}" th:value="${room.roomId}" th:text="${room.roomName}"></option>
                 </select>
               </div>
               <div class="mb-3">
-                <label for="allocationDate" class="form-label">Allocation Date</label>
+                <label for="allocationDate" class="form-label filter-label">Allocation Date</label>
                 <input type="date" class="form-control" id="allocationDate" name="allocationDate" required>
               </div>
               <div class="mb-3">
-                <label for="notes" class="form-label">Notes</label>
+                <label for="notes" class="form-label filter-label">Notes</label>
                 <textarea class="form-control" id="notes" name="notes"></textarea>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-success">Allocate</button>
+              <button type="submit" class="btn btn-primary">Allocate</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
           </div>
@@ -979,28 +1486,28 @@
             <div class="modal-body">
               <input type="hidden" id="editLocationId" name="locationId">
               <div class="mb-3">
-                <label for="editDepartmentName" class="form-label">Department</label>
+                <label for="editDepartmentName" class="form-label filter-label">Department</label>
                 <input type="text" class="form-control" id="editDepartmentName" name="departmentName" required>
               </div>
               <div class="mb-3">
-                <label for="editDescription" class="form-label">Description</label>
+                <label for="editDescription" class="form-label filter-label">Description</label>
                 <input type="text" class="form-control" id="editDescription" name="description">
               </div>
               <div class="mb-3">
-                <label for="editTransferDate" class="form-label">Transfer Date</label>
+                <label for="editTransferDate" class="form-label filter-label">Transfer Date</label>
                 <input type="date" class="form-control" id="editTransferDate" name="transferDate">
               </div>
               <div class="mb-3">
-                <label for="editStartDate" class="form-label">Start Date</label>
+                <label for="editStartDate" class="form-label filter-label">Start Date</label>
                 <input type="date" class="form-control" id="editStartDate" name="startDate">
               </div>
               <div class="mb-3">
-                <label for="editEndDate" class="form-label">End Date</label>
+                <label for="editEndDate" class="form-label filter-label">End Date</label>
                 <input type="date" class="form-control" id="editEndDate" name="endDate">
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-success">Update</button>
+              <button type="submit" class="btn btn-primary">Update</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
           </div>
@@ -1020,16 +1527,18 @@
             <div class="modal-body">
               <input type="hidden" id="editRoomId" name="roomId">
               <div class="mb-3">
-                <label for="editRoomName" class="form-label">Room Name</label>
+                <label for="editRoomName" class="form-label filter-label">Room Name</label>
                 <input type="text" class="form-control" id="editRoomName" name="roomName" required>
               </div>
               <div class="mb-3">
-                <label for="editRoomLocation" class="form-label">Location</label>
-                <input type="text" class="form-control" id="editRoomLocation" name="locationName" readonly>
+                <label for="editRoomLocationId" class="form-label filter-label">Location</label>
+                <select class="form-select" id="editRoomLocationId" name="locationId">
+                  <option th:each="loc : ${locations}" th:value="${loc.locationId}" th:text="${loc.departmentName}"></option>
+                </select>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-success">Update</button>
+              <button type="submit" class="btn btn-primary">Update</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
           </div>
@@ -1049,41 +1558,41 @@
             <div class="modal-body">
               <input type="hidden" id="editMovementId" name="movementId">
               <div class="mb-3">
-                <label for="editAssetId" class="form-label">Asset ID</label>
+                <label for="editAssetId" class="form-label filter-label">Asset ID</label>
                 <select class="form-select" id="editAssetId" name="assetId" required>
                     <option value="">Select asset</option>
                     <option th:each="a : ${assets}" th:value="${a.assetId}" th:text="${a.assetId}"></option>
                 </select>
               </div>
               <div class="mb-3">
-                <label for="editFromLocationId" class="form-label">From Location</label>
+                <label for="editFromLocationId" class="form-label filter-label">From Location</label>
                 <select class="form-select" id="editFromLocationId" name="fromLocationId" required>
                     <option value="">Select location</option>
                     <option th:each="loc : ${locations}" th:value="${loc.locationId}" th:text="${loc.departmentName}"></option>
                 </select>
               </div>
               <div class="mb-3">
-                <label for="editToLocationId" class="form-label">To Location</label>
+                <label for="editToLocationId" class="form-label filter-label">To Location</label>
                 <select class="form-select" id="editToLocationId" name="toLocationId" required>
                     <option value="">Select location</option>
                     <option th:each="loc : ${locations}" th:value="${loc.locationId}" th:text="${loc.departmentName}"></option>
                 </select>
               </div>
               <div class="mb-3">
-                <label for="editMovementRoomName" class="form-label">Room</label>
+                <label for="editMovementRoomName" class="form-label filter-label">Room</label>
                 <input type="text" class="form-control" id="editMovementRoomName" name="roomName" readonly>
               </div>
               <div class="mb-3">
-                <label for="editMovementDate" class="form-label">Date</label>
+                <label for="editMovementDate" class="form-label filter-label">Date</label>
                 <input type="date" class="form-control" id="editMovementDate" name="movementDate" required>
               </div>
               <div class="mb-3">
-                <label for="editMovementNotes" class="form-label">Notes</label>
+                <label for="editMovementNotes" class="form-label filter-label">Notes</label>
                 <textarea class="form-control" id="editMovementNotes" name="notes"></textarea>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-success">Update</button>
+              <button type="submit" class="btn btn-primary">Update</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
             </div>
           </div>
@@ -1097,28 +1606,31 @@
         document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
             document.querySelector('.sidebar').classList.toggle('active');
         });
-        
-        // Add active class to current nav item
-        document.querySelectorAll('.main-nav a').forEach(link => {
-            link.addEventListener('click', function() {
-                document.querySelectorAll('.main-nav a').forEach(item => {
-                    item.classList.remove('active');
-                });
-                this.classList.add('active');
-            });
-        });
-        
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
 
-        document.addEventListener('DOMContentLoaded', function () {
+        // Add CSS animation for table rows
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add smooth transitions to table rows
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableRows = document.querySelectorAll('tbody tr');
+            tableRows.forEach((row, index) => {
+                row.style.animationDelay = `${index * 0.1}s`;
+                row.style.animation = 'fadeInUp 0.5s ease forwards';
+            });
+            
             // Activate tab from query parameter
             const params = new URLSearchParams(window.location.search);
             const tab = params.get('tab');
@@ -1134,6 +1646,7 @@
                 const locTrigger = document.querySelector('#locations-tab');
                 if (locTrigger) new bootstrap.Tab(locTrigger).show();
             }
+            
             // Location modal
             var locationViewModal = document.getElementById('locationViewModal');
             if(locationViewModal){
@@ -1191,7 +1704,17 @@
             btn.addEventListener('click', function() {
                 document.getElementById('editRoomId').value = btn.getAttribute('data-room-id');
                 document.getElementById('editRoomName').value = btn.getAttribute('data-room-name');
-                document.getElementById('editRoomLocation').value = btn.getAttribute('data-location');
+                // Find the location ID by matching the location name
+                const locationName = btn.getAttribute('data-location');
+                const locationSelect = document.getElementById('editRoomLocationId');
+                if (locationSelect) {
+                    for (let i = 0; i < locationSelect.options.length; i++) {
+                        if (locationSelect.options[i].text === locationName) {
+                            locationSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
             });
         });
 

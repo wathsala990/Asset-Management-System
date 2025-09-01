@@ -45,28 +45,47 @@ public class M_AssetMovementService {
 
     // Corrected allocateAsset method
     public void allocateAsset(String assetId, String locationId, String roomId, Date allocationDate, String notes) {
-        M_AssetMovement movement = new M_AssetMovement();
-
         // Fetch asset, location, room
         Asset asset = assetRepository.findById(assetId).orElse(null);
+        if (asset == null) {
+            throw new IllegalArgumentException("Asset not found with ID: " + assetId);
+        }
+        
         Location toLocation = locationRepository.findById(locationId).orElse(null);
-        Room room = roomRepository.findById(roomId).orElse(null);
-        Location fromLocation = (asset != null) ? asset.getLocation() : null;
-
+        if (toLocation == null) {
+            throw new IllegalArgumentException("Location not found with ID: " + locationId);
+        }
+        
+        Room room = null;
+        if (roomId != null && !roomId.isBlank()) {
+            room = roomRepository.findById(roomId).orElse(null);
+            if (room == null) {
+                throw new IllegalArgumentException("Room not found with ID: " + roomId);
+            }
+        }
+        
+        // Create movement record
+        M_AssetMovement movement = new M_AssetMovement();
+        
+        // The fromLocation should be the asset's current location
+        Location fromLocation = asset.getLocation();
+        
         movement.setAsset(asset);
         movement.setFromLocation(fromLocation);
         movement.setToLocation(toLocation);
-        movement.setRoom(room);
-        movement.setMovementDate(allocationDate);
+        if (room != null) {
+            movement.setRoom(room);
+        }
+        // If allocationDate is null, use current date
+        movement.setMovementDate(allocationDate != null ? allocationDate : new Date());
         movement.setNotes(notes);
 
-        // Update asset current state to reflect the allocation
-        if (asset != null) {
-            asset.setLocation(toLocation);
-            asset.setRoom(room);
-            assetRepository.save(asset);
-        }
-
+        // Save the movement first
         movementRepository.save(movement);
+        
+        // Update asset current state to reflect the allocation
+        asset.setLocation(toLocation);
+        asset.setRoom(room);
+        assetRepository.save(asset);
     }
 }
