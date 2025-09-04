@@ -22,7 +22,7 @@ import com.example.AMS.repository.M_AssetMovementRepository;
 import com.example.AMS.repository.M_LocationRepository;
 
 @Controller
-@RequestMapping("/adminMovement")
+@RequestMapping("/admin/adminMovement")
 public class M_AssetMovementController {
 
     @Autowired
