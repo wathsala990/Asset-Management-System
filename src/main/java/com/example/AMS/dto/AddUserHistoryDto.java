@@ -37,4 +37,8 @@ public class AddUserHistoryDto {
     public void setStartDate(Date startDate) { this.startDate = startDate; }
     public Date getEndDate() { return endDate; }
     public void setEndDate(Date endDate) { this.endDate = endDate; }
+    public String getAssetSerialNumber() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getAssetSerialNumber'");
+    }
 }
