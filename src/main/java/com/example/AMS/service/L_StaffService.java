@@ -47,4 +47,26 @@ public class L_StaffService {
             return false;
         }
     }
+
+    @Transactional
+    public boolean editStaff(StaffDto dto) {
+        try {
+            // Find existing staff by userId
+            AssetUser existingUser = staffRepository.findByUserId(dto.getUserId());
+            if (existingUser == null) {
+                return false; // User not found
+            }
+            
+            // Update the fields
+            existingUser.setUserName(dto.getUserName());
+            existingUser.setJobRole(dto.getJobRole());
+            existingUser.setUserDescription(dto.getUserDescription());
+            
+            staffRepository.save(existingUser);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

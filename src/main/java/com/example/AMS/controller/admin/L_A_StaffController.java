@@ -76,4 +76,15 @@ public class L_A_StaffController {
             return "DUPLICATE_USERID";
         }
     }
+
+    @PostMapping("/adminStaff/edit")
+    @ResponseBody
+    public String editStaff(@RequestBody StaffDto dto) {
+        boolean success = staffService.editStaff(dto);
+        if (success) {
+            return "OK";
+        } else {
+            return "ERROR";
+        }
+    }
 }

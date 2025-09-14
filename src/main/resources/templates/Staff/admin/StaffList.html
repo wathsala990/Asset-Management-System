@@ -793,6 +793,49 @@
             margin-right: 6px;
         }
 
+        /* Edit Button - Enhanced */
+        .edit-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            transition: var(--transition);
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .edit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .edit-btn:hover::before {
+            left: 100%;
+        }
+        
+        .edit-btn:hover {
+            background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .edit-btn i {
+            margin-right: 6px;
+        }
+
         /* Loading Animation */
         .loading-spinner {
             display: inline-block;
@@ -1067,8 +1110,17 @@
                                     <td th:text="${staff.jobRole}"></td>
                                     <td th:text="${staff.userDescription}"></td>
                                     <td class="text-end">
-                                        <button class="btn btn-sm view-btn" data-bs-toggle="modal" data-bs-target="#viewStaffModal" onclick="loadStaffDetails(this)" data-staff-id="${staff.id}">
+                                        <button class="btn btn-sm view-btn me-2" data-bs-toggle="modal" data-bs-target="#viewStaffModal" onclick="loadStaffDetails(this)" data-staff-id="${staff.id}">
                                             <i class="fas fa-eye"></i> View
+                                        </button>
+                                        <button class="btn btn-sm edit-btn" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#editStaffModal"
+                                                th:data-user-id="${staff.userId}"
+                                                th:data-user-name="${staff.userName}"
+                                                th:data-job-role="${staff.jobRole}"
+                                                th:data-user-description="${staff.userDescription}">
+                                            <i class="fas fa-edit"></i> Edit
                                         </button>
                                     </td>
                                 </tr>
@@ -1125,6 +1177,52 @@
                         </button>
                         <button type="submit" class="btn btn-primary-custom" id="saveStaffBtn">
                             <i class="fas fa-save me-2"></i> Save Staff
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Staff Modal -->
+    <div class="modal fade" id="editStaffModal" tabindex="-1" aria-labelledby="editStaffModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="editStaffForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editStaffModalLabel">
+                            <i class="fas fa-user-edit me-2"></i>Edit Staff
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="editUserIdInput" class="form-label">User ID *</label>
+                            <input type="text" class="form-control" id="editUserIdInput" readonly>
+                            <small class="form-text text-muted">User ID cannot be changed</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editUserNameInput" class="form-label">User Name *</label>
+                            <input type="text" class="form-control" id="editUserNameInput" required>
+                            <div id="editUserNameError" class="error-message">Please enter a user name</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editJobRoleInput" class="form-label">Job Role *</label>
+                            <input type="text" class="form-control" id="editJobRoleInput" required>
+                            <div id="editJobRoleError" class="error-message">Please enter a job role</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editUserDescriptionInput" class="form-label">User Description *</label>
+                            <textarea class="form-control" id="editUserDescriptionInput" rows="3" required></textarea>
+                            <div id="editUserDescriptionError" class="error-message">Please enter a description</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary-custom" id="updateStaffBtn">
+                            <i class="fas fa-save me-2"></i> Update Staff
                         </button>
                     </div>
                 </form>
@@ -1281,6 +1379,70 @@
             .finally(() => {
                 saveBtn.disabled = false;
                 saveBtn.innerHTML = '<i class="fas fa-save me-2"></i> Save Staff';
+            });
+        });
+
+        // Edit Staff Modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const editButtons = document.querySelectorAll('.edit-btn');
+            
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Get data attributes from the button
+                    const userId = button.getAttribute('data-user-id');
+                    const userName = button.getAttribute('data-user-name');
+                    const jobRole = button.getAttribute('data-job-role');
+                    const userDescription = button.getAttribute('data-user-description');
+                    
+                    // Populate the edit form
+                    document.getElementById('editUserIdInput').value = userId || '';
+                    document.getElementById('editUserNameInput').value = userName || '';
+                    document.getElementById('editJobRoleInput').value = jobRole || '';
+                    document.getElementById('editUserDescriptionInput').value = userDescription || '';
+                });
+            });
+        });
+
+        // Edit Staff Form Submission
+        document.getElementById('editStaffForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm('editStaffForm')) return;
+
+            const updateBtn = document.getElementById('updateStaffBtn');
+
+            // Show loading state
+            updateBtn.disabled = true;
+            updateBtn.innerHTML = '<div class="loading-spinner me-2"></div> Updating...';
+
+            const payload = {
+                userId: document.getElementById('editUserIdInput').value.trim(),
+                userName: document.getElementById('editUserNameInput').value.trim(),
+                jobRole: document.getElementById('editJobRoleInput').value.trim(),
+                userDescription: document.getElementById('editUserDescriptionInput').value.trim()
+            };
+
+            fetch('/admin/adminStaff/edit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.text())
+            .then(result => {
+                if (result === 'OK') {
+                    showSuccessMessage('Staff updated successfully!');
+                    bootstrap.Modal.getInstance(document.getElementById('editStaffModal')).hide();
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    alert('Error updating staff.');
+                }
+            })
+            .catch(error => {
+                alert('Error updating staff: ' + error.message);
+            })
+            .finally(() => {
+                updateBtn.disabled = false;
+                updateBtn.innerHTML = '<i class="fas fa-save me-2"></i> Update Staff';
             });
         });
 
