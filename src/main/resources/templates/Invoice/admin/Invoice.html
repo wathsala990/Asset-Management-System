@@ -621,6 +621,49 @@
             margin-right: 6px;
         }
 
+        /* Edit Button - Enhanced */
+        .edit-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            transition: var(--transition);
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .edit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .edit-btn:hover::before {
+            left: 100%;
+        }
+        
+        .edit-btn:hover {
+            background: linear-gradient(135deg, #1e7e34 0%, #17a2b8 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .edit-btn i {
+            margin-right: 6px;
+        }
+
         /* Item Count Badge */
         .item-count-badge {
             background: var(--gradient-primary);
@@ -1020,6 +1063,25 @@
                 </button>
             </div>
 
+            <!-- Success/Error Messages -->
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>Success!</strong> Invoice has been added successfully.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            
+            <div th:if="${editSuccess}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>Success!</strong> Invoice has been updated successfully.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            
+            <div th:if="${editError}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <strong>Error!</strong> There was an error updating the invoice. Please try again.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+
             <!-- Invoices Table -->
             <div class="card invoice-card">
                 <div class="card-header">
@@ -1038,6 +1100,7 @@
                                     <th><i class="fas fa-calendar-alt me-2"></i>Date</th>
                                     <th><i class="fas fa-money-bill-wave me-2"></i>Cost</th>
                                     <th class="text-end"><i class="fas fa-cubes me-2"></i>Items</th>
+                                    <th><i class="fas fa-sticky-note me-2"></i>Remark</th>
                                     <th class="text-end">Actions</th>
                                 </tr>
                             </thead>
@@ -1053,11 +1116,29 @@
                                     <td class="text-end">
                                         <span class="badge item-count-badge" th:text="${invoice.itemCount}">5</span>
                                     </td>
+                                    <td>
+                                        <span th:text="${invoice.remark != null && !#strings.isEmpty(invoice.remark) ? (invoice.remark.length() > 30 ? invoice.remark.substring(0, 30) + '...' : invoice.remark) : '-'}" 
+                                              th:title="${invoice.remark}" class="text-muted"></span>
+                                    </td>
                                     <td class="text-end">
                                         <a th:href="@{'/admin/adminInvoice/view/' + ${invoice.invoiceNumber}}" 
-                                           class="btn btn-sm view-btn">
+                                           class="btn btn-sm view-btn me-2">
                                             <i class="fas fa-eye me-2"></i>View
                                         </a>
+                                        <button type="button" 
+                                                class="btn btn-sm edit-btn" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#editInvoiceModal"
+                                                th:data-invoice-number="${invoice.invoiceNumber}"
+                                                th:data-order-id="${invoice.orderId}"
+                                                th:data-invoice-date="${#temporals.format(invoice.invoiceDate, 'yyyy-MM-dd')}"
+                                                th:data-invoice-cost="${invoice.invoiceCost}"
+                                                th:data-vender-name="${invoice.venderName != null ? invoice.venderName : ''}"
+                                                th:data-address="${invoice.address != null ? invoice.address : ''}"
+                                                th:data-contact-no="${invoice.contactNo != null ? invoice.contactNo : ''}"
+                                                th:data-remark="${invoice.remark != null ? invoice.remark : ''}">
+                                            <i class="fas fa-edit me-2"></i>Edit
+                                        </button>
                                     </td>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(invoices)}">
@@ -1169,25 +1250,25 @@
                                 <span class="input-group-text">
                                     <i class="fas fa-map-marker-alt"></i>
                                 </span>
-                                <input type="text" class="form-control" id="address"
+                                <textarea class="form-control" id="address"
                                        th:field="*{address}"
                                        th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''"
-                                       placeholder="e.g., 123 Main St, Kandy" required readonly>
+                                       placeholder="Enter vendor address details..." rows="3" required readonly></textarea>
                             </div>
                             <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error-message"></div>
                         </div>
 
                         <!-- Vendor Contact No Field -->
                         <div class="mb-3">
-                            <label for="contactNo" class="form-label">Vendor Contact No *</label>
+                            <label for="contactNo" class="form-label">Vendor Contact Details *</label>
                             <div class="input-group">
                                 <span class="input-group-text">
                                     <i class="fas fa-phone"></i>
                                 </span>
-                                <input type="text" class="form-control" id="contactNo"
+                                <textarea class="form-control" id="contactNo"
                                        th:field="*{contactNo}"
                                        th:classappend="${#fields.hasErrors('contactNo')} ? 'is-invalid' : ''"
-                                       placeholder="e.g., 0771234567" required readonly>
+                                       placeholder="Enter contact numbers, emails, etc..." rows="2" required readonly></textarea>
                             </div>
                             <div th:if="${#fields.hasErrors('contactNo')}" th:errors="*{contactNo}" class="error-message"></div>
                         </div>
@@ -1206,6 +1287,21 @@
                             </div>
                             <div th:if="${#fields.hasErrors('itemCount')}" th:errors="*{itemCount}" class="error-message"></div>
                         </div>
+                        
+                        <!-- Remark Field -->
+                        <div class="mb-3">
+                            <label for="remark" class="form-label">Remark</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-sticky-note"></i>
+                                </span>
+                                <textarea class="form-control" id="remark"
+                                       th:field="*{remark}"
+                                       th:classappend="${#fields.hasErrors('remark')} ? 'is-invalid' : ''"
+                                       placeholder="Enter any additional remarks or notes..." rows="3"></textarea>
+                            </div>
+                            <div th:if="${#fields.hasErrors('remark')}" th:errors="*{remark}" class="error-message"></div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
@@ -1213,6 +1309,131 @@
                         </button>
                         <button type="submit" class="btn btn-primary-custom">
                             <i class="fas fa-save me-2"></i> Save Invoice
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Invoice Modal -->
+    <div class="modal fade" id="editInvoiceModal" tabindex="-1" aria-labelledby="editInvoiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/admin/adminInvoice/edit}" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editInvoiceModalLabel">
+                            <i class="fas fa-edit me-2"></i>Edit Invoice
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Invoice Number Field (readonly) -->
+                        <div class="mb-3">
+                            <label for="editInvoiceNumber" class="form-label">Invoice Number</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-hashtag"></i>
+                                </span>
+                                <input type="text" class="form-control" id="editInvoiceNumber" 
+                                       name="invoiceNumber" readonly>
+                            </div>
+                        </div>
+
+                        <!-- Order ID Field -->
+                        <div class="mb-3">
+                            <label for="editOrderId" class="form-label">Order ID *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-barcode"></i>
+                                </span>
+                                <input type="text" class="form-control" id="editOrderId" 
+                                       name="orderId" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Invoice Date Field -->
+                        <div class="mb-3">
+                            <label for="editInvoiceDate" class="form-label">Invoice Date *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </span>
+                                <input type="date" class="form-control" id="editInvoiceDate" 
+                                       name="invoiceDate" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Invoice Cost Field -->
+                        <div class="mb-3">
+                            <label for="editInvoiceCost" class="form-label">Invoice Cost *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                </span>
+                                <input type="text" class="form-control" id="editInvoiceCost" 
+                                       name="invoiceCost" required>
+                            </div>
+                        </div>
+
+                        <!-- Vender Name Field -->
+                        <div class="mb-3 position-relative">
+                            <label for="editVenderName" class="form-label">Vendor Name *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-user-tie"></i>
+                                </span>
+                                <input type="text" class="form-control" id="editVenderName"
+                                       name="venderName" autocomplete="off" required>
+                                <div id="edit-vendor-suggest-list" class="list-group position-absolute w-100" style="z-index: 1000; top: 100%; left: 0; display: none;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Vendor Address Field -->
+                        <div class="mb-3">
+                            <label for="editAddress" class="form-label">Vendor Address *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </span>
+                                <textarea class="form-control" id="editAddress"
+                                       name="address" rows="3" 
+                                       placeholder="Enter vendor address details..." required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Vendor Contact No Field -->
+                        <div class="mb-3">
+                            <label for="editContactNo" class="form-label">Vendor Contact Details *</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-phone"></i>
+                                </span>
+                                <textarea class="form-control" id="editContactNo"
+                                       name="contactNo" rows="2"
+                                       placeholder="Enter contact numbers, emails, etc..." required></textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Remark Field -->
+                        <div class="mb-3">
+                            <label for="editRemark" class="form-label">Remark</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-sticky-note"></i>
+                                </span>
+                                <textarea class="form-control" id="editRemark"
+                                       name="remark" rows="3"
+                                       placeholder="Enter any additional remarks or notes..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary-custom">
+                            <i class="fas fa-save me-2"></i> Update Invoice
                         </button>
                     </div>
                 </form>
@@ -1325,6 +1546,57 @@
             document.querySelector('.sidebar').classList.toggle('active');
         });
 
+        // Edit modal vendor auto-suggest and autofill
+        const editVenderNameInput = document.getElementById('editVenderName');
+        const editVendorSuggestList = document.getElementById('edit-vendor-suggest-list');
+        const editAddressInput = document.getElementById('editAddress');
+        const editContactNoInput = document.getElementById('editContactNo');
+
+        if (editVenderNameInput) {
+            editVenderNameInput.addEventListener('input', function() {
+                const query = editVenderNameInput.value.trim();
+                if (query.length < 2) {
+                    editVendorSuggestList.style.display = 'none';
+                    return;
+                }
+                fetch(`/admin/adminInvoice/vendors/suggest?query=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(names => {
+                        editVendorSuggestList.innerHTML = '';
+                        if (names.length === 0) {
+                            editVendorSuggestList.style.display = 'none';
+                            return;
+                        }
+                        names.forEach(name => {
+                            const item = document.createElement('button');
+                            item.type = 'button';
+                            item.className = 'list-group-item list-group-item-action';
+                            item.textContent = name;
+                            item.onclick = function() {
+                                editVenderNameInput.value = name;
+                                editVendorSuggestList.style.display = 'none';
+                                // Autofill address/contact for edit modal
+                                fetch(`/admin/adminInvoice/vendors/details?venderName=${encodeURIComponent(name)}`)
+                                    .then(res => res.json())
+                                    .then(data => {
+                                        editAddressInput.value = data.address || '';
+                                        editContactNoInput.value = data.contactNo || '';
+                                    });
+                            };
+                            editVendorSuggestList.appendChild(item);
+                        });
+                        editVendorSuggestList.style.display = 'block';
+                    });
+            });
+
+            // Hide edit suggest list on outside click
+            document.addEventListener('click', function(e) {
+                if (!editVendorSuggestList.contains(e.target) && e.target !== editVenderNameInput) {
+                    editVendorSuggestList.style.display = 'none';
+                }
+            });
+        }
+
         // Show modal if there are validation errors
         document.addEventListener('DOMContentLoaded', function() {
             const hasErrors = document.querySelector('.is-invalid');
@@ -1332,6 +1604,63 @@
                 const modal = new bootstrap.Modal(document.getElementById('addInvoiceModal'));
                 modal.show();
             }
+        });
+
+        // Edit Invoice Modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const editButtons = document.querySelectorAll('.edit-btn');
+            const editModal = document.getElementById('editInvoiceModal');
+            
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Get data attributes from the button
+                    const invoiceNumber = button.getAttribute('data-invoice-number');
+                    const orderId = button.getAttribute('data-order-id');
+                    const invoiceDate = button.getAttribute('data-invoice-date');
+                    const invoiceCost = button.getAttribute('data-invoice-cost');
+                    const venderName = button.getAttribute('data-vender-name') || '';
+                    const address = button.getAttribute('data-address') || '';
+                    const contactNo = button.getAttribute('data-contact-no') || '';
+                    const remark = button.getAttribute('data-remark') || '';
+                    
+                    // Debug logging
+                    console.log('Edit button clicked for invoice:', invoiceNumber);
+                    console.log('Vendor Details:', { venderName, address, contactNo, remark });
+                    
+                    // Populate the edit form
+                    document.getElementById('editInvoiceNumber').value = invoiceNumber || '';
+                    document.getElementById('editOrderId').value = orderId || '';
+                    document.getElementById('editInvoiceDate').value = invoiceDate || '';
+                    document.getElementById('editInvoiceCost').value = invoiceCost || '';
+                    document.getElementById('editVenderName').value = venderName;
+                    document.getElementById('editAddress').value = address;
+                    document.getElementById('editContactNo').value = contactNo;
+                    document.getElementById('editRemark').value = remark;
+                    
+                    // Ensure textareas are properly populated (for vendor address, contact, and remark)
+                    const addressTextarea = document.getElementById('editAddress');
+                    const contactTextarea = document.getElementById('editContactNo');
+                    const remarkTextarea = document.getElementById('editRemark');
+                    
+                    if (addressTextarea) {
+                        addressTextarea.value = address;
+                        // Trigger input event to ensure proper display
+                        addressTextarea.dispatchEvent(new Event('input'));
+                    }
+                    
+                    if (contactTextarea) {
+                        contactTextarea.value = contactNo;
+                        // Trigger input event to ensure proper display
+                        contactTextarea.dispatchEvent(new Event('input'));
+                    }
+                    
+                    if (remarkTextarea) {
+                        remarkTextarea.value = remark;
+                        // Trigger input event to ensure proper display
+                        remarkTextarea.dispatchEvent(new Event('input'));
+                    }
+                });
+            });
         });
     </script>
 </body>

@@ -11,6 +11,7 @@ public class Invoice {
     private java.time.LocalDate invoiceDate;
     private int itemCount;
     private String invoiceCost;
+    private String remark; // Field for additional remarks/notes
 
     // Soft delete flag
     private boolean deleted;
@@ -55,6 +56,9 @@ public class Invoice {
     public void setAddress(String address) { this.address = address; }
     public int getContactNo() { return contactNo; }
     public void setContactNo(int contactNo) { this.contactNo = contactNo; }
+
+    public String getRemark() { return remark; }
+    public void setRemark(String remark) { this.remark = remark; }
 
     public boolean isDeleted() { return deleted; }
     public void setDeleted(boolean deleted) { this.deleted = deleted; }
