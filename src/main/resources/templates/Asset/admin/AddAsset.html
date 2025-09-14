@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <th:block th:if="${_csrf != null}">
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    </th:block>
     <title>Asset Management | University of Peradeniya</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -1082,6 +1086,23 @@
                                                     data-bs-toggle="modal" th:attr="data-bs-target='#viewAssetModal' + ${asset.assetId}">
                                                     <i class="fas fa-eye"></i>View
                                                 </button>
+                                                <button type="button" class="btn-custom btn-success-custom edit-asset-btn" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#editAssetModal"
+                                                    th:data-asset-id="${asset.assetId}"
+                                                    th:data-name="${asset.name != null ? asset.name : ''}"
+                                                    th:data-type="${asset.type != null ? asset.type : ''}"
+                                                    th:data-serial-number="${asset.serialNumber != null ? asset.serialNumber : ''}"
+                                                    th:data-model="${asset.model != null ? asset.model : ''}"
+                                                    th:data-specification="${asset.specification != null ? asset.specification : ''}"
+                                                    th:data-invoice-number="${asset.invoiceNumber != null ? asset.invoiceNumber : ''}"
+                                                    th:data-activity-status="${asset.activityStatus}"
+                                                    th:data-purchase-date="${asset.purchaseDate != null ? asset.purchaseDate : ''}"
+                                                    th:data-warranty-id="${asset.warrantyId != null ? asset.warrantyId : ''}"
+                                                    th:data-warranty-period="${asset.warrantyPeriod != null ? asset.warrantyPeriod : ''}"
+                                                    th:data-warranty-date="${asset.warrantyDate != null ? asset.warrantyDate : ''}">
+                                                    <i class="fas fa-edit"></i>Edit
+                                                </button>
                                                 <form th:action="@{'/admin/adminAsset/delete/' + ${asset.assetId}}" method="post">
                                                     <button type="submit" class="btn-custom btn-danger-custom" 
                                                         onclick="return confirm('Are you sure you want to delete this asset?')">
@@ -1277,6 +1298,124 @@
                 </div>
             </div>
 
+            <!-- Edit Asset Modal -->
+            <div class="modal fade" id="editAssetModal" tabindex="-1" aria-labelledby="editAssetModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editAssetModalLabel">
+                                <i class="fas fa-edit"></i>Edit Asset
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="editAssetForm" method="post">
+                                <div class="container-fluid">
+                                    <h6 class="mb-3" style="color: var(--primary-color); font-weight: 600;">
+                                        <i class="fas fa-box-open me-2"></i> Asset Information
+                                    </h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="editAssetId" class="form-label">
+                                                <i class="fas fa-barcode"></i>Asset ID
+                                            </label>
+                                            <input type="text" class="form-control" id="editAssetId" name="assetId" readonly />
+                                            <small class="form-text text-muted">Asset ID cannot be changed</small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="editName" class="form-label">
+                                                <i class="fas fa-tag"></i>Asset Name
+                                            </label>
+                                            <input type="text" class="form-control" id="editName" name="name" placeholder="Enter asset name" required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="editType" class="form-label">
+                                                <i class="fas fa-list"></i>Type
+                                            </label>
+                                            <input type="text" class="form-control" id="editType" name="type" placeholder="e.g. Computer, Furniture" required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="editSerialNumber" class="form-label">
+                                                <i class="fas fa-hashtag"></i>Serial Number
+                                            </label>
+                                            <input type="text" class="form-control" id="editSerialNumber" name="serialNumber" placeholder="e.g. ITC/SB3/P33/001" required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="editModel" class="form-label">
+                                                <i class="fas fa-laptop"></i>Model
+                                            </label>
+                                            <input type="text" class="form-control" id="editModel" name="model" placeholder="e.g. EliteBook 840" required />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="editSpecification" class="form-label">
+                                                <i class="fas fa-info-circle"></i>Specification
+                                            </label>
+                                            <input type="text" class="form-control" id="editSpecification" name="specification" placeholder="e.g. 16GB RAM, 512GB SSD" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="editInvoiceNumber" class="form-label">
+                                                <i class="fas fa-file-invoice"></i>Invoice Number
+                                            </label>
+                                            <select class="form-select" id="editInvoiceNumber" name="invoiceNumber" required>
+                                                <option value="" disabled>Select invoice number</option>
+                                                <option th:each="invNum : ${invoiceNumbers}" th:value="${invNum}" th:text="${invNum}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="editActivityStatus" class="form-label">
+                                                <i class="fas fa-power-off"></i>Activity Status
+                                            </label>
+                                            <select class="form-select" id="editActivityStatus" name="activityStatus" required>
+                                                <option value="true">Active</option>
+                                                <option value="false">Condemned</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <hr class="my-4">
+                                    <h6 class="mb-3" style="color: var(--primary-color); font-weight: 600;">
+                                        <i class="fas fa-calendar-alt me-2"></i> Purchase & Warranty
+                                    </h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="editPurchaseDate" class="form-label">
+                                                <i class="fas fa-calendar-check"></i>Purchase Date
+                                            </label>
+                                            <input type="date" class="form-control" id="editPurchaseDate" name="purchaseDate" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="editWarrantyId" class="form-label">
+                                                <i class="fas fa-id-card"></i>Warranty ID
+                                            </label>
+                                            <input type="text" class="form-control" id="editWarrantyId" name="warrantyId" placeholder="Enter warranty ID" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="editWarrantyPeriod" class="form-label">
+                                                <i class="fas fa-clock"></i>Warranty Period
+                                            </label>
+                                            <input type="text" class="form-control" id="editWarrantyPeriod" name="warrantyPeriod" placeholder="e.g. 2 years" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="editWarrantyDate" class="form-label">
+                                                <i class="fas fa-calendar-plus"></i>Warranty Date
+                                            </label>
+                                            <input type="date" class="form-control" id="editWarrantyDate" name="warrantyDate" />
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="button" class="btn-custom btn-outline-secondary me-2" data-bs-dismiss="modal">
+                                            <i class="fas fa-times me-2"></i>Cancel
+                                        </button>
+                                        <button type="submit" class="btn-custom btn-success-custom" id="updateAssetBtn">
+                                            <i class="fas fa-save me-2"></i>Update Asset
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- View Asset Modals -->
             <div th:each="asset : ${assets}">
                 <div class="modal fade" th:id="'viewAssetModal' + ${asset.assetId}" tabindex="-1" aria-labelledby="viewAssetModalLabel" aria-hidden="true">
@@ -1431,6 +1570,133 @@
             
             row.addEventListener('mouseleave', function() {
                 this.style.transform = 'translateX(0)';
+            });
+        });
+
+        // Edit Asset Modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const editButtons = document.querySelectorAll('.edit-asset-btn');
+            
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Get data attributes from the button
+                    const assetId = button.getAttribute('data-asset-id');
+                    const name = button.getAttribute('data-name');
+                    const type = button.getAttribute('data-type');
+                    const serialNumber = button.getAttribute('data-serial-number');
+                    const model = button.getAttribute('data-model');
+                    const specification = button.getAttribute('data-specification');
+                    const invoiceNumber = button.getAttribute('data-invoice-number');
+                    const activityStatus = button.getAttribute('data-activity-status');
+                    const purchaseDate = button.getAttribute('data-purchase-date');
+                    const warrantyId = button.getAttribute('data-warranty-id');
+                    const warrantyPeriod = button.getAttribute('data-warranty-period');
+                    const warrantyDate = button.getAttribute('data-warranty-date');
+                    
+                    // Populate the edit form
+                    document.getElementById('editAssetId').value = assetId || '';
+                    document.getElementById('editName').value = name || '';
+                    document.getElementById('editType').value = type || '';
+                    document.getElementById('editSerialNumber').value = serialNumber || '';
+                    document.getElementById('editModel').value = model || '';
+                    document.getElementById('editSpecification').value = specification || '';
+                    document.getElementById('editInvoiceNumber').value = invoiceNumber || '';
+                    document.getElementById('editActivityStatus').value = activityStatus || 'true';
+                    document.getElementById('editPurchaseDate').value = purchaseDate || '';
+                    document.getElementById('editWarrantyId').value = warrantyId || '';
+                    document.getElementById('editWarrantyPeriod').value = warrantyPeriod || '';
+                    document.getElementById('editWarrantyDate').value = warrantyDate || '';
+                    
+                    // Set the form action URL
+                    document.getElementById('editAssetForm').action = `/admin/adminAsset/edit-ajax/${assetId}`;
+                    
+                    // Debug logging
+                    console.log('Edit form populated for asset:', assetId);
+                    console.log('Form action set to:', document.getElementById('editAssetForm').action);
+                });
+            });
+        });
+
+        // Edit Asset Form Submission
+        document.getElementById('editAssetForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('=== EDIT FORM SUBMISSION STARTED ===');
+            
+            const updateBtn = document.getElementById('updateAssetBtn');
+            const formData = new FormData(this);
+            
+            // Add CSRF token (check if available)
+            const csrfTokenEl = document.querySelector('meta[name="_csrf"]');
+            const csrfHeaderEl = document.querySelector('meta[name="_csrf_header"]');
+            const csrfToken = csrfTokenEl ? csrfTokenEl.getAttribute('content') : null;
+            const csrfHeader = csrfHeaderEl ? csrfHeaderEl.getAttribute('content') : null;
+            
+            // Debug: Log form data
+            console.log('Form data being sent:');
+            for (let [key, value] of formData.entries()) {
+                console.log(`  ${key}: ${value}`);
+            }
+            console.log('Form action URL:', this.action);
+            console.log('CSRF token available:', !!csrfToken);
+            console.log('CSRF header:', csrfHeader);
+            
+            // Show loading state
+            updateBtn.disabled = true;
+            updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
+            
+            const headers = {
+                'X-Requested-With': 'XMLHttpRequest'
+            };
+            
+            // Add CSRF header
+            if (csrfHeader && csrfToken) {
+                headers[csrfHeader] = csrfToken;
+                console.log('CSRF header added to request');
+            } else {
+                console.log('No CSRF token available - continuing without');
+            }
+            
+            console.log('Sending fetch request...');
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: headers
+            })
+            .then(response => {
+                console.log('=== RESPONSE RECEIVED ===');
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+                console.log('Response headers:', [...response.headers.entries()]);
+                
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    return response.text().then(text => {
+                        console.log('Error response text:', text);
+                        throw new Error(text || `HTTP ${response.status}: Update failed`);
+                    });
+                }
+            })
+            .then(data => {
+                console.log('=== SUCCESS ===');
+                console.log('Success response:', data);
+                showSuccessMessage('Asset updated successfully!');
+                bootstrap.Modal.getInstance(document.getElementById('editAssetModal')).hide();
+                setTimeout(() => {
+                    console.log('Reloading page...');
+                    location.reload();
+                }, 1500);
+            })
+            .catch(error => {
+                console.error('=== ERROR ===');
+                console.error('Error updating asset:', error);
+                console.error('Error stack:', error.stack);
+                alert('Error updating asset: ' + error.message);
+            })
+            .finally(() => {
+                updateBtn.disabled = false;
+                updateBtn.innerHTML = '<i class="fas fa-save me-2"></i>Update Asset';
             });
         });
     </script>

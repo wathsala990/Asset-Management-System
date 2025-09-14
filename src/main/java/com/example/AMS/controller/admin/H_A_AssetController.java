@@ -1,5 +1,7 @@
 package com.example.AMS.controller.admin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.ResponseEntity;
 
 import com.example.AMS.model.Asset;
 import com.example.AMS.model.User;
@@ -110,6 +112,84 @@ public class H_A_AssetController {
         model.addAttribute("invoiceNumbers", invoiceService.getAllInvoiceNumbers());
         return "Asset/admin/AddAsset";
     }
+
+    // Handle asset edit from modal form
+    @PostMapping("/adminAsset/edit/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DIRECTOR')")
+    public String editAsset(@PathVariable("id") String assetId, @ModelAttribute Asset updatedAsset, Model model) {
+        Asset existingAsset = assetService.getAssetById(assetId);
+        if (existingAsset != null) {
+            // Update fields
+            existingAsset.setName(updatedAsset.getName());
+            existingAsset.setType(updatedAsset.getType());
+            existingAsset.setSerialNumber(updatedAsset.getSerialNumber());
+            existingAsset.setModel(updatedAsset.getModel());
+            existingAsset.setSpecification(updatedAsset.getSpecification());
+            existingAsset.setInvoiceNumber(updatedAsset.getInvoiceNumber());
+            existingAsset.setActivityStatus(updatedAsset.isActivityStatus());
+            existingAsset.setPurchaseDate(updatedAsset.getPurchaseDate());
+            existingAsset.setWarrantyId(updatedAsset.getWarrantyId());
+            existingAsset.setWarrantyPeriod(updatedAsset.getWarrantyPeriod());
+            existingAsset.setWarrantyDate(updatedAsset.getWarrantyDate());
+            
+            assetService.saveAsset(existingAsset);
+        }
+        model.addAttribute("success", true);
+        model.addAttribute("assets", assetService.getAllAssets());
+        model.addAttribute("deletedAssets", assetService.getDeletedAssets());
+        model.addAttribute("asset", new Asset());
+        model.addAttribute("invoiceNumbers", invoiceService.getAllInvoiceNumbers());
+        return "Asset/admin/AddAsset";
+    }
+
+    // AJAX endpoint for asset edit
+    @PostMapping("/adminAsset/edit-ajax/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DIRECTOR')")
+    @ResponseBody
+    public ResponseEntity<String> editAssetAjax(@PathVariable("id") String assetId, @ModelAttribute Asset updatedAsset) {
+        System.out.println("=== Asset Edit Request ===");
+        System.out.println("Asset ID: " + assetId);
+        System.out.println("Updated Asset Name: " + updatedAsset.getName());
+        System.out.println("Updated Asset Type: " + updatedAsset.getType());
+        System.out.println("Updated Asset Serial: " + updatedAsset.getSerialNumber());
+        System.out.println("Updated Asset Model: " + updatedAsset.getModel());
+        System.out.println("Updated Asset Invoice: " + updatedAsset.getInvoiceNumber());
+        System.out.println("Updated Asset Activity Status: " + updatedAsset.isActivityStatus());
+        
+        try {
+            Asset existingAsset = assetService.getAssetById(assetId);
+            if (existingAsset == null) {
+                System.out.println("Asset not found with ID: " + assetId);
+                return ResponseEntity.badRequest().body("Asset not found");
+            }
+            
+            System.out.println("Found existing asset: " + existingAsset.getName());
+            
+            // Update fields
+            existingAsset.setName(updatedAsset.getName());
+            existingAsset.setType(updatedAsset.getType());
+            existingAsset.setSerialNumber(updatedAsset.getSerialNumber());
+            existingAsset.setModel(updatedAsset.getModel());
+            existingAsset.setSpecification(updatedAsset.getSpecification());
+            existingAsset.setInvoiceNumber(updatedAsset.getInvoiceNumber());
+            existingAsset.setActivityStatus(updatedAsset.isActivityStatus());
+            existingAsset.setPurchaseDate(updatedAsset.getPurchaseDate());
+            existingAsset.setWarrantyId(updatedAsset.getWarrantyId());
+            existingAsset.setWarrantyPeriod(updatedAsset.getWarrantyPeriod());
+            existingAsset.setWarrantyDate(updatedAsset.getWarrantyDate());
+            
+            Asset savedAsset = assetService.saveAsset(existingAsset);
+            System.out.println("Asset saved successfully: " + savedAsset.getAssetId());
+            
+            return ResponseEntity.ok("Asset updated successfully");
+            
+        } catch (Exception e) {
+            System.out.println("Error updating asset: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Failed to update asset: " + e.getMessage());
+        }
+    }
+
     @Autowired
     private UserRepository userRepository;
 
