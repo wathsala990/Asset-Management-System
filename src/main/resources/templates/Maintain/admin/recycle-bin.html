@@ -564,8 +564,8 @@
                     <td th:text="${maintain.description}"></td>
                     <td th:text="${maintain.cost}"></td>
                     <td>
-                        <a th:href="@{/admin/adminMaintain/restore/{id}(id=${maintain.maintainId})}" class="btn btn-success btn-sm"><i class="fas fa-undo"></i> Restore</a>
-                        <a th:href="@{/admin/adminMaintain/permanent-delete/{id}(id=${maintain.maintainId})}" class="btn btn-danger btn-sm" onclick="return confirm('Permanently delete this record?');"><i class="fas fa-trash-alt"></i> Delete Permanently</a>
+                        <a th:href="@{/admin/adminMaintain/restore(id=${maintain.maintainId})}" class="btn btn-success btn-sm"><i class="fas fa-undo"></i> Restore</a>
+                        <a th:href="@{/admin/adminMaintain/permanent-delete(id=${maintain.maintainId})}" class="btn btn-danger btn-sm" onclick="return confirm('Permanently delete this record?');"><i class="fas fa-trash-alt"></i> Delete Permanently</a>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(deletedMaintains)}">
