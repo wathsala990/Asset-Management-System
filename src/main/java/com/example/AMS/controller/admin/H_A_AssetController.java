@@ -1,6 +1,7 @@
 package com.example.AMS.controller.admin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.http.ResponseEntity;
 
 import com.example.AMS.model.Asset;
@@ -30,9 +31,9 @@ public class H_A_AssetController {
     }
 
     // Soft delete asset by id
-    @PostMapping("/adminAsset/delete/{id}")
+    @PostMapping("/adminAsset/delete")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DIRECTOR')")
-    public String softDeleteAsset(@PathVariable("id") String assetId, Model model) {
+    public String softDeleteAsset(@RequestParam("id") String assetId, Model model) {
         Asset asset = assetService.getAssetById(assetId);
         if (asset != null) {
             asset.setDeleted(true);
@@ -47,9 +48,9 @@ public class H_A_AssetController {
     }
 
     // Restore soft deleted asset
-    @PostMapping("/adminAsset/restore/{id}")
+    @PostMapping("/adminAsset/restore")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DIRECTOR')")
-    public String restoreAsset(@PathVariable("id") String assetId, Model model) {
+    public String restoreAsset(@RequestParam("id") String assetId, Model model) {
         assetService.restoreAsset(assetId);
         model.addAttribute("assets", assetService.getAllAssets());
         model.addAttribute("deletedAssets", assetService.getDeletedAssets());
@@ -59,9 +60,9 @@ public class H_A_AssetController {
     }
 
     // Permanently delete asset
-    @PostMapping("/adminAsset/permanent-delete/{id}")
+    @PostMapping("/adminAsset/permanent-delete")
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_DIRECTOR')")
-    public String permanentDeleteAsset(@PathVariable("id") String assetId, Model model) {
+    public String permanentDeleteAsset(@RequestParam("id") String assetId, Model model) {
         assetService.deleteAssetPermanently(assetId);
         model.addAttribute("assets", assetService.getAllAssets());
         model.addAttribute("deletedAssets", assetService.getDeletedAssets());

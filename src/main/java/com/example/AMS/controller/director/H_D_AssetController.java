@@ -1,6 +1,7 @@
 
 package com.example.AMS.controller.director;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.AMS.model.Asset;
 import com.example.AMS.model.User;
@@ -29,9 +30,9 @@ public class H_D_AssetController {
     }
 
     // Soft delete asset by id
-    @PostMapping("/directorAsset/delete/{id}")
+    @PostMapping("/directorAsset/delete")
     @PreAuthorize("hasAnyRole('ROLE_director', 'ROLE_DIRECTOR')")
-    public String softDeleteAsset(@PathVariable("id") String assetId, Model model) {
+    public String softDeleteAsset(@RequestParam("id") String assetId, Model model) {
         Asset asset = assetService.getAssetById(assetId);
         if (asset != null) {
             asset.setDeleted(true);
@@ -46,9 +47,9 @@ public class H_D_AssetController {
     }
 
     // Restore soft deleted asset
-    @PostMapping("/directorAsset/restore/{id}")
+    @PostMapping("/directorAsset/restore")
     @PreAuthorize("hasAnyRole('ROLE_director', 'ROLE_DIRECTOR')")
-    public String restoreAsset(@PathVariable("id") String assetId, Model model) {
+    public String restoreAsset(@RequestParam("id") String assetId, Model model) {
         assetService.restoreAsset(assetId);
         model.addAttribute("assets", assetService.getAllAssets());
         model.addAttribute("deletedAssets", assetService.getDeletedAssets());
@@ -58,9 +59,9 @@ public class H_D_AssetController {
     }
 
     // Permanently delete asset
-    @PostMapping("/directorAsset/permanent-delete/{id}")
+    @PostMapping("/directorAsset/permanent-delete")
     @PreAuthorize("hasAnyRole('ROLE_director', 'ROLE_DIRECTOR')")
-    public String permanentDeleteAsset(@PathVariable("id") String assetId, Model model) {
+    public String permanentDeleteAsset(@RequestParam("id") String assetId, Model model) {
         assetService.deleteAssetPermanently(assetId);
         model.addAttribute("assets", assetService.getAllAssets());
         model.addAttribute("deletedAssets", assetService.getDeletedAssets());
