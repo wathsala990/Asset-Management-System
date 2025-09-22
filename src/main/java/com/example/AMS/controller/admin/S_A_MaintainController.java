@@ -3,6 +3,7 @@ package com.example.AMS.controller.admin;
 import com.example.AMS.model.User;
 import com.example.AMS.repository.UserRepository;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.AMS.model.Maintain;
 import com.example.AMS.repository.S_MaintainRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,37 +75,47 @@ public class S_A_MaintainController {
         model.addAttribute("deletedMaintains", deletedMaintains);
         return "Maintain/admin/recycle-bin";
     }
-    // Show form to add new maintenance
+    // Show form to add new maintenance (redirect to main page with modal)
     @GetMapping("/add")
     public String showAddForm(Model model) {
-        model.addAttribute("maintain", new Maintain());
-        model.addAttribute("assets", assetRepository.findAll());
-        return "Maintain/admin/form";
+        return "redirect:/admin/adminMaintain";
     }
 
     // Save a maintenance record
     @PostMapping("/save")
-    public String saveMaintain(@ModelAttribute Maintain maintain) {
+    public String saveMaintain(@RequestParam("maintainId") String maintainId,
+                              @RequestParam("assetId") String assetId,
+                              @RequestParam("maintainsDate") String maintainsDate,
+                              @RequestParam("nextMaintainDate") String nextMaintainDate,
+                              @RequestParam("description") String description,
+                              @RequestParam("cost") float cost) {
+        
+        // Create or update maintenance record
+        Maintain maintain = maintainRepository.findById(maintainId).orElse(new Maintain());
+        maintain.setMaintainId(maintainId);
+        maintain.setMaintainsDate(LocalDate.parse(maintainsDate));
+        maintain.setNextMaintainDate(LocalDate.parse(nextMaintainDate));
+        maintain.setDescription(description);
+        maintain.setCost(cost);
+        
+        // Set the asset based on the assetId
+        if (assetId != null && !assetId.isEmpty()) {
+            assetRepository.findById(assetId).ifPresent(maintain::setAsset);
+        }
+        
         maintainRepository.save(maintain);
         return "redirect:/admin/adminMaintain";
     }
 
-    // Edit a maintenance record
-    @GetMapping("/edit/{id}")
-    public String showEditForm(@PathVariable("id") String maintainId, Model model) {
-        Optional<Maintain> maintainOpt = maintainRepository.findById(maintainId);
-        if (maintainOpt.isPresent()) {
-            model.addAttribute("maintain", maintainOpt.get());
-            model.addAttribute("assets", assetRepository.findAll());
-            return "Maintain/admin/form";
-        } else {
-            return "redirect:/admin/adminMaintain";
-        }
+    // Edit a maintenance record (redirect to main page with modal)
+    @GetMapping("/edit")
+    public String showEditForm(@RequestParam("id") String maintainId, Model model) {
+        return "redirect:/admin/adminMaintain";
     }
 
     // Soft delete a maintenance record
-    @GetMapping("/delete/{id}")
-    public String deleteMaintain(@PathVariable("id") String maintainId) {
+    @GetMapping("/delete")
+    public String deleteMaintain(@RequestParam("id") String maintainId) {
         Optional<Maintain> maintainOpt = maintainRepository.findById(maintainId);
         if (maintainOpt.isPresent()) {
             Maintain maintain = maintainOpt.get();
@@ -113,8 +125,8 @@ public class S_A_MaintainController {
         return "redirect:/admin/adminMaintain";
     }
     // Restore a deleted maintenance record
-    @GetMapping("/restore/{id}")
-    public String restoreMaintain(@PathVariable("id") String maintainId) {
+    @GetMapping("/restore")
+    public String restoreMaintain(@RequestParam("id") String maintainId) {
         Optional<Maintain> maintainOpt = maintainRepository.findById(maintainId);
         if (maintainOpt.isPresent()) {
             Maintain maintain = maintainOpt.get();
@@ -125,8 +137,8 @@ public class S_A_MaintainController {
     }
     
     // Permanently delete a maintenance record
-    @GetMapping("/permanent-delete/{id}")
-    public String permanentDeleteMaintain(@PathVariable("id") String maintainId) {
+    @GetMapping("/permanent-delete")
+    public String permanentDeleteMaintain(@RequestParam("id") String maintainId) {
         maintainRepository.deleteById(maintainId);
         return "redirect:/admin/adminMaintain/recycle-bin";
     }

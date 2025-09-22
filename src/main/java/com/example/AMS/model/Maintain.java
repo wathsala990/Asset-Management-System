@@ -12,7 +12,7 @@ public class Maintain {
     private String description;
     private float cost;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "assetId")
     private Asset asset;
 
