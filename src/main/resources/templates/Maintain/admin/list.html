@@ -986,7 +986,7 @@
                 <a href="/admin/adminMaintain/recycle-bin" class="btn-custom btn-danger-custom">
                     <i class="fas fa-trash"></i>Recycle Bin
                 </a>
-                <button type="button" class="btn-custom btn-primary-custom" data-bs-toggle="modal" data-bs-target="#maintainModal">
+                <button type="button" class="btn-custom btn-primary-custom" data-bs-toggle="modal" data-bs-target="#maintainModal" onclick="addNewMaintain()">
                     <i class="fas fa-plus"></i>Add New Maintenance
                 </button>
             </div>
@@ -1003,6 +1003,7 @@
                                 <thead>
                                     <tr>
                                         <th><i class="fas fa-hashtag me-2"></i>ID</th>
+                                        <th><i class="fas fa-box me-2"></i>Asset</th>
                                         <th><i class="fas fa-calendar-check me-2"></i>Maintenance Date</th>
                                         <th><i class="fas fa-calendar-plus me-2"></i>Next Maintenance Date</th>
                                         <th><i class="fas fa-file-alt me-2"></i>Description</th>
@@ -1013,6 +1014,11 @@
                                 <tbody>
                                     <tr th:each="maintain : ${maintains}">
                                         <td><strong th:text="${maintain.maintainId}">M001</strong></td>
+                                        <td>
+                                            <span th:if="${maintain.asset != null}" 
+                                                  th:text="${maintain.asset.assetId + ' - ' + maintain.asset.name}">A001 - Laptop</span>
+                                            <span th:if="${maintain.asset == null}" class="text-muted">No Asset Assigned</span>
+                                        </td>
                                         <td th:text="${#temporals.format(maintain.maintainsDate, 'yyyy-MM-dd')}">2024-01-15</td>
                                         <td th:text="${#temporals.format(maintain.nextMaintainDate, 'yyyy-MM-dd')}">2024-07-15</td>
                                         <td th:text="${maintain.description}">Regular maintenance check</td>
@@ -1022,11 +1028,19 @@
                                         </td>
                                         <td>
                                             <div class="d-flex gap-2">
-                                                <a th:href="@{/admin/adminMaintain/edit/{id}(id=${maintain.maintainId})}" 
-                                                   class="btn-custom btn-warning-custom">
+                                                <button type="button" class="btn-custom btn-warning-custom" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#maintainModal"
+                                                        onclick="editMaintain(this)"
+                                                        th:data-maintain-id="${maintain.maintainId}"
+                                                        th:data-asset-id="${maintain.asset != null ? maintain.asset.assetId : ''}"
+                                                        th:data-maintains-date="${maintain.maintainsDate}"
+                                                        th:data-next-maintain-date="${maintain.nextMaintainDate}"
+                                                        th:data-description="${maintain.description}"
+                                                        th:data-cost="${maintain.cost}">
                                                     <i class="fas fa-edit"></i>Edit
-                                                </a>
-                                                <a th:href="@{/admin/adminMaintain/delete/{id}(id=${maintain.maintainId})}" 
+                                                </button>
+                                                <a th:href="@{/admin/adminMaintain/delete(id=${maintain.maintainId})}" 
                                                    class="btn-custom btn-danger-custom" 
                                                    onclick="return confirm('Are you sure you want to delete this maintenance record?');">
                                                     <i class="fas fa-trash"></i>Delete
@@ -1035,7 +1049,7 @@
                                         </td>
                                     </tr>
                                     <tr th:if="${#lists.isEmpty(maintains)}">
-                                        <td colspan="6" class="text-center">
+                                        <td colspan="7" class="text-center">
                                             <div class="empty-state">
                                                 <i class="fas fa-clipboard-list"></i>
                                                 <h3>No Maintenance Records Found</h3>
@@ -1054,10 +1068,10 @@
             <div class="modal fade" id="maintainModal" tabindex="-1" aria-labelledby="maintainModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
-                        <form th:action="@{/admin/adminMaintain/save}" th:object="${maintain}" method="post">
+                        <form th:action="@{/admin/adminMaintain/save}" method="post">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="maintainModalLabel">
-                                    <i class="fas fa-plus-circle"></i>Add New Maintenance Record
+                                    <i class="fas fa-plus-circle"></i><span id="modalTitle">Add New Maintenance Record</span>
                                 </h5>
                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
@@ -1067,37 +1081,52 @@
                                         <label class="form-label">
                                             <i class="fas fa-hashtag"></i>Maintenance ID
                                         </label>
-                                        <input type="text" th:field="*{maintainId}" class="form-control" required placeholder="Enter maintenance ID">
+                                        <input type="text" name="maintainId" class="form-control" id="modalMaintainId" required placeholder="Enter maintenance ID">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">
+                                            <i class="fas fa-box"></i>Asset
+                                        </label>
+                                        <select name="assetId" class="form-select" id="modalAssetId" required>
+                                            <option value="">Select an asset</option>
+                                            <option th:each="assetOption : ${assets}" 
+                                                    th:value="${assetOption.assetId}" 
+                                                    th:text="${assetOption.assetId + ' - ' + assetOption.name}">
+                                            </option>
+                                        </select>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">
                                             <i class="fas fa-calendar-check"></i>Maintenance Date
                                         </label>
-                                        <input type="date" th:field="*{maintainsDate}" class="form-control" required>
+                                        <input type="date" name="maintainsDate" class="form-control" id="modalMaintainsDate" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">
                                             <i class="fas fa-calendar-plus"></i>Next Maintenance Date
                                         </label>
-                                        <input type="date" th:field="*{nextMaintainDate}" class="form-control" required>
+                                        <input type="date" name="nextMaintainDate" class="form-control" id="modalNextMaintainDate" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">
                                             <i class="fas fa-dollar-sign"></i>Cost (LKR)
                                         </label>
-                                        <input type="number" step="0.01" th:field="*{cost}" class="form-control" required placeholder="0.00">
+                                        <div class="input-group">
+                                            <span class="input-group-text">LKR</span>
+                                            <input type="number" step="0.01" name="cost" class="form-control" id="modalCost" required placeholder="0.00">
+                                        </div>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label">
                                             <i class="fas fa-file-alt"></i>Description
                                         </label>
-                                        <textarea th:field="*{description}" class="form-control" rows="4" required placeholder="Provide detailed description of the maintenance work performed..."></textarea>
+                                        <textarea name="description" class="form-control" rows="4" id="modalDescription" required placeholder="Provide detailed description of the maintenance work performed..."></textarea>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn-custom btn-success-custom btn-lg">
-                                    <i class="fas fa-save"></i>Save Maintenance Record
+                                <button type="submit" class="btn-custom btn-success-custom btn-lg" id="modalSubmitBtn">
+                                    <i class="fas fa-save"></i><span id="submitBtnText">Save Maintenance Record</span>
                                 </button>
                                 <button type="button" class="btn-custom btn-accent-custom" data-bs-dismiss="modal">
                                     <i class="fas fa-times"></i>Cancel
@@ -1228,13 +1257,53 @@
 
         // Form validation enhancement
         document.getElementById('maintainModal').addEventListener('shown.bs.modal', function() {
-            // Set today's date as default for maintenance date
+            // Set today's date as default for maintenance date only in add mode
             const today = new Date().toISOString().split('T')[0];
-            const maintainDateInput = this.querySelector('input[type="date"]');
-            if (maintainDateInput && !maintainDateInput.value) {
+            const maintainDateInput = this.querySelector('#modalMaintainsDate');
+            if (maintainDateInput && !maintainDateInput.value && document.getElementById('modalTitle').textContent.includes('Add')) {
                 maintainDateInput.value = today;
             }
         });
+
+        // Function to clear modal for adding new maintenance
+        function addNewMaintain() {
+            // Reset form
+            document.querySelector('#maintainModal form').reset();
+            
+            // Update modal title and button text
+            document.getElementById('modalTitle').textContent = 'Add New Maintenance Record';
+            document.getElementById('submitBtnText').textContent = 'Save Maintenance Record';
+            
+            // Make maintainId field editable
+            document.getElementById('modalMaintainId').readOnly = false;
+            
+            // Clear asset selection
+            document.getElementById('modalAssetId').value = '';
+        }
+
+        // Function to populate modal for editing maintenance
+        function editMaintain(button) {
+            // Get data from button attributes
+            const maintainId = button.getAttribute('data-maintain-id');
+            const assetId = button.getAttribute('data-asset-id');
+            const maintainsDate = button.getAttribute('data-maintains-date');
+            const nextMaintainDate = button.getAttribute('data-next-maintain-date');
+            const description = button.getAttribute('data-description');
+            const cost = button.getAttribute('data-cost');
+            
+            // Update modal title and button text
+            document.getElementById('modalTitle').textContent = 'Edit Maintenance Record';
+            document.getElementById('submitBtnText').textContent = 'Update Maintenance Record';
+            
+            // Populate form fields
+            document.getElementById('modalMaintainId').value = maintainId;
+            document.getElementById('modalMaintainId').readOnly = true; // Make read-only for edit
+            document.getElementById('modalAssetId').value = assetId;
+            document.getElementById('modalMaintainsDate').value = maintainsDate;
+            document.getElementById('modalNextMaintainDate').value = nextMaintainDate;
+            document.getElementById('modalDescription').value = description;
+            document.getElementById('modalCost').value = cost;
+        }
     </script>
 </body>
 </html>

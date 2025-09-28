@@ -534,19 +534,107 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="container mt-4">
-    <h2 th:text="${maintain.maintainId == null} ? 'Add Maintenance' : 'Edit Maintenance'"></h2>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-tools me-2"></i>
+                        <span th:text="${maintain.maintainId == null} ? 'Add New Maintenance Record' : 'Edit Maintenance Record'"></span>
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/admin/adminMaintain/save}" th:object="${maintain}" method="post">
+                        <!-- Maintain ID -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="maintainId" class="form-label">
+                                    <i class="fas fa-hashtag me-1"></i>Maintenance ID
+                                </label>
+                                <input type="text" th:field="*{maintainId}" class="form-control" id="maintainId" 
+                                       placeholder="Enter maintenance ID" required
+                                       th:readonly="${maintain.maintainId != null}">
+                                <small class="form-text text-muted">Unique identifier for this maintenance record</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="assetId" class="form-label">
+                                    <i class="fas fa-box me-1"></i>Asset
+                                </label>
+                                <select name="assetId" class="form-select" id="assetId" required>
+                                    <option value="">Select an asset</option>
+                                    <option th:each="assetOption : ${assets}" 
+                                            th:value="${assetOption.assetId}" 
+                                            th:text="${assetOption.assetId + ' - ' + assetOption.name}"
+                                            th:selected="${maintain.asset != null and maintain.asset.assetId == assetOption.assetId}">
+                                    </option>
+                                </select>
+                                <small class="form-text text-muted">
+                                    Select the asset for maintenance 
+                                    <span th:if="${maintain.asset != null}" class="text-primary">
+                                        (Currently: <span th:text="${maintain.asset.assetId}"></span>)
+                                    </span>
+                                </small>
+                            </div>
+                        </div>
 
-    <form th:action="@{/admin/adminMaintain/save}" th:object="${maintain}" method="post">
-        <div class="mb-3">
-            <label for="maintainId" class="form-label">Maintain ID</label>
-            <input type="text" th:field="*{maintainId}" class="form-control" id="maintainId" required>
+                        <!-- Dates -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="maintainsDate" class="form-label">
+                                    <i class="fas fa-calendar-check me-1"></i>Maintenance Date
+                                </label>
+                                <input type="date" th:field="*{maintainsDate}" class="form-control" id="maintainsDate" required>
+                                <small class="form-text text-muted">Date when maintenance was performed</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="nextMaintainDate" class="form-label">
+                                    <i class="fas fa-calendar-plus me-1"></i>Next Maintenance Date
+                                </label>
+                                <input type="date" th:field="*{nextMaintainDate}" class="form-control" id="nextMaintainDate" required>
+                                <small class="form-text text-muted">Scheduled date for next maintenance</small>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">
+                                <i class="fas fa-file-alt me-1"></i>Description
+                            </label>
+                            <textarea th:field="*{description}" class="form-control" id="description" rows="4" 
+                                      placeholder="Enter detailed description of maintenance work performed" required></textarea>
+                            <small class="form-text text-muted">Describe the maintenance work performed, issues found, and actions taken</small>
+                        </div>
+
+                        <!-- Cost -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="cost" class="form-label">
+                                    <i class="fas fa-dollar-sign me-1"></i>Cost (LKR)
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">LKR</span>
+                                    <input type="number" th:field="*{cost}" class="form-control" id="cost" 
+                                           step="0.01" min="0" placeholder="0.00" required>
+                                </div>
+                                <small class="form-text text-muted">Total cost of maintenance in Sri Lankan Rupees</small>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-3 justify-content-end">
+                            <a th:href="@{/admin/adminMaintain}" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-1"></i>
+                                <span th:text="${maintain.maintainId == null} ? 'Add Maintenance' : 'Update Maintenance'"></span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <!-- Add your other fields here -->
-
-        <button type="submit" class="btn btn-success">Save</button>
-        <a th:href="@{/admin/adminMaintain}" class="btn btn-secondary">Cancel</a>
-    </form>
+    </div>
 </div>
         </main>
     </div>
