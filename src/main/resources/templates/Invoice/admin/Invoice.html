@@ -578,13 +578,22 @@
             to { opacity: 0; transform: translateX(100%); }
         }
 
+        /* Action Buttons Container */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 120px;
+        }
+        
         /* View Button - Enhanced */
         .view-btn {
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.2rem;
             font-size: 0.85rem;
             border-radius: 8px;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             background: var(--gradient-primary);
             color: white;
             border: none;
@@ -593,6 +602,8 @@
             box-shadow: 0 2px 8px rgba(128, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
+            width: 100%;
+            text-decoration: none;
         }
 
         .view-btn::before {
@@ -623,11 +634,12 @@
 
         /* Edit Button - Enhanced */
         .edit-btn {
-            padding: 0.5rem 1rem;
+            padding: 0.6rem 1.2rem;
             font-size: 0.85rem;
             border-radius: 8px;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
             color: white;
             border: none;
@@ -636,6 +648,7 @@
             box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
             position: relative;
             overflow: hidden;
+            width: 100%;
         }
 
         .edit-btn::before {
@@ -672,6 +685,49 @@
             padding: 0.5rem 0.8rem;
             border-radius: 25px;
             box-shadow: 0 2px 8px rgba(128, 0, 0, 0.2);
+        }
+
+        /* Vendor Information Display */
+        .vendor-info {
+            max-width: 200px;
+        }
+        
+        .vendor-info .fw-semibold {
+            color: var(--primary-color);
+            margin-bottom: 2px;
+        }
+        
+        .vendor-info small {
+            font-size: 0.75rem;
+            line-height: 1.2;
+        }
+        
+        .vendor-info .fa-map-marker-alt {
+            color: #dc3545;
+        }
+
+        /* View Modal Specific Styles */
+        .modal-lg .card-header {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 500;
+        }
+        
+        .modal-lg .card-header h6 {
+            margin: 0;
+        }
+        
+        .modal-lg .card-body {
+            padding: 1rem;
+        }
+        
+        .modal-lg .row.mb-2 {
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 0.5rem;
+        }
+        
+        .modal-lg .row.mb-2:last-child {
+            border-bottom: none;
         }
 
         /* Vendor Suggestions */
@@ -822,6 +878,17 @@
 
             .page-title {
                 font-size: 1.3rem;
+            }
+            
+            /* Action buttons responsive */
+            .action-buttons {
+                gap: 0.3rem;
+                min-width: 100px;
+            }
+            
+            .view-btn, .edit-btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
             }
         }
 
@@ -1099,9 +1166,10 @@
                                     <th><i class="fas fa-barcode me-2"></i>Order ID</th>
                                     <th><i class="fas fa-calendar-alt me-2"></i>Date</th>
                                     <th><i class="fas fa-money-bill-wave me-2"></i>Cost</th>
+                                    <th><i class="fas fa-user-tie me-2"></i>Vendor</th>
                                     <th class="text-end"><i class="fas fa-cubes me-2"></i>Items</th>
                                     <th><i class="fas fa-sticky-note me-2"></i>Remark</th>
-                                    <th class="text-end">Actions</th>
+                                    <th class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1113,6 +1181,16 @@
                                     <td th:text="${invoice.orderId}">ORD-2023-001</td>
                                     <td th:text="${#temporals.format(invoice.invoiceDate, 'yyyy-MM-dd')}">2023-07-01</td>
                                     <td th:text="${invoice.invoiceCost}">100.00</td>
+                                    <td>
+                                        <div class="vendor-info">
+                                            <div class="fw-semibold" th:text="${invoice.venderName != null ? invoice.venderName : '-'}">Vendor Name</div>
+                                            <small class="text-muted" th:if="${invoice.address != null && !#strings.isEmpty(invoice.address)}">
+                                                <i class="fas fa-map-marker-alt me-1"></i>
+                                                <span th:text="${invoice.address.length() > 25 ? invoice.address.substring(0, 25) + '...' : invoice.address}" 
+                                                      th:title="${invoice.address}"></span>
+                                            </small>
+                                        </div>
+                                    </td>
                                     <td class="text-end">
                                         <span class="badge item-count-badge" th:text="${invoice.itemCount}">5</span>
                                     </td>
@@ -1120,29 +1198,42 @@
                                         <span th:text="${invoice.remark != null && !#strings.isEmpty(invoice.remark) ? (invoice.remark.length() > 30 ? invoice.remark.substring(0, 30) + '...' : invoice.remark) : '-'}" 
                                               th:title="${invoice.remark}" class="text-muted"></span>
                                     </td>
-                                    <td class="text-end">
-                                        <a th:href="@{'/admin/adminInvoice/view/' + ${invoice.invoiceNumber}}" 
-                                           class="btn btn-sm view-btn me-2">
-                                            <i class="fas fa-eye me-2"></i>View
-                                        </a>
-                                        <button type="button" 
-                                                class="btn btn-sm edit-btn" 
-                                                data-bs-toggle="modal" 
-                                                data-bs-target="#editInvoiceModal"
-                                                th:data-invoice-number="${invoice.invoiceNumber}"
-                                                th:data-order-id="${invoice.orderId}"
-                                                th:data-invoice-date="${#temporals.format(invoice.invoiceDate, 'yyyy-MM-dd')}"
-                                                th:data-invoice-cost="${invoice.invoiceCost}"
-                                                th:data-vender-name="${invoice.venderName != null ? invoice.venderName : ''}"
-                                                th:data-address="${invoice.address != null ? invoice.address : ''}"
-                                                th:data-contact-no="${invoice.contactNo != null ? invoice.contactNo : ''}"
-                                                th:data-remark="${invoice.remark != null ? invoice.remark : ''}">
-                                            <i class="fas fa-edit me-2"></i>Edit
-                                        </button>
+                                    <td class="text-center">
+                                        <div class="action-buttons">
+                                            <button type="button" 
+                                                    class="btn btn-sm view-btn" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#viewInvoiceModal"
+                                                    th:data-invoice-number="${invoice.invoiceNumber}"
+                                                    th:data-order-id="${invoice.orderId}"
+                                                    th:data-invoice-date="${#temporals.format(invoice.invoiceDate, 'yyyy-MM-dd')}"
+                                                    th:data-invoice-cost="${invoice.invoiceCost}"
+                                                    th:data-item-count="${invoice.itemCount}"
+                                                    th:data-vender-name="${invoice.venderName != null ? invoice.venderName : ''}"
+                                                    th:data-address="${invoice.address != null ? invoice.address : ''}"
+                                                    th:data-contact-no="${invoice.contactNo != null ? invoice.contactNo : ''}"
+                                                    th:data-remark="${invoice.remark != null ? invoice.remark : ''}">
+                                                <i class="fas fa-eye me-2"></i>View
+                                            </button>
+                                            <button type="button" 
+                                                    class="btn btn-sm edit-btn" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#editInvoiceModal"
+                                                    th:data-invoice-number="${invoice.invoiceNumber}"
+                                                    th:data-order-id="${invoice.orderId}"
+                                                    th:data-invoice-date="${#temporals.format(invoice.invoiceDate, 'yyyy-MM-dd')}"
+                                                    th:data-invoice-cost="${invoice.invoiceCost}"
+                                                    th:data-vender-name="${invoice.venderName != null ? invoice.venderName : ''}"
+                                                    th:data-address="${invoice.address != null ? invoice.address : ''}"
+                                                    th:data-contact-no="${invoice.contactNo != null ? invoice.contactNo : ''}"
+                                                    th:data-remark="${invoice.remark != null ? invoice.remark : ''}">
+                                                <i class="fas fa-edit me-2"></i>Edit
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(invoices)}">
-                                    <td colspan="6" class="text-center py-4 empty-state">
+                                    <td colspan="8" class="text-center py-4 empty-state">
                                         <i class="fas fa-file-invoice"></i>
                                         <p class="mt-2">No invoices found. Add your first invoice!</p>
                                     </td>
@@ -1253,7 +1344,7 @@
                                 <textarea class="form-control" id="address"
                                        th:field="*{address}"
                                        th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''"
-                                       placeholder="Enter vendor address details..." rows="3" required readonly></textarea>
+                                       placeholder="Enter vendor address details..." rows="3" required></textarea>
                             </div>
                             <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="error-message"></div>
                         </div>
@@ -1268,7 +1359,7 @@
                                 <textarea class="form-control" id="contactNo"
                                        th:field="*{contactNo}"
                                        th:classappend="${#fields.hasErrors('contactNo')} ? 'is-invalid' : ''"
-                                       placeholder="Enter contact numbers, emails, etc..." rows="2" required readonly></textarea>
+                                       placeholder="Enter contact numbers, emails, etc..." rows="2" required></textarea>
                             </div>
                             <div th:if="${#fields.hasErrors('contactNo')}" th:errors="*{contactNo}" class="error-message"></div>
                         </div>
@@ -1441,6 +1532,105 @@
         </div>
     </div>
 
+    <!-- View Invoice Modal -->
+    <div class="modal fade" id="viewInvoiceModal" tabindex="-1" aria-labelledby="viewInvoiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewInvoiceModalLabel">
+                        <i class="fas fa-file-invoice me-2"></i>Invoice Details
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Invoice Information -->
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h6 class="mb-0"><i class="fas fa-file-invoice me-2"></i>Invoice Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row mb-2">
+                                        <div class="col-5"><strong>Invoice Number:</strong></div>
+                                        <div class="col-7" id="viewInvoiceNumber">-</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5"><strong>Order ID:</strong></div>
+                                        <div class="col-7" id="viewOrderId">-</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5"><strong>Date:</strong></div>
+                                        <div class="col-7" id="viewInvoiceDate">-</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5"><strong>Cost:</strong></div>
+                                        <div class="col-7" id="viewInvoiceCost">-</div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-5"><strong>Items:</strong></div>
+                                        <div class="col-7">
+                                            <span class="badge item-count-badge" id="viewItemCount">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Vendor Information -->
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h6 class="mb-0"><i class="fas fa-user-tie me-2"></i>Vendor Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row mb-2">
+                                        <div class="col-4"><strong>Name:</strong></div>
+                                        <div class="col-8" id="viewVenderName">-</div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-4"><strong>Address:</strong></div>
+                                        <div class="col-8">
+                                            <div id="viewAddress" class="text-muted" style="white-space: pre-wrap;">-</div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-2">
+                                        <div class="col-4"><strong>Contact:</strong></div>
+                                        <div class="col-8">
+                                            <div id="viewContactNo" class="text-muted" style="white-space: pre-wrap;">-</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Remark Section -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0"><i class="fas fa-sticky-note me-2"></i>Remarks</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div id="viewRemark" class="text-muted" style="white-space: pre-wrap;">No remarks</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Close
+                    </button>
+                    <button type="button" class="btn btn-primary-custom" onclick="window.print()">
+                        <i class="fas fa-print me-2"></i>Print
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="main-footer">
         <div class="footer-container">
@@ -1604,6 +1794,37 @@
                 const modal = new bootstrap.Modal(document.getElementById('addInvoiceModal'));
                 modal.show();
             }
+        });
+
+        // View Invoice Modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const viewButtons = document.querySelectorAll('.view-btn');
+            
+            viewButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Get data attributes from the button
+                    const invoiceNumber = button.getAttribute('data-invoice-number') || '';
+                    const orderId = button.getAttribute('data-order-id') || '';
+                    const invoiceDate = button.getAttribute('data-invoice-date') || '';
+                    const invoiceCost = button.getAttribute('data-invoice-cost') || '';
+                    const itemCount = button.getAttribute('data-item-count') || '';
+                    const venderName = button.getAttribute('data-vender-name') || '';
+                    const address = button.getAttribute('data-address') || '';
+                    const contactNo = button.getAttribute('data-contact-no') || '';
+                    const remark = button.getAttribute('data-remark') || '';
+                    
+                    // Populate the view modal
+                    document.getElementById('viewInvoiceNumber').textContent = invoiceNumber || '-';
+                    document.getElementById('viewOrderId').textContent = orderId || '-';
+                    document.getElementById('viewInvoiceDate').textContent = invoiceDate || '-';
+                    document.getElementById('viewInvoiceCost').textContent = invoiceCost ? '$' + invoiceCost : '-';
+                    document.getElementById('viewItemCount').textContent = itemCount || '-';
+                    document.getElementById('viewVenderName').textContent = venderName || 'Not specified';
+                    document.getElementById('viewAddress').textContent = address || 'Not specified';
+                    document.getElementById('viewContactNo').textContent = contactNo || 'Not specified';
+                    document.getElementById('viewRemark').textContent = remark || 'No remarks';
+                });
+            });
         });
 
         // Edit Invoice Modal functionality
