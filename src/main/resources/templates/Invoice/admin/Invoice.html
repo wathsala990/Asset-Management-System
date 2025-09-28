@@ -895,6 +895,54 @@
         .mobile-menu-btn {
             display: none;
         }
+
+        /* Print Styles - Ensure only one invoice is shown */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            .modal.show, .modal.show * {
+                visibility: visible;
+            }
+            
+            .modal-dialog {
+                margin: 0;
+                padding: 0;
+                max-width: 100%;
+                width: 100%;
+            }
+            
+            .modal-content {
+                border: none;
+                box-shadow: none;
+            }
+            
+            .modal-header, .modal-footer {
+                display: none;
+            }
+            
+            .modal-body {
+                padding: 0;
+            }
+            
+            /* Hide everything else during print */
+            .main-header, .sidebar, .main-footer {
+                display: none !important;
+            }
+            
+            /* Ensure clean invoice print layout */
+            .card {
+                border: 1px solid #ddd;
+                page-break-inside: avoid;
+            }
+            
+            .card-header {
+                background-color: #f8f9fa !important;
+                color: #000 !important;
+            }
+        }
+
         /* Footer Styles */
         .main-footer {
             background-color: var(--primary-color);
@@ -1623,7 +1671,7 @@
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                         <i class="fas fa-times me-2"></i>Close
                     </button>
-                    <button type="button" class="btn btn-primary-custom" onclick="window.print()">
+                    <button type="button" class="btn btn-primary-custom" onclick="printInvoice()">
                         <i class="fas fa-print me-2"></i>Print
                     </button>
                 </div>
@@ -1787,19 +1835,17 @@
             });
         }
 
-        // Show modal if there are validation errors
+        // Consolidated DOMContentLoaded event listener to prevent duplication
         document.addEventListener('DOMContentLoaded', function() {
+            // Show modal if there are validation errors
             const hasErrors = document.querySelector('.is-invalid');
             if (hasErrors) {
                 const modal = new bootstrap.Modal(document.getElementById('addInvoiceModal'));
                 modal.show();
             }
-        });
 
-        // View Invoice Modal functionality
-        document.addEventListener('DOMContentLoaded', function() {
+            // View Invoice Modal functionality
             const viewButtons = document.querySelectorAll('.view-btn');
-            
             viewButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     // Get data attributes from the button
@@ -1813,7 +1859,18 @@
                     const contactNo = button.getAttribute('data-contact-no') || '';
                     const remark = button.getAttribute('data-remark') || '';
                     
-                    // Populate the view modal
+                    // Clear any existing content first to prevent duplication
+                    document.getElementById('viewInvoiceNumber').textContent = '';
+                    document.getElementById('viewOrderId').textContent = '';
+                    document.getElementById('viewInvoiceDate').textContent = '';
+                    document.getElementById('viewInvoiceCost').textContent = '';
+                    document.getElementById('viewItemCount').textContent = '';
+                    document.getElementById('viewVenderName').textContent = '';
+                    document.getElementById('viewAddress').textContent = '';
+                    document.getElementById('viewContactNo').textContent = '';
+                    document.getElementById('viewRemark').textContent = '';
+                    
+                    // Populate the view modal with new data
                     document.getElementById('viewInvoiceNumber').textContent = invoiceNumber || '-';
                     document.getElementById('viewOrderId').textContent = orderId || '-';
                     document.getElementById('viewInvoiceDate').textContent = invoiceDate || '-';
@@ -1825,10 +1882,8 @@
                     document.getElementById('viewRemark').textContent = remark || 'No remarks';
                 });
             });
-        });
 
-        // Edit Invoice Modal functionality
-        document.addEventListener('DOMContentLoaded', function() {
+            // Edit Invoice Modal functionality
             const editButtons = document.querySelectorAll('.edit-btn');
             const editModal = document.getElementById('editInvoiceModal');
             
@@ -1883,6 +1938,31 @@
                 });
             });
         });
+
+        // Custom print function for invoice modal
+        function printInvoice() {
+            // Hide modal backdrop and other elements during print
+            const modal = document.getElementById('viewInvoiceModal');
+            const backdrop = document.querySelector('.modal-backdrop');
+            
+            if (backdrop) {
+                backdrop.style.display = 'none';
+            }
+            
+            // Add print-specific class to modal
+            modal.classList.add('printing');
+            
+            // Trigger print
+            window.print();
+            
+            // Restore modal backdrop after print
+            setTimeout(() => {
+                if (backdrop) {
+                    backdrop.style.display = 'block';
+                }
+                modal.classList.remove('printing');
+            }, 100);
+        }
     </script>
 </body>
 </html>
