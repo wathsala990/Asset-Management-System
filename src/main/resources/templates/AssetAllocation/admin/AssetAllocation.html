@@ -1055,6 +1055,10 @@
             const query = this.value;
             if (query.length < 1) {
                 document.getElementById('userNameSuggestions').innerHTML = '';
+                // Clear related fields when input is cleared
+                document.getElementById('jobRoleInput').value = '';
+                document.getElementById('userIdInput').value = '';
+                selectedUserId = '';
                 return;
             }
             fetch('/admin/assetAllocation/assetUsers/suggest?query=' + encodeURIComponent(query))
@@ -1103,6 +1107,19 @@
             document.getElementById('assetCondemnError').classList.add('d-none');
             document.getElementById('assetCondemnError').textContent = '';
             
+            // Validate user is selected from suggestions
+            const userNameInput = document.getElementById('userNameInput').value.trim();
+            const userIdInput = document.getElementById('userIdInput').value.trim();
+            
+            // Use userIdInput as fallback if selectedUserId is not set
+            const finalUserId = selectedUserId || userIdInput;
+            
+            if (!userNameInput || !userIdInput || !finalUserId) {
+                document.getElementById('assetCondemnError').textContent = 'Please select a valid user from the suggestions.';
+                document.getElementById('assetCondemnError').classList.remove('d-none');
+                return;
+            }
+            
             // Validate assetId is from suggestions
             const assetIdInput = document.getElementById('assetIdInput').value.trim();
             const assetNameInput = document.getElementById('assetNameInput').value.trim();
@@ -1118,8 +1135,8 @@
                 return;
             }
             const payload = {
-                userId: selectedUserId,
-                userName: document.getElementById('userNameInput').value,
+                userId: finalUserId,
+                userName: userNameInput,
                 jobRole: document.getElementById('jobRoleInput').value,
                 assetId: assetIdInput,
                 assetName: assetNameInput,
