@@ -197,6 +197,197 @@
             margin: 1rem;
         }
         
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .page-header h1 {
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .page-header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        /* Navigation Tabs */
+        .nav-tabs {
+            border-bottom: 2px solid var(--primary-color);
+            margin-bottom: 2rem;
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            border-bottom: 3px solid transparent;
+            background: none;
+            color: var(--text-dark);
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+            margin-bottom: -2px;
+            transition: var(--transition);
+        }
+        
+        .nav-tabs .nav-link:hover {
+            border-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        .nav-tabs .nav-link.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: rgba(128, 0, 0, 0.05);
+        }
+        
+        /* Card Styles */
+        .verification-card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            overflow: hidden;
+        }
+        
+        .verification-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            font-weight: 600;
+            padding: 1.25rem;
+            border-bottom: none;
+        }
+        
+        .card-header i {
+            margin-right: 0.5rem;
+        }
+        
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+        }
+        
+        .table {
+            margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .table th {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            font-weight: 600;
+            padding: 1rem;
+            border: none;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .table th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+        
+        .table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+        
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            transition: var(--transition);
+        }
+        
+        .table tbody tr:hover {
+            background-color: rgba(128, 0, 0, 0.05);
+            transform: scale(1.001);
+        }
+        
+        .table tbody tr:last-child td:first-child {
+            border-radius: 0 0 0 8px;
+        }
+        
+        .table tbody tr:last-child td:last-child {
+            border-radius: 0 0 8px 0;
+        }
+        
+        /* Button Styles */
+        .btn-action {
+            margin: 0 2px;
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-view {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-view:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        /* Modal Styles */
+        .modal-content {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: white;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .modal-header .btn-close {
+            filter: invert(1);
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid #e9ecef;
+            padding: 1rem 2rem;
+        }
+        
         /* Footer Styles */
         .main-footer {
             background-color: var(--primary-color);
@@ -503,8 +694,315 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <h1>Director - Movement</h1>
+            <!-- Page Header -->
+            <div class="page-header">
+                <h1><i class="fas fa-exchange-alt"></i>Asset Movement Management</h1>
+                <p>View locations, rooms, and asset movement history</p>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs" id="movementTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="locations-tab" data-bs-toggle="tab" data-bs-target="#locationsTab" type="button" role="tab" aria-controls="locationsTab" aria-selected="true">
+                        <i class="fas fa-map-marker-alt"></i> Locations
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="rooms-tab" data-bs-toggle="tab" data-bs-target="#roomsTab" type="button" role="tab" aria-controls="roomsTab" aria-selected="false">
+                        <i class="fas fa-door-open"></i> Rooms
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="movement-tab" data-bs-toggle="tab" data-bs-target="#movementTab" type="button" role="tab" aria-controls="movementTab" aria-selected="false">
+                        <i class="fas fa-history"></i> Movement History
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="movementTabContent">
+                <!-- Locations Tab -->
+                <div class="tab-pane fade show active" id="locationsTab" role="tabpanel" aria-labelledby="locations-tab">
+                    <div class="card verification-card">
+                        <div class="card-header">
+                            <strong>
+                                <i class="fas fa-map-marker-alt"></i>All Locations
+                            </strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Location ID</th>
+                                            <th>Department Name</th>
+                                            <th>Description</th>
+                                            <th>Transfer Date</th>
+                                            <th>Start Date</th>
+                                            <th>End Date</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="loc, iterStat : ${locations}">
+                                            <td th:text="${iterStat.count}"></td>
+                                            <td>
+                                                <div class="fw-semibold text-primary" th:text="${loc.locationId}"></div>
+                                            </td>
+                                            <td th:text="${loc.departmentName}"></td>
+                                            <td th:text="${loc.description}"></td>
+                                            <td th:text="${#dates.format(loc.transferDate, 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#dates.format(loc.startDate, 'dd-MM-yyyy')}"></td>
+                                            <td th:text="${#dates.format(loc.endDate, 'dd-MM-yyyy')}"></td>
+                                            <td class="text-center">
+                                                <div class="btn-group" role="group">
+                                                    <!-- View Button -->
+                                                    <button 
+                                                        class="btn btn-action btn-view btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#locationViewModal"
+                                                        th:attr="data-location-id=${loc.locationId},
+                                                                 data-department-name=${loc.departmentName},
+                                                                 data-description=${loc.description},
+                                                                 data-transfer-date=${#dates.format(loc.transferDate, 'yyyy-MM-dd')},
+                                                                 data-start-date=${#dates.format(loc.startDate, 'yyyy-MM-dd')},
+                                                                 data-end-date=${#dates.format(loc.endDate, 'yyyy-MM-dd')}"
+                                                    >
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${locations == null or #lists.isEmpty(locations)}">
+                                            <td colspan="8" class="empty-state">
+                                                <i class="fas fa-info-circle"></i>
+                                                <p>No locations found.</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rooms Tab -->
+                <div class="tab-pane fade" id="roomsTab" role="tabpanel" aria-labelledby="rooms-tab">
+                    <div class="card verification-card">
+                        <div class="card-header">
+                            <strong>
+                                <i class="fas fa-door-open"></i>All Rooms
+                            </strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Room ID</th>
+                                            <th>Room Name</th>
+                                            <th>Location</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="room, iterStat : ${rooms}">
+                                            <td th:text="${iterStat.count}"></td>
+                                            <td>
+                                                <div class="fw-semibold text-primary" th:text="${room.roomId}"></div>
+                                            </td>
+                                            <td th:text="${room.roomName}"></td>
+                                            <td th:text="${room.location.departmentName}"></td>
+                                            <td class="text-center">
+                                                <div class="btn-group" role="group">
+                                                    <!-- View Button -->
+                                                    <button 
+                                                        class="btn btn-action btn-view btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#roomViewModal"
+                                                        th:attr="data-room-id=${room.roomId},
+                                                                 data-room-name=${room.roomName},
+                                                                 data-location=${room.location.departmentName}"
+                                                    >
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${rooms == null or #lists.isEmpty(rooms)}">
+                                            <td colspan="5" class="empty-state">
+                                                <i class="fas fa-info-circle"></i>
+                                                <p>No rooms found.</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Movement History Tab -->
+                <div class="tab-pane fade" id="movementTab" role="tabpanel" aria-labelledby="movement-tab">
+                    <div class="card verification-card">
+                        <div class="card-header">
+                            <strong>
+                                <i class="fas fa-history"></i>Movement History
+                            </strong>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-container">
+                                <table class="table table-hover align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Asset ID</th>
+                                            <th>From Location</th>
+                                            <th>To Location</th>
+                                            <th>Room</th>
+                                            <th>Date</th>
+                                            <th>Notes</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="move, iterStat : ${movements}">
+                                            <td th:text="${iterStat.count}"></td>
+                                            <td>
+                                                <div class="fw-semibold text-primary" th:text="${move.asset != null ? move.asset.assetId : ''}"></div>
+                                            </td>
+                                            <td th:text="${move.fromLocation != null ? move.fromLocation.departmentName : ''}"></td>
+                                            <td th:text="${move.toLocation != null ? move.toLocation.departmentName : ''}"></td>
+                                            <td th:text="${move.room != null ? move.room.roomName : ''}"></td>
+                                            <td th:text="${move.movementDate != null ? #dates.format(move.movementDate, 'dd-MM-yyyy') : ''}"></td>
+                                            <td th:text="${move.notes}"></td>
+                                            <td class="text-center">
+                                                <div class="btn-group" role="group">
+                                                    <!-- View Button -->
+                                                    <button 
+                                                        class="btn btn-action btn-view btn-sm"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#movementViewModal"
+                                                        th:attr="data-movement-id=${move.movementId},
+                                                                 data-asset-id=${move.asset != null ? move.asset.assetId : ''},
+                                                                 data-from-location=${move.fromLocation != null ? move.fromLocation.departmentName : ''},
+                                                                 data-to-location=${move.toLocation != null ? move.toLocation.departmentName : ''},
+                                                                 data-to-location-id=${move.toLocation != null ? move.toLocation.locationId : ''},
+                                                                 data-room-name=${move.room != null ? move.room.roomName : ''},
+                                                                 data-movement-date=${move.movementDate != null ? #dates.format(move.movementDate, 'yyyy-MM-dd') : ''},
+                                                                 data-notes=${move.notes}"
+                                                    >
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${movements == null or #lists.isEmpty(movements)}">
+                                            <td colspan="8" class="empty-state">
+                                                <i class="fas fa-info-circle"></i>
+                                                <p>No movement records found.</p>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
+    </div>
+
+    <!-- View Modals (Read-only) -->
+    <!-- Location Details Modal -->
+    <div class="modal fade" id="locationViewModal" tabindex="-1" aria-labelledby="locationViewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="locationViewModalLabel">Location Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Location ID</dt>
+                        <dd class="col-sm-8" id="modalLocationId"></dd>
+                        <dt class="col-sm-4">Department</dt>
+                        <dd class="col-sm-8" id="modalDepartmentName"></dd>
+                        <dt class="col-sm-4">Description</dt>
+                        <dd class="col-sm-8" id="modalDescription"></dd>
+                        <dt class="col-sm-4">Transfer Date</dt>
+                        <dd class="col-sm-8" id="modalTransferDate"></dd>
+                        <dt class="col-sm-4">Start Date</dt>
+                        <dd class="col-sm-8" id="modalStartDate"></dd>
+                        <dt class="col-sm-4">End Date</dt>
+                        <dd class="col-sm-8" id="modalEndDate"></dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Room Details Modal -->
+    <div class="modal fade" id="roomViewModal" tabindex="-1" aria-labelledby="roomViewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="roomViewModalLabel">Room Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Room ID</dt>
+                        <dd class="col-sm-8" id="modalRoomId"></dd>
+                        <dt class="col-sm-4">Room Name</dt>
+                        <dd class="col-sm-8" id="modalRoomName"></dd>
+                        <dt class="col-sm-4">Location</dt>
+                        <dd class="col-sm-8" id="modalRoomLocation"></dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movement Details Modal -->
+    <div class="modal fade" id="movementViewModal" tabindex="-1" aria-labelledby="movementViewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="movementViewModalLabel">Asset Movement Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Movement ID</dt>
+                        <dd class="col-sm-8" id="modalMovementId"></dd>
+                        <dt class="col-sm-4">Asset ID</dt>
+                        <dd class="col-sm-8" id="modalAssetId"></dd>
+                        <dt class="col-sm-4">From Location</dt>
+                        <dd class="col-sm-8" id="modalFromLocation"></dd>
+                        <dt class="col-sm-4">To Location</dt>
+                        <dd class="col-sm-8" id="modalToLocation"></dd>
+                        <dt class="col-sm-4">Room</dt>
+                        <dd class="col-sm-8" id="modalMovementRoomName"></dd>
+                        <dt class="col-sm-4">Date</dt>
+                        <dd class="col-sm-8" id="modalMovementDate"></dd>
+                        <dt class="col-sm-4">Notes</dt>
+                        <dd class="col-sm-8" id="modalMovementNotes"></dd>
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -561,6 +1059,88 @@
         // Mobile menu toggle functionality
         document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
             document.querySelector('.sidebar').classList.toggle('active');
+        });
+
+        // Add CSS animation for table rows
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add smooth transitions to table rows and modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableRows = document.querySelectorAll('tbody tr');
+            tableRows.forEach((row, index) => {
+                row.style.animationDelay = `${index * 0.1}s`;
+                row.style.animation = 'fadeInUp 0.5s ease forwards';
+            });
+            
+            // Activate tab from query parameter
+            const params = new URLSearchParams(window.location.search);
+            const tab = params.get('tab');
+            let defaultTab = 'locations-tab';
+            if (tab === 'movement') defaultTab = 'movement-tab';
+            if (tab === 'rooms') defaultTab = 'rooms-tab';
+            const triggerEl = document.querySelector(`#${defaultTab}`);
+            if (triggerEl) {
+                const tabInstance = new bootstrap.Tab(triggerEl);
+                tabInstance.show();
+            } else {
+                // fallback: show locations tab
+                const locTrigger = document.querySelector('#locations-tab');
+                if (locTrigger) new bootstrap.Tab(locTrigger).show();
+            }
+            
+            // Location modal
+            var locationViewModal = document.getElementById('locationViewModal');
+            if(locationViewModal){
+                locationViewModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    document.getElementById('modalLocationId').textContent = button.getAttribute('data-location-id');
+                    document.getElementById('modalDepartmentName').textContent = button.getAttribute('data-department-name');
+                    document.getElementById('modalDescription').textContent = button.getAttribute('data-description');
+                    document.getElementById('modalTransferDate').textContent = button.getAttribute('data-transfer-date');
+                    document.getElementById('modalStartDate').textContent = button.getAttribute('data-start-date');
+                    document.getElementById('modalEndDate').textContent = button.getAttribute('data-end-date');
+                });
+            }
+            
+            // Room modal
+            var roomViewModal = document.getElementById('roomViewModal');
+            if(roomViewModal){
+                roomViewModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    document.getElementById('modalRoomId').textContent = button.getAttribute('data-room-id');
+                    document.getElementById('modalRoomName').textContent = button.getAttribute('data-room-name');
+                    document.getElementById('modalRoomLocation').textContent = button.getAttribute('data-location');
+                });
+            }
+            
+            // Movement modal
+            var movementViewModal = document.getElementById('movementViewModal');
+            if(movementViewModal){
+                movementViewModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    document.getElementById('modalMovementId').textContent = button.getAttribute('data-movement-id');
+                    document.getElementById('modalAssetId').textContent = button.getAttribute('data-asset-id');
+                    document.getElementById('modalFromLocation').textContent = button.getAttribute('data-from-location');
+                    document.getElementById('modalToLocation').textContent = button.getAttribute('data-to-location');
+                    document.getElementById('modalMovementRoomName').textContent = button.getAttribute('data-room-name');
+                    document.getElementById('modalMovementDate').textContent = button.getAttribute('data-movement-date');
+                    var notes = button.getAttribute('data-notes');
+                    document.getElementById('modalMovementNotes').textContent = notes ? notes : '';
+                });
+            }
         });
         
         // Add active class to current nav item

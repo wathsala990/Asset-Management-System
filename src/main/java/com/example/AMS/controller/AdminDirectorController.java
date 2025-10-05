@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.AMS.model.User;
 import com.example.AMS.repository.UserRepository;
+import com.example.AMS.service.M_LocationService;
+import com.example.AMS.service.M_RoomService;
+import com.example.AMS.service.M_AssetMovementService;
+import com.example.AMS.service.M_AssetService;
 
 @Controller
 @RequestMapping
@@ -17,6 +21,18 @@ public class AdminDirectorController {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private M_LocationService locationService;
+    
+    @Autowired
+    private M_RoomService roomService;
+    
+    @Autowired
+    private M_AssetMovementService movementService;
+    
+    @Autowired
+    private M_AssetService assetService;
 
     @GetMapping("/user/home")
     public String userHome(Model model, Authentication authentication) {
@@ -248,6 +264,21 @@ public class AdminDirectorController {
     // }
     @GetMapping("/director/directorMovement")
     public String DirectorMovement(Model model) {
+        try {
+            // Add all necessary data for view-only access
+            model.addAttribute("locations", locationService.getAllLocations());
+            model.addAttribute("rooms", roomService.getAllRooms());
+            model.addAttribute("movements", movementService.getAllMovements());
+            model.addAttribute("assets", assetService.getAllAssets());
+        } catch (Exception e) {
+            // Log error but don't throw exception to avoid template parsing issues
+            System.err.println("Error populating model attributes for director movement: " + e.getMessage());
+            // Add empty collections to avoid null pointers in template
+            model.addAttribute("locations", java.util.Collections.emptyList());
+            model.addAttribute("rooms", java.util.Collections.emptyList());
+            model.addAttribute("movements", java.util.Collections.emptyList());
+            model.addAttribute("assets", java.util.Collections.emptyList());
+        }
         return "Movement/director/Movement";
     }
 

@@ -103,42 +103,64 @@ public class L_A_AssetAllocationController {
     // Assign user to asset
     @PostMapping("/assign")
     public String assignUserToAsset(@RequestBody Map<String, String> payload) {
-        String userId = payload.get("userId");
-        String userName = payload.get("userName");
-        String jobRole = payload.get("jobRole");
-        String assetId = payload.get("assetId");
-        String startDateStr = payload.get("startDate");
-        Asset asset = assetRepository.findById(assetId).orElse(null);
-        if (asset == null) return "Asset not found";
-        // Prevent assignment if asset is condemned (activityStatus == false)
-        if (!asset.isActivityStatus()) {
-            return "Error: This asset is condemned and cannot be assigned.";
-        }
-        // If asset is already assigned, end previous assignment
-        List<AssetUser> currentAssignments = assetUserRepository.findAll().stream()
-            .filter(u -> assetId.equals(u.getAsset().getAssetId()) && u.getEndDate() == null)
-            .toList();
-        if (!currentAssignments.isEmpty()) {
-            java.util.Date today = new java.util.Date();
-            for (AssetUser u : currentAssignments) {
-                u.setEndDate(today);
-                assetUserRepository.save(u);
+        try {
+            String userId = payload.get("userId");
+            String userName = payload.get("userName");
+            String jobRole = payload.get("jobRole");
+            String assetId = payload.get("assetId");
+            String startDateStr = payload.get("startDate");
+            
+            // Validate required fields
+            if (userId == null || userId.trim().isEmpty() || 
+                userName == null || userName.trim().isEmpty() || 
+                assetId == null || assetId.trim().isEmpty() || 
+                startDateStr == null || startDateStr.trim().isEmpty()) {
+                return "Missing required fields";
             }
-        }
-        AssetUser assetUser = new AssetUser();
-        assetUser.setUserId(userId);
-        assetUser.setUserName(userName);
-        assetUser.setJobRole(jobRole);
-        assetUser.setAsset(asset);
-        if (startDateStr != null && !startDateStr.isEmpty()) {
-            try {
-                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-                assetUser.setStartDate(sdf.parse(startDateStr));
-            } catch (Exception e) {
-                // Invalid date format, ignore or handle as needed
+            
+            Asset asset = assetRepository.findById(assetId).orElse(null);
+            if (asset == null) return "Asset not found";
+            
+            // Prevent assignment if asset is condemned (activityStatus == false)
+            if (!asset.isActivityStatus()) {
+                return "This asset is condemned and cannot be assigned.";
             }
+            
+            // End any current assignments for this asset
+            List<AssetUser> currentAssignments = assetUserRepository.findAll().stream()
+                .filter(u -> u.getAsset() != null && assetId.equals(u.getAsset().getAssetId()) && u.getEndDate() == null)
+                .toList();
+            
+            if (!currentAssignments.isEmpty()) {
+                java.util.Date today = new java.util.Date();
+                for (AssetUser u : currentAssignments) {
+                    u.setEndDate(today);
+                    assetUserRepository.save(u);
+                }
+            }
+            
+            // Create new assignment
+            AssetUser assetUser = new AssetUser();
+            assetUser.setUserId(userId.trim());
+            assetUser.setUserName(userName.trim());
+            assetUser.setJobRole(jobRole != null ? jobRole.trim() : "");
+            assetUser.setAsset(asset);
+            
+            // Parse and set start date
+            if (startDateStr != null && !startDateStr.isEmpty()) {
+                try {
+                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                    assetUser.setStartDate(sdf.parse(startDateStr));
+                } catch (Exception e) {
+                    return "Invalid date format";
+                }
+            }
+            
+            assetUserRepository.save(assetUser);
+            return "Success";
+            
+        } catch (Exception e) {
+            return "Error assigning user to asset: " + e.getMessage();
         }
-        assetUserRepository.save(assetUser);
-        return "Success";
     }
 }
