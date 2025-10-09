@@ -3,6 +3,8 @@ package com.example.AMS.service;
 import com.example.AMS.dto.UserDto;
 import com.example.AMS.model.User;
 import com.example.AMS.repository.UserRepository;
+import com.example.AMS.repository.RoleRepository;
+import com.example.AMS.model.Role;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
@@ -10,11 +12,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class AdminUserService {
-
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
-    public AdminUserService(UserRepository userRepository) {
+    public AdminUserService(UserRepository userRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
     }
 
     public List<UserDto> getAllUsers() {
@@ -25,7 +28,7 @@ public class AdminUserService {
 
     private UserDto convertToDto(User user) {
         Set<String> roleNames = user.getRoles().stream()
-                .map(role -> role.getName())
+                .map(Role::getName)
                 .collect(Collectors.toSet());
 
         return new UserDto(
@@ -33,8 +36,33 @@ public class AdminUserService {
                 user.getUsername(),
                 user.getFullName(),
                 user.getEmail(),
+                user.getProfilePhotoUrl(),
                 roleNames,
                 user.isEnabled()
         );
+    }
+
+    public void updateUserRoles(Long userId, List<String> roles) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+        Set<Role> newRoles = roles.stream()
+                .map(roleName -> roleRepository.findByName(roleName)
+                        .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName)))
+                .collect(Collectors.toSet());
+        user.setRoles(newRoles);
+        userRepository.save(user);
+    }
+    // Update profile photo URL for a user by username
+    public void updateProfilePhoto(String username, String photoUrl) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
+        user.setProfilePhotoUrl(photoUrl);
+        userRepository.save(user);
+    }
+
+     // Get user by username
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
     }
 }
